@@ -1,0 +1,27 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  # - name: "ubuntu"
+  #   entrypoint: "bash"
+  #   args:
+  #     - "-c"
+  #     - "cat package.json && echo 'Package.json content printed above.'"
+
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install"]
+
+  - name: "gcr.io/cloud-builders/npm"
+    env:
+      - "PUBLIC_URL=/shopinggo"
+    args: ["run", "build"]
+
+  # - name: "ubuntu"
+  #   entrypoint: "bash"
+  #   args:
+  #     - "-c"
+  #     - "cat build/index.html && echo 'Index.html content printed above.'"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gsutil"
+    args: ["-m", "cp", "-r", "build/*", "gs://shopinggo/"]
