@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -6,7 +6,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -16,32 +15,79 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import styled from '@mui/material/styles/styled';
+import dayjs from "dayjs";
+const mockData = {
+    eventName: "ColdStone Gogo",
+    date: "2024-12-12",
+    time: "12:00 PM",
+    brandName: "ColdStone",
+    location: "Taipei City",
+    peopleNumNeeded: 2,
+    price: 180,
+    photo: "https://source.unsplash.com/random",
+    hashtag1: "Coffee",
+    hashtag2: "BOGO",
+    description: "Come and get your ice cream!"
+    };
 const EditTicket = () => {
-  const [peopleNumNeeded, setPeopleNumNeeded] = React.useState('');
-  const [hashtag1, setHashtag1] = React.useState('');
-  const [hashtag2, setHashtag2] = React.useState('');
-  const handleChangePeopleNum = (event) => {
-    setPeopleNumNeeded(event.target.value);
-  };
-  const handleChangeHashtag1 = (event) => {
-    setHashtag1(event.target.value);
-  }
-  const handleChangeHashtag2 = (event) => {
-    setHashtag2(event.target.value);
-  }
+    const [eventName, setEventName] = useState(mockData.eventName);
+    const [date, setDate] = useState(dayjs(mockData.date));
+    const [time, setTime] = useState(dayjs(mockData.time, "HH:mm A"));
+    const [brandName, setBrandName] = useState(mockData.brandName);
+    const [location, setLocation] = useState(mockData.location);
+    const [peopleNumNeeded, setPeopleNumNeeded] = React.useState(mockData.peopleNumNeeded);
+    const [price, setPrice] = React.useState(mockData.price);
+    const [photo, setPhoto] = React.useState(mockData.photo);
+    const [hashtag1, setHashtag1] = React.useState(mockData.hashtag1);
+    const [hashtag2, setHashtag2] = React.useState(mockData.hashtag2);
+    const [description, setDescription] = React.useState(mockData.description);
+    const peopleOptions = [1, 2, 3];
+    const hashtagOptions1 = ["Coffee", "Tea", "Pizza", "Burger", "Sushi"];
+    const hashtagOptions2 = ["BOGO", "Discount", "Free", "Coupon", "Sale"];
+    const handleChangeEventName = (event) => {
+        setEventName(event.target.value);
+        };
+    const handleChangeDate = (newDate) => {
+        setDate(newDate);
+        };
+    const handleChangeTime = (newTime) => {
+        setTime(newTime);
+        };
+    const handleChangeBrandName = (event) => {
+        setBrandName(event.target.value);
+    };
+    const handleChangeLocation = (event) => {
+        setLocation(event.target.value);
+    };
+    const handleChangePeopleNum = (event) => {
+        setPeopleNumNeeded(event.target.value);
+    };
+    const handleChangePrice = (event) => {
+        setPrice(event.target.value);
+    };
+    const handleChangePhoto = (event) => {
+        const file = event.target.files[0]; // Get the selected file
+        const reader = new FileReader(); // Create a new file reader
+        reader.onloadend = () => {
+          // Set the photo state with the data URL of the selected file
+          setPhoto(reader.result);
+        };
+    
+        if (file) {
+          // Read the selected file as a data URL
+          reader.readAsDataURL(file);
+        }
+      };
+    const handleChangeHashtag1 = (event) => {
+        setHashtag1(event.target.value);
+    }
+    const handleChangeHashtag2 = (event) => {
+        setHashtag2(event.target.value);
+    }
+    const handleChangeDescription = (event) => {
+        setDescription(event.target.value);
+    }
 
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-  });
   // 在 profile那邊的 my ticket 點擊 edit 後，會跳轉到這個頁面
   return (
     <>
@@ -55,20 +101,29 @@ const EditTicket = () => {
               <div class="form my-3">
                 <label for="Name">Event Name</label>
                 <input
-                  type="email"
-                  class="form-control"
-                  id="Name"
-                  placeholder="Enter event name"
+                    type="text"
+                    className="form-control"
+                    id="Name"
+                    value={eventName}
+                    onChange={handleChangeEventName}
                 />
               </div>
               <div class="form my-3">
                 <label for="Name">Date & Time</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
-                    <DatePicker label="Choose date" />
+                  <DatePicker
+                    value={date}
+                    onChange={handleChangeDate}
+                    renderInput={(params) => <input {...params.inputProps} />}
+                    />
                   </DemoContainer>
                   <DemoContainer components={['TimePicker']}>
-                    <TimePicker label="Choose time" />
+                    <TimePicker 
+                    value={time}
+                    onChange={handleChangeTime}
+                    renderInput={(params) => <input {...params.inputProps} />}
+                    />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
@@ -78,7 +133,8 @@ const EditTicket = () => {
                   type="email"
                   class="form-control"
                   id="Name"
-                  placeholder="Enter brand name"
+                  value={brandName}
+                  onChange={handleChangeBrandName}
                 />
               </div>
               <div class="form my-3">
@@ -87,23 +143,24 @@ const EditTicket = () => {
                   type="email"
                   class="form-control"
                   id="Name"
-                  placeholder="Enter location"
+                  value={location}
+                  onChange={handleChangeLocation}
                 />
               </div>
               <div class="form my-3">
                 <label for="Name">People Number Needed</label>
                   <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">People Needed</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={peopleNumNeeded}
                         onChange={handleChangePeopleNum}
                       >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
+                        {peopleOptions.map((value) => (
+                            <MenuItem key={value} value={value}>{value}</MenuItem>
+                        ))}
+
                       </Select>
                     </FormControl>
                   </Box>
@@ -111,16 +168,19 @@ const EditTicket = () => {
               <div class="form my-3">
                   <label for="Name">People Number Needed</label>
                   <FormControl fullWidth sx={{ m: 1 }}>
-                    <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-amount"
                       startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                      label="Amount"
+                      value={price}
+                      onChange={handleChangePrice}
                     />
                   </FormControl>
               </div>
               <div class="form my-3">
                 <label for="Name">Photo</label>
+                <br/>
+                <img src={photo} alt="photo" width="300" height="300" />
+                <br/>
                 <br/>
                 <Button
                     component="label"
@@ -130,7 +190,17 @@ const EditTicket = () => {
                     startIcon={<CloudUploadIcon />}
                     >
                     Change Photo
-                    <VisuallyHiddenInput type="file" />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleChangePhoto}
+                        /><input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleChangePhoto}
+                    />
                 </Button>
               </div>
               <div class="form my-3">
@@ -143,9 +213,9 @@ const EditTicket = () => {
                   value={hashtag1}
                   onChange={handleChangeHashtag1}
                 >
-                  <MenuItem value={1}>Coffee</MenuItem>
-                  <MenuItem value={2}>Tea</MenuItem>
-                  <MenuItem value={3}>Pizza</MenuItem>
+                {hashtagOptions1.map((value) => (
+                        <MenuItem key={value} value={value}>{value}</MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               <FormControl sx={{ m: 1, minWidth: 192 }}>
@@ -155,8 +225,9 @@ const EditTicket = () => {
                   value={hashtag2}
                   onChange={handleChangeHashtag2}
                 >
-                  <MenuItem value={4}>BOGO</MenuItem>
-                  <MenuItem value={5}>Discount</MenuItem>
+                  {hashtagOptions2.map((value) => (
+                        <MenuItem key={value} value={value}>{value}</MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               </div>
@@ -166,7 +237,8 @@ const EditTicket = () => {
                 <FormControl fullWidth sx={{ m: 1 }} variant="standard">
                 <TextField
                   id="outlined-multiline-static"
-                  placeholder="Enter description"
+                  value={description}
+                  onChange={handleChangeDescription}
                   multiline
                   rows={4}
                 />
