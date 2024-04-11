@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 
 
-import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, Login, Register, Checkout, PageNotFound } from "./pages"
+import { Home, Ticket, Tickets, NewTicket, EditTicket, Calendar, Bookmark, Login, Register, Checkout, PageNotFound } from "./pages"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,6 +18,7 @@ root.render(
         <Route path="/ticket" element={<Tickets />} />
         <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/newticket" element={<NewTicket />} />
+        <Route path="/editticket" element={<EditTicket />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/login" element={<Login />} />
