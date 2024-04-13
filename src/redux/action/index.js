@@ -13,3 +13,19 @@ export const delBookmark = (ticket) =>{
         payload:ticket
     }
 }
+
+// For Add Ticket to JoinTicket
+export const addJoinTicket = (ticket) =>{
+    return {
+        type:"ADDJOINTICKET",
+        payload:ticket
+    }
+}
+
+// For Delete Ticket to JoinTicket
+export const delJoinTicket = (ticket) =>{
+    return {
+        type:"DELJOINTICKET",
+        payload:ticket
+    }
+}

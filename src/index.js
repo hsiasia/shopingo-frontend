@@ -7,8 +7,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-
-import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, Login, Checkout, PageNotFound } from "./pages"
+import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, JoinTicket, Login, Register, Checkout, PageNotFound } from "./pages"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +21,7 @@ root.render(
         <Route path="/newticket" element={<NewTicket />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/bookmark" element={<Bookmark />} />
+        <Route path="/jointicket" element={<JoinTicket />} />
         <Route path="/login" element={<Login />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<PageNotFound />} />

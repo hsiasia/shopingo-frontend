@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addBookmark } from "../redux/action";
+import { addBookmark, addJoinTicket } from "../redux/action";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -26,6 +26,9 @@ import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Collapse from '@mui/material/Collapse';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CardActions from '@mui/material/CardActions';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -38,7 +41,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 // Shawn add
 const labelStyle = {
-  backgroundColor: '#87CEFA',
+  backgroundColor: '#9EC5FF',
+  color: 'white',
   textAlign: 'center',
   borderRadius: '10px',
   margin: '3px'
@@ -59,16 +63,37 @@ const chipStyle = {
   margin: '3px'
 };
 
+const ExpandMore = styled((props) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
 const Ticket = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
 
+  // shawn
+  const [expanded, setExpanded] = React.useState(false);
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
   const dispatch = useDispatch();
 
-  const addTicket = (ticket) => {
+  const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
+  }
+
+  const addjointicket = (ticket) => {
+    dispatch(addJoinTicket(ticket))
   }
 
   useEffect(() => {
@@ -169,89 +194,108 @@ const Ticket = () => {
                 </div>
               </div> */}
               {/* 以下為 Shawn 測試 MUI */}
-              <Card sx={{margin: '10px', width: '1000px'}}>
-                <CardHeader
-                  title="3 Days 2 Hours 10 Mins Before the Event Starts"
-                  sx={{bgcolor: '#FF9292'}}
-                />
-                <CardContent container>
-                  <Grid container spacing={2}>
-                    <Grid container item xs={8}>
-                      <Grid item xs={1}>
-                        <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
+                <Card sx={{margin: '10px', width: '1000px'}}>
+                  <CardHeader
+                    title="3 Days 2 Hours 10 Mins Before the Event Starts"
+                    sx={{bgcolor: '#FF9292'}}
+                  />
+                  <CardContent container>
+                    <Grid container spacing={2}>
+                      <Grid container item xs={8}>
+                        <Grid item xs={1}>
+                          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                        </Grid>
+                        <Grid item xs={5}>
+                          <Typography variant="h4" xs={2}>influencer3</Typography>
+                        </Grid>
+                        <Grid item xs={5}>
+                          <Box sx={{display: 'flex', bgcolor: '#FFE4E3', borderRadius: '10px', justifyContent: 'center'}}>
+                            <Rating value={4} readOnly size="large"></Rating>
+                            <Typography variant="h5">4.0</Typography>
+                            <Typography variant="h5">(12)</Typography>
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          <Typography variant="h2">Cold Stone BOGOF</Typography>
+                          <Typography variant="h6" color="gray">@_coldstone_official</Typography>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={5}>
-                        <Typography variant="h4" xs={2}>influencer3</Typography>
+                      <Grid container item xs={4}>
+                        <Grid item xs={6}>
+                          <IconButton>
+                            <AddCircleIcon onClick={() => addjointicket(ticket)} sx={{width: 100, height: 100, color: "red"}}/>
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <IconButton>
+                            <BookmarkIcon onClick={() => addbookmark(ticket)} sx={{width: 100, height: 100, color: "#9EC5FF"}}/>
+                          </IconButton>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={5}>
-                        <Box sx={{display: 'flex', bgcolor: '#FFE4E3', borderRadius: '10px', justifyContent: 'center'}}>
-                          <Rating value={4} readOnly size="large"></Rating>
-                          <Typography variant="h5">4.0</Typography>
-                          <Typography variant="h5">(12)</Typography>
-                        </Box>
+                      <Grid item xs={12}>
+                        <CardMedia
+                          sx={{height: '300px', objectFit: 'over'}}
+                          image={ticket.image}
+                          title={ticket.title}
+                        />
+                        <Chip label="#ColdStone" variant="outlined" sx={chipStyle}/>
+                        <Chip label="#BOGOF" variant="outlined" sx={chipStyle}/>
+                        <Chip label="#Ice-Cream" variant="outlined" sx={chipStyle}/>
                       </Grid>
-                      <Grid item>
-                        <Typography variant="h2">Cold Stone BOGOF</Typography>
-                        <Typography variant="h6" color="gray">@_coldstone_official</Typography>
+                      <Grid container>
+                        <Grid item xs={2}>
+                          <Typography variant="h5" sx={labelStyle}>LOC</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <Typography variant="h5" sx={contentStyle}>smth Rd. NO.123, Taipei, Taiwan</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography variant="h5" sx={labelStyle}>DATE</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <Typography variant="h5" sx={contentStyle}>4:00 PM, April 1st, 2024</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <Typography variant="h5" sx={contentStyle}>2~4</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <Typography variant="h5" sx={contentStyle}>100 NTD</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <Typography variant="h5" sx={contentStyle}>Buy one get one free</Typography>
+                        </Grid>
                       </Grid>
                     </Grid>
-                    <Grid container item xs={4}>
-                      <Grid item xs={6}>
-                        <IconButton>
-                          <AddCircleIcon sx={{width: 100, height: 100, color: "red"}}/>
-                        </IconButton>
-                      </Grid>
-                      <Grid item xs={6}>
-                        <IconButton>
-                          <BookmarkIcon sx={{width: 100, height: 100, color: "#87CEFA"}}/>
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <CardMedia
-                        sx={{height: '300px', objectFit: 'over'}}
-                        image={ticket.image}
-                        title={ticket.title}
-                      />
-                      <Chip label="#ColdStone" variant="outlined" sx={chipStyle}/>
-                      <Chip label="#BOGOF" variant="outlined" sx={chipStyle}/>
-                      <Chip label="#Ice-Cream" variant="outlined" sx={chipStyle}/>
-                    </Grid>
-                    <Grid container>
-                      <Grid item xs={2}>
-                        <Typography variant="h5" sx={labelStyle}>LOC</Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <Typography variant="h5" sx={contentStyle}>smth Rd. NO.123, Taipei, Taiwan</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="h5" sx={labelStyle}>DATE</Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <Typography variant="h5" sx={contentStyle}>4:00 PM, April 1st, 2024</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <Typography variant="h5" sx={contentStyle}>2~4</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <Typography variant="h5" sx={contentStyle}>100 NTD</Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
-                      </Grid>
-                      <Grid item xs={10}>
-                        <Typography variant="h5" sx={contentStyle}>Buy one get one free</Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
+                    <CardActions disableSpacing>
+                      <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                      >
+                        <ExpandMoreIcon />
+                      </ExpandMore>
+                    </CardActions>
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                      <CardContent>
+                        <Typography paragraph>
+                          Test
+                        </Typography>
+                      </CardContent>
+                    </Collapse>
+                  </CardContent>
+                </Card>
+              </Box>
             </>
           );
         })}
