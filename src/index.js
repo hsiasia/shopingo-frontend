@@ -35,7 +35,7 @@ root.render(
           <Route path="/bookmark" element={<Bookmark />} />
           <Route path="/login" element={<Login />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="*" element={<PageNotFound />} />
+          <Route path="/*" element={<PageNotFound />} />
           <Route path="/ticket/*" element={<PageNotFound />} />
         </Routes>
       </Provider>

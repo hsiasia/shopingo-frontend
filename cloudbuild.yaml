@@ -13,14 +13,14 @@ steps:
 
   - name: "gcr.io/cloud-builders/npm"
     env:
-      - "PUBLIC_URL=/shopinggo"
+      - "PUBLIC_URL=/shopinggo/*"
     args: ["run", "build"]
 
-  # - name: "ubuntu"
-  #   entrypoint: "bash"
-  #   args:
-  #     - "-c"
-  #     - "cat build/index.html && echo 'Index.html content printed above.'"
+  - name: "ubuntu"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - "echo 'PUBLIC_URL value is:' $PUBLIC_URL"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gsutil"
