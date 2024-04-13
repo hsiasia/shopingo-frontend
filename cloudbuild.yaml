@@ -16,12 +16,6 @@ steps:
       - "PUBLIC_URL=/shopinggo/*"
     args: ["run", "build"]
 
-  - name: "ubuntu"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - "echo 'PUBLIC_URL value is:' $PUBLIC_URL"
-
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gsutil"
     args: ["-m", "cp", "-r", "build/*", "gs://shopinggo/"]
