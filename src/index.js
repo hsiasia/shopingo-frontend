@@ -29,7 +29,6 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/index.html" element={<Home />} />
           <Route path="/ticket" element={<Tickets />} />
           <Route path="/ticket/:id" element={<Ticket />} />
           <Route path="/newticket" element={<NewTicket />} />
@@ -37,8 +36,8 @@ root.render(
           <Route path="/bookmark" element={<Bookmark />} />
           <Route path="/login" element={<Login />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/*" element={<PageNotFound />} />
           <Route path="/ticket/*" element={<PageNotFound />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Provider>
     </BrowserRouter>
