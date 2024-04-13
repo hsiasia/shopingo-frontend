@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Navigate } from "react-router-dom";
 
 import {
   Home,
@@ -28,6 +29,7 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/index.html" element={<Navigate to="/" replace />} />
           <Route path="/ticket" element={<Tickets />} />
           <Route path="/ticket/:id" element={<Ticket />} />
           <Route path="/newticket" element={<NewTicket />} />
