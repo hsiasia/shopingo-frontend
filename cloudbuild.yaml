@@ -1,6 +1,5 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: "N1_HIGHMEM_8"
 
 steps:
   # - name: "ubuntu"
