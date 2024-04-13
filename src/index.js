@@ -20,7 +20,7 @@ import {
   PageNotFound,
 } from "./pages";
 
-const baseurl = process.env.PUBLIC_URL;
+const baseurl = process.env.PUBLIC_URL ? process.env.PUBLIC_URL : "/";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <GoogleOAuthProvider clientId={process.env.client_id}>
