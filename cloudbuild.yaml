@@ -13,7 +13,7 @@ steps:
 
   - name: "gcr.io/cloud-builders/npm"
     env:
-      - "PUBLIC_URL=/shopinggo/*"
+      - "NODE_OPTIONS=--max-old-space-size=4096"
     args: ["run", "build"]
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
