@@ -9,7 +9,7 @@ steps:
   #     - "cat package.json && echo 'Package.json content printed above.'"
 
   - name: "gcr.io/cloud-builders/npm"
-    args: ["install"]
+    args: ["install", "--force"]
 
   - name: "gcr.io/cloud-builders/npm"
     env:
