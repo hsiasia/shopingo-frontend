@@ -29,7 +29,7 @@ root.render(
       <Provider store={store}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/index.html" element={<Navigate to="/" replace />} />
+          <Route path="/index.html" element={<Home />} />
           <Route path="/ticket" element={<Tickets />} />
           <Route path="/ticket/:id" element={<Ticket />} />
           <Route path="/newticket" element={<NewTicket />} />
