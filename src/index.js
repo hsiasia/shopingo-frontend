@@ -7,7 +7,9 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, JoinTicket, Login, Register, Checkout, PageNotFound } from "./pages"
+
+import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, Login, Register, Checkout, PageNotFound } from "./pages"
+const publicUrl = (path) => `${process.env.PUBLIC_URL}${path}`;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,17 +17,17 @@ root.render(
   <BrowserRouter>
     <Provider store={store}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/ticket" element={<Tickets />} />
-        <Route path="/ticket/:id" element={<Ticket />} />
-        <Route path="/newticket" element={<NewTicket />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/bookmark" element={<Bookmark />} />
-        <Route path="/jointicket" element={<JoinTicket />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="*" element={<PageNotFound />} />
-        <Route path="/ticket/*" element={<PageNotFound />} />
+        <Route path={publicUrl('/')} element={<Home />} />
+        <Route path={publicUrl('/ticket')} element={<Tickets />} />
+        <Route path={publicUrl('/ticket/:id')} element={<Ticket />} />
+        <Route path={publicUrl('/newticket')} element={<NewTicket />} />
+        <Route path={publicUrl('/calendar')} element={<Calendar />} />
+        <Route path={publicUrl('/bookmark')} element={<Bookmark />} />
+        <Route path={publicUrl('/login')} element={<Login />} />
+        <Route path={publicUrl('/checkout')} element={<Checkout />} />
+        <Route path={publicUrl('*')} element={<PageNotFound />} />
+        <Route path={publicUrl('/ticket/*')} element={<PageNotFound />} />
+
       </Routes>
     </Provider>
   </BrowserRouter>
