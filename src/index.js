@@ -5,12 +5,13 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import { Home, Ticket, Tickets, NewTicket, Calendar, Bookmark, JoinTicket, Login, Register, Checkout, PageNotFound } from "./pages"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  <GoogleOAuthProvider clientId={process.env.client_id}>
   <BrowserRouter>
     <Provider store={store}>
       <Routes>
@@ -22,11 +23,11 @@ root.render(
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/jointicket" element={<JoinTicket />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="*" element={<PageNotFound />} />
         <Route path="/ticket/*" element={<PageNotFound />} />
       </Routes>
     </Provider>
   </BrowserRouter>
+  </GoogleOAuthProvider>
 );
