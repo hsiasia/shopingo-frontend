@@ -9,18 +9,12 @@ steps:
   #     - "cat package.json && echo 'Package.json content printed above.'"
 
   - name: "gcr.io/cloud-builders/npm"
-    args: ["install"]
+    args: ["install", "--force"]
 
   - name: "gcr.io/cloud-builders/npm"
     env:
-      - "PUBLIC_URL=/shopinggo"
+      - "NODE_OPTIONS=--max-old-space-size=4096"
     args: ["run", "build"]
-
-  # - name: "ubuntu"
-  #   entrypoint: "bash"
-  #   args:
-  #     - "-c"
-  #     - "cat build/index.html && echo 'Index.html content printed above.'"
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gsutil"
