@@ -5,7 +5,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import { Navigate } from "react-router-dom";
+
 
 import {
   Home,
@@ -20,10 +20,9 @@ import {
   PageNotFound,
 } from "./pages";
 
-const baseurl = process.env.PUBLIC_URL ? process.env.PUBLIC_URL : "/";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter basename={baseurl}>
+  <BrowserRouter>
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Home />} />
