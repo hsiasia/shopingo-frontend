@@ -29,6 +29,7 @@ root.render(
         <Route path="/ticket" element={<Tickets />} />
         <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/newticket" element={<NewTicket />} />
+        <Route path="/editticket" element={<EditTicket />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/login" element={<Login />} />
