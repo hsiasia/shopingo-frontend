@@ -12,10 +12,10 @@ import {
   Ticket,
   Tickets,
   NewTicket,
+  EditTicket,
   Calendar,
   Bookmark,
   Login,
-  Register,
   Checkout,
   PageNotFound,
 } from "./pages";
