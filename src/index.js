@@ -16,6 +16,7 @@ import {
   Calendar,
   Bookmark,
   Login,
+  JoinTicket,
   Checkout,
   PageNotFound,
 } from "./pages";
@@ -30,6 +31,7 @@ root.render(
         <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/newticket" element={<NewTicket />} />
         <Route path="/editticket" element={<EditTicket />} />
+        <Route path="/jointicket" element={<JoinTicket />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/login" element={<Login />} />
