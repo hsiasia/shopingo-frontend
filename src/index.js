@@ -5,7 +5,6 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Navigate } from "react-router-dom";
 
 import {
@@ -24,22 +23,20 @@ import {
 const baseurl = process.env.PUBLIC_URL ? process.env.PUBLIC_URL : "/";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <GoogleOAuthProvider clientId={process.env.client_id}>
-    <BrowserRouter basename={baseurl}>
-      <Provider store={store}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/ticket" element={<Tickets />} />
-          <Route path="/ticket/:id" element={<Ticket />} />
-          <Route path="/newticket" element={<NewTicket />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/bookmark" element={<Bookmark />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/ticket/*" element={<PageNotFound />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Provider>
-    </BrowserRouter>
-  </GoogleOAuthProvider>
+  <BrowserRouter basename={baseurl}>
+    <Provider store={store}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/ticket" element={<Tickets />} />
+        <Route path="/ticket/:id" element={<Ticket />} />
+        <Route path="/newticket" element={<NewTicket />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/bookmark" element={<Bookmark />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/ticket/*" element={<PageNotFound />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </Provider>
+  </BrowserRouter>
 );
