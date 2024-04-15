@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addBookmark, addJoinTicket } from "../redux/action";
-
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-
 import { Link } from "react-router-dom";
-
-// Shawn import MUI component
+// import MUI component
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -168,18 +165,13 @@ const Ticket = () => {
           const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
           const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
-
+          // 將日期轉換成使用者易懂的方式
           const formattedEventDate = `${eventDate.getFullYear()} 年 ${eventDate.getMonth() + 1} 月 ${eventDate.getDate()} 日 ${eventDate.getHours()}:${eventDate.getMinutes() < 10 ? '0' : ''}${eventDate.getMinutes()}`;
-
 
           return (
             <>
               <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
                 <Card sx={{margin: '10px', width: '1000px'}}>
-                  {/* <CardHeader
-                    title="3 Days 2 Hours 10 Mins Before the Event Starts"
-                    sx={{bgcolor: '#FF9292'}}
-                  /> */}
                   <CardHeader
                     title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
                     sx={{bgcolor: '#FF9292'}}
