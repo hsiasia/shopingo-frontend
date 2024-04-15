@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addBookmark, addJoinTicket } from "../redux/action";
-
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-
 import { Link } from "react-router-dom";
-
-// Shawn import MUI component
+// import MUI component
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -99,10 +96,11 @@ const Ticket = () => {
   useEffect(() => {
     const getTickets = async () => {
       setLoading(true);
-      const response = await fetch("https://fakestoreapi.com/products/");
+      const response = await fetch("http://34.81.121.53:8000/api/event/");
       if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
+        const responseData = await response.json();
+        setData(responseData.data);
+        setFilter(responseData.data);
         setLoading(false);
       }
 
@@ -160,44 +158,22 @@ const Ticket = () => {
         </div>
 
         {filter.map((ticket) => {
+          // 計算當前時間與活動差距
+          const eventDate = new Date(ticket.event_date);
+          const currentDate = new Date();
+          const diffInMs = eventDate - currentDate;
+          const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+          // 將日期轉換成使用者易懂的方式
+          const formattedEventDate = `${eventDate.getFullYear()} 年 ${eventDate.getMonth() + 1} 月 ${eventDate.getDate()} 日 ${eventDate.getHours()}:${eventDate.getMinutes() < 10 ? '0' : ''}${eventDate.getMinutes()}`;
+
           return (
             <>
-              {/* <div id={ticket.id} key={ticket.id} >
-                <div className="card text-center h-100" key={ticket.id}>
-                  <img
-                    className="card-img-top p-3"
-                    src={ticket.image}
-                    alt="Card"
-                    height={300}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      {ticket.title.substring(0, 12)}...
-                    </h5>
-                    <p className="card-text">
-                      {ticket.description.substring(0, 90)}...
-                    </p>
-                  </div>
-                  <ul className="list-group list-group-flush">
-                    <li className="list-group-item lead">$ {ticket.price}</li> */}
-                    {/* <li className="list-group-item">Dapibus ac facilisis in</li>
-                      <li className="list-group-item">Vestibulum at eros</li> */}
-                  {/* </ul>
-                  <div className="card-body">
-                    <Link to={"/ticket/" + ticket.id} className="btn btn-black m-1">
-                      Join Ticket
-                    </Link>
-                    <button className="btn btn-dark m-1" onClick={() => addTicket(ticket)}>
-                      Save to Bookmark
-                    </button>
-                  </div>
-                </div>
-              </div> */}
-              {/* 以下為 Shawn 測試 MUI */}
               <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
                 <Card sx={{margin: '10px', width: '1000px'}}>
                   <CardHeader
-                    title="3 Days 2 Hours 10 Mins Before the Event Starts"
+                    title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
                     sx={{bgcolor: '#FF9292'}}
                   />
                   <CardContent container>
@@ -207,18 +183,18 @@ const Ticket = () => {
                           <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                         </Grid>
                         <Grid item xs={5}>
-                          <Typography variant="h4" xs={2}>influencer3</Typography>
+                          <Typography variant="h4" xs={2}>{ticket.creator}</Typography>
                         </Grid>
                         <Grid item xs={5}>
                           <Box sx={{display: 'flex', bgcolor: '#FFE4E3', borderRadius: '10px', justifyContent: 'center'}}>
-                            <Rating value={4} readOnly size="large"></Rating>
-                            <Typography variant="h5">4.0</Typography>
+                            <Rating value={ticket.score} readOnly size="large"></Rating>
+                            <Typography variant="h5">{ticket.score}</Typography>
                             <Typography variant="h5">(12)</Typography>
                           </Box>
                         </Grid>
                         <Grid item>
-                          <Typography variant="h2">Cold Stone BOGOF</Typography>
-                          <Typography variant="h6" color="gray">@_coldstone_official</Typography>
+                          <Typography variant="h2">{ticket.event_name}</Typography>
+                          <Typography variant="h6" color="gray">{ticket.company_name}</Typography>
                         </Grid>
                       </Grid>
                       <Grid container item xs={4}>
@@ -239,40 +215,40 @@ const Ticket = () => {
                           image={ticket.image}
                           title={ticket.title}
                         />
-                        <Chip label="#ColdStone" variant="outlined" sx={chipStyle}/>
-                        <Chip label="#BOGOF" variant="outlined" sx={chipStyle}/>
-                        <Chip label="#Ice-Cream" variant="outlined" sx={chipStyle}/>
+                        {ticket.hashtag.map((tag, index) => (
+                          <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                        ))}
                       </Grid>
                       <Grid container>
                         <Grid item xs={2}>
                           <Typography variant="h5" sx={labelStyle}>LOC</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                          <Typography variant="h5" sx={contentStyle}>smth Rd. NO.123, Taipei, Taiwan</Typography>
+                          <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
                         </Grid>
                         <Grid item xs={2}>
                           <Typography variant="h5" sx={labelStyle}>DATE</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                          <Typography variant="h5" sx={contentStyle}>4:00 PM, April 1st, 2024</Typography>
+                          <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
                         </Grid>
                         <Grid item xs={2}>
                           <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                          <Typography variant="h5" sx={contentStyle}>2~4</Typography>
+                          <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
                         </Grid>
                         <Grid item xs={2}>
                           <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                          <Typography variant="h5" sx={contentStyle}>100 NTD</Typography>
+                          <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
                         </Grid>
                         <Grid item xs={2}>
                           <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
                         </Grid>
                         <Grid item xs={10}>
-                          <Typography variant="h5" sx={contentStyle}>Buy one get one free</Typography>
+                          <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
                         </Grid>
                       </Grid>
                     </Grid>

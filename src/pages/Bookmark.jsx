@@ -31,16 +31,16 @@ const Bookmark = () => {
   };
 
   const ShowBookmark = () => {
-    let subtotal = 0;
-    let shipping = 30.0;
-    let totalItems = 0;
-    state.map((item) => {
-      return (subtotal += item.price * item.qty);
-    });
+    // let subtotal = 0;
+    // let shipping = 30.0;
+    // let totalItems = 0;
+    // state.map((item) => {
+    //   return (subtotal += item.price * item.qty);
+    // });
 
-    state.map((item) => {
-      return (totalItems += item.qty);
-    });
+    // state.map((item) => {
+    //   return (totalItems += item.qty);
+    // });
     return (
       <>
         <section className="h-100 gradient-custom">
@@ -49,7 +49,7 @@ const Bookmark = () => {
               <div className="col-md-8">
                 <div className="card mb-4">
                   <div className="card-header py-3">
-                    <h5 className="mb-0">Item List</h5>
+                    <h5 className="mb-0">Ticket List</h5>
                   </div>
                   <div className="card-body">
                     {state.map((item) => {
@@ -121,7 +121,7 @@ const Bookmark = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-md-4">
+              {/* <div className="col-md-4">
                 <div className="card mb-4">
                   <div className="card-header py-3 bg-light">
                     <h5 className="mb-0">Order Summary</h5>
@@ -153,7 +153,7 @@ const Bookmark = () => {
                     </Link>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>
