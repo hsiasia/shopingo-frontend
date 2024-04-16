@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useHistory } from "react";
 import { Footer, Navbar } from "../components";
 
 const clientId =
@@ -20,6 +20,7 @@ const Login = () => {
   const handleCredentialResponse = (response) => {
     console.log("response", response);
     console.log("Encoded JWT ID token: " + response.credential);
+    useHistory.push('/');
   };
 
   return (
@@ -28,7 +29,7 @@ const Login = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Login</h1>
         <hr />
-        <div id="signInDiv"></div>{" "}
+        <div id="signInDiv"></div>{" "}    
         {/* Google SignIn button will be rendered here */}
         <br />
         <br />
