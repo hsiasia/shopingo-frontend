@@ -3,7 +3,7 @@ import { Navbar, Main, Ticket, Footer } from "../components";
 import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link } from "react-router-dom";
+import TextField from '@mui/material/TextField';
 
 
 const HomeShowAllTicket = () => {
@@ -21,6 +21,7 @@ const HomeShowAllTicket = () => {
         setData(responseData.data);
         setFilter(responseData.data);
         setLoading(false);
+        console.log(responseData.data[0].hashtag);
       }
 
       return () => {
@@ -58,22 +59,37 @@ const HomeShowAllTicket = () => {
       </>
     );
   };
-
+  const [search, setSearch] = useState('');
   const filterTicket = (cat) => {
-    const updatedList = data.filter((item) => item.category === cat);
-    setFilter(updatedList);
-  }
+    if (data.length > 0) {
+      const updatedList = data.filter((item) => {
+        return (
+          item.hashtag.includes(cat) ||
+          item.event_name.toLowerCase().includes(cat.toLowerCase())
+        );
+      });
+      setFilter(updatedList);
+    }
+  };
+  
   const ShowTickets = () => {
     return (
       <>
+        <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
+          value={search}
+          inputProps={{ 'aria-label': 'search' }}
+          focused
+          onChange={(e) => {
+            setSearch(e.target.value);
+            // filterTicket(e.target.value);
+          }}
+        />
         <div className="buttons text-center py-5">
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => setFilter(data)}>All</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("men's clothing")}>Men's Clothing</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("women's clothing")}>
-            Women's Clothing
-          </button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("jewelery")}>Jewelery</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("electronics")}>Electronics</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("coffee")}>Coffee</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("tea")}>Tea</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>Dessert</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGO</button>
         </div>
 
         {filter.map((ticket) => {
