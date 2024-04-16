@@ -1,11 +1,12 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux';
+import Avatar from '@mui/material/Avatar';
 
 const Navbar = () => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
-    const user = useSelector(state => state.handleUser);
+    let isLoggedIn = localStorage.getItem('jwt_token') ? JSON.parse(localStorage.getItem('jwt_token')) : null
     
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -33,10 +34,11 @@ const Navbar = () => {
                             <NavLink className="nav-link" to="/editticket">EditTicket</NavLink>
                         </li> */}
                     </ul>
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
-                        {user ? (
-                                <img src={user.avatar} alt={user.name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                        {isLoggedIn ? (
+                            <Avatar src="/broken-image.jpg"/>
+                                // <img src={user.avatar} alt={user.name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}

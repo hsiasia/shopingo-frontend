@@ -1,41 +1,34 @@
-// 定義 action types
+// 定义 action types
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 const LOGOUT = 'LOGOUT';
 
-// 初始化狀態
+// 定义 actions
+export const loginSuccess = () => ({
+  type: LOGIN_SUCCESS
+});
+
+export const logout = () => ({
+  type: LOGOUT
+});
+
+// 定义 reducer
 const initialState = {
-  isLoggedIn: false,
-  user: null,
+  isLoggedIn: true
 };
 
-// reducer 函數
-const userReducer = (state = initialState, action) => {
+const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return {
         ...state,
-        isLoggedIn: true,
-        user: action.payload,
+        isLoggedIn: true
       };
     case LOGOUT:
       return {
         ...state,
-        isLoggedIn: false,
-        user: null,
+        isLoggedIn: false
       };
     default:
       return state;
   }
 };
-
-export default userReducer;
-
-// action creators
-export const loginSuccess = (user) => ({
-  type: LOGIN_SUCCESS,
-  payload: user,
-});
-
-export const logout = () => ({
-  type: LOGOUT,
-});
