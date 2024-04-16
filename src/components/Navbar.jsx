@@ -1,10 +1,15 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { NavLink, withRouter } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
-const Navbar = () => {
+const Navbar = ({ history }) => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
+    const user = useSelector(state => state.handleUser);
+    const handleLoginSuccess = () => {
+        history.push('/');
+    };
+    
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
             <div className="container">
@@ -27,12 +32,17 @@ const Navbar = () => {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <NavLink className="nav-link" to="/editticket">EditTicket</NavLink>
-                        </li>
+                        </li> */}
                     </ul>
-                    <div className="buttons text-center">
-                        <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
+                    <div>
+                        {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
+                        {user ? (
+                                <img src={user.avatar} alt={user.name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                        ) : (
+                            <NavLink to="/login" onClick={handleLoginSuccess} className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
+                        )}
                         <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
                         <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> Bookmark ({BookMarkstate.length}) </NavLink>
                     </div>
