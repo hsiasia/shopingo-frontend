@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link } from "react-router-dom";
 
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomeShowAllTicket = () => {
   const [data, setData] = useState([]);
@@ -15,7 +16,8 @@ const HomeShowAllTicket = () => {
   useEffect(() => {
     const getTickets = async () => {
       setLoading(true);
-      const response = await fetch("http://34.81.121.53:8000/api/event/");
+      
+      const response = await fetch(`${apiUrl}/api/event`);
       if (componentMounted) {
         const responseData = await response.json();
         setData(responseData.data);
