@@ -1,6 +1,7 @@
-import React, { useEffect, useHistory } from "react";
+import React, { useEffect } from "react";
 import { Footer, Navbar } from "../components";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 const clientId =
   "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
@@ -24,7 +25,6 @@ const Login = () => {
     console.log("Encoded JWT ID token: " + response.credential);
     if (response.credential) {
       dispatch(state => state.handleUser);
-      useHistory.push('/');
     }
   };
 
@@ -36,6 +36,12 @@ const Login = () => {
         <hr />
         <div id="signInDiv"></div>{" "}    
         {/* Google SignIn button will be rendered here */}
+        <div className="col-md-12 py-5 bg-light text-center">
+        <Link to="/" className="btn btn-outline-dark mx-4">
+              <i className="fa fa-arrow-left"></i> Home Page
+        </Link>
+        </div>
+        
         <br />
         <br />
       </div>
