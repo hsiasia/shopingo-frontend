@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
@@ -6,7 +6,16 @@ import Avatar from '@mui/material/Avatar';
 const Navbar = () => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
-    let isLoggedIn = localStorage.getItem('jwt_token') ? JSON.parse(localStorage.getItem('jwt_token')) : null
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn');
+        setIsLoggedIn(loggedIn);
+    }, []);
+    const handleLogout = () => {
+        setIsLoggedIn(false); // 設置登入狀態為false
+        localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
+      };
     
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -37,7 +46,7 @@ const Navbar = () => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
                         {isLoggedIn ? (
-                            <Avatar src="/broken-image.jpg"/>
+                            <Avatar src="/broken-image.jpg" onClick={handleLogout}/>
                                 // <img src={user.avatar} alt={user.name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>

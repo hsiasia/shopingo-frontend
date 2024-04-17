@@ -3,8 +3,9 @@ import { Navbar, Main, Ticket, Footer } from "../components";
 import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link } from "react-router-dom";
+import TextField from '@mui/material/TextField';
 
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomeShowAllTicket = () => {
   const [data, setData] = useState([]);
@@ -15,12 +16,14 @@ const HomeShowAllTicket = () => {
   useEffect(() => {
     const getTickets = async () => {
       setLoading(true);
-      const response = await fetch("http://34.81.121.53:8000/api/event/");
+      
+      const response = await fetch(`${apiUrl}/api/event`);
       if (componentMounted) {
         const responseData = await response.json();
         setData(responseData.data);
         setFilter(responseData.data);
         setLoading(false);
+        console.log(responseData.data[0].hashtag);
       }
 
       return () => {
@@ -58,22 +61,37 @@ const HomeShowAllTicket = () => {
       </>
     );
   };
-
+  const [search, setSearch] = useState('');
   const filterTicket = (cat) => {
-    const updatedList = data.filter((item) => item.category === cat);
-    setFilter(updatedList);
-  }
+    if (data.length > 0) {
+      const updatedList = data.filter((item) => {
+        return (
+          item.hashtag.includes(cat) ||
+          item.event_name.toLowerCase().includes(cat.toLowerCase())
+        );
+      });
+      setFilter(updatedList);
+    }
+  };
+  
   const ShowTickets = () => {
     return (
       <>
+        <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
+          value={search}
+          inputProps={{ 'aria-label': 'search' }}
+          focused
+          onChange={(e) => {
+            setSearch(e.target.value);
+            // filterTicket(e.target.value);
+          }}
+        />
         <div className="buttons text-center py-5">
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => setFilter(data)}>All</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("coffee")}>coffee</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>
-            dessert
-          </button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("coffee")}>Coffee</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("tea")}>Tea</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>Dessert</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGOF</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("drink")}>drink</button>
         </div>
 
         {filter.map((ticket) => {
