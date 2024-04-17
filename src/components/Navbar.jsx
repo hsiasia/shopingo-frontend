@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
@@ -6,7 +6,12 @@ import Avatar from '@mui/material/Avatar';
 const Navbar = () => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
-    let isLoggedIn = localStorage.getItem('jwt_token') ? JSON.parse(localStorage.getItem('jwt_token')) : null
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn');
+        setIsLoggedIn(loggedIn);
+    }, []);
     
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
