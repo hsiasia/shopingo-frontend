@@ -46,8 +46,9 @@ const Navbar = () => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
                         {isLoggedIn ? (
-                            <Avatar src="/broken-image.jpg" onClick={handleLogout}/>
-                                // <img src={user.avatar} alt={user.name} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                            <button onClick={handleLogout} className="btn btn-link p-0">
+                            <Avatar src="/broken-image.jpg" />
+                          </button>
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
