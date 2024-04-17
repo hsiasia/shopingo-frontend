@@ -28,7 +28,7 @@ const labelStyle = {
   color: 'white',
   textAlign: 'center',
   borderRadius: '10px',
-  margin: '3px'
+  margin: '5px'
 };
 
 const contentStyle = {
@@ -40,8 +40,8 @@ const contentStyle = {
 
 const chipStyle = {
   fontSize: '22px',
-  width: '150px',
-  height: '50px',
+  width: '130px',
+  height: '40px',
   borderRadius: '10px',
   margin: '3px'
 };
@@ -83,7 +83,10 @@ const Ticket = ({ticket}) => {
       <Card sx={{margin: '10px', width: '1000px'}}>
         <CardHeader
           title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
-          sx={{bgcolor: '#FF9292'}}
+          sx={{
+            bgcolor: '#FF9292',
+            color: 'white', 
+          }}
         />
         <CardContent container>
           <Grid container spacing={2}>
@@ -102,7 +105,7 @@ const Ticket = ({ticket}) => {
                 </Box>
               </Grid>
               <Grid item>
-                <Typography variant="h2">{ticket.event_name}</Typography>
+                <Typography variant="h3">{ticket.event_name}</Typography>
                 <Typography variant="h6" color="gray">{ticket.company_name}</Typography>
               </Grid>
             </Grid>
@@ -118,12 +121,15 @@ const Ticket = ({ticket}) => {
                 </IconButton>
               </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <CardMedia
+            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+              <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
+              {/* <CardMedia
                 sx={{height: '300px', objectFit: 'over'}}
-                image={ticket.image}
                 title={ticket.title}
-              />
+                image={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`}
+              /> */}
+            </Grid>
+            <Grid item xs={12}>
               {ticket.hashtag.map((tag, index) => (
                 <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
               ))}
@@ -174,7 +180,7 @@ const Ticket = ({ticket}) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Typography paragraph>
-                Test
+                
               </Typography>
             </CardContent>
           </Collapse>

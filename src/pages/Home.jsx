@@ -68,12 +68,12 @@ const HomeShowAllTicket = () => {
       <>
         <div className="buttons text-center py-5">
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => setFilter(data)}>All</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("men's clothing")}>Men's Clothing</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("women's clothing")}>
-            Women's Clothing
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("coffee")}>coffee</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>
+            dessert
           </button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("jewelery")}>Jewelery</button>
-          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("electronics")}>Electronics</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGOF</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("drink")}>drink</button>
         </div>
 
         {filter.map((ticket) => {
