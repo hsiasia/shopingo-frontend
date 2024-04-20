@@ -39,9 +39,9 @@ const Navbar = () => {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
                         </li>
-                        {/* <li className="nav-item">
-                            <NavLink className="nav-link" to="/editticket">EditTicket</NavLink>
-                        </li> */}
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/mytickets">MyTickets</NavLink>
+                        </li>
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}

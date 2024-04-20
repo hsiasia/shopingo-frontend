@@ -14,6 +14,7 @@ import {
   NewTicket,
   EditTicket,
   Calendar,
+  MyTickets,
   Bookmark,
   Login,
   JoinTicket,
@@ -33,6 +34,7 @@ root.render(
         <Route path="/editticket" element={<EditTicket />} />
         <Route path="/jointicket" element={<JoinTicket />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/mytickets" element={<MyTickets />} />
         <Route path="/bookmark" element={<Bookmark />} />
         <Route path="/login" element={<Login />} />
         <Route path="/checkout" element={<Checkout />} />

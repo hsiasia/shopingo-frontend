@@ -129,11 +129,11 @@ const Ticket = ({ticket}) => {
                 image={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`}
               /> */}
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               {ticket.hashtag.map((tag, index) => (
                 <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
               ))}
-            </Grid>
+            </Grid> */}
             <Grid container>
               <Grid item xs={2}>
                 <Typography variant="h5" sx={labelStyle}>LOC</Typography>

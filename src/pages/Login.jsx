@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Footer, Navbar } from "../components";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 const clientId =
   "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
+const UserContext = React.createContext();
 
 const Login = () => {
+
   const dispatch = useDispatch();
   useEffect(() => {
     window.google?.accounts.id.initialize({
@@ -20,11 +22,15 @@ const Login = () => {
     window.google?.accounts.id.prompt();
   }, []);
 
+  const [user, setUser] = useState(null); // [1]
+  
   const handleCredentialResponse = (response) => {
     console.log("response", response);
     console.log("Encoded JWT ID token: " + response.credential);
+    const userData = response.user_info;
+    setUser(userData);
     localStorage.setItem('isLoggedIn', true);
-  };
+  };  
 
   return (
     <>
@@ -39,7 +45,6 @@ const Login = () => {
               <i className="fa fa-arrow-left"></i> Home Page
         </Link>
         </div>
-        
         <br />
         <br />
       </div>
@@ -48,4 +53,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export {Login as default, UserContext};
