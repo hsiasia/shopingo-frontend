@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Footer, Navbar } from "../components";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 const clientId =
@@ -9,7 +8,6 @@ const UserContext = React.createContext();
 
 const Login = () => {
 
-  const dispatch = useDispatch();
   useEffect(() => {
     window.google?.accounts.id.initialize({
       client_id: clientId,
@@ -22,7 +20,7 @@ const Login = () => {
     window.google?.accounts.id.prompt();
   }, []);
 
-  const [user, setUser] = useState(null); // [1]
+  const [user, setUser] = useState(null);
   
   const handleCredentialResponse = (response) => {
     console.log("response", response);
@@ -32,8 +30,22 @@ const Login = () => {
     localStorage.setItem('isLoggedIn', true);
   };  
 
+  {/* const handleTest = () => {
+    const userData = {
+      user_info: {
+        id: "123",
+        name: "小明",
+        profile_pic: "https://via.placeholder.com/150",
+        score: 100,
+      },
+      status: 1,
+    };
+    setUser(userData);
+    localStorage.setItem('isLoggedIn', true);
+  }; */}
+
   return (
-    <>
+    <UserContext.Provider value={user}>
       <Navbar />
       <div className="container my-3 py-3">
         <h1 className="text-center">Login</h1>
@@ -49,7 +61,7 @@ const Login = () => {
         <br />
       </div>
       <Footer />
-    </>
+      </UserContext.Provider>
   );
 };
 

@@ -9,7 +9,8 @@ const MyTickets = () => {
     useEffect(() => {
         const loggedIn = localStorage.getItem('isLoggedIn');
         setIsLoggedIn(loggedIn);
-    }, []);   
+        console.log("Test Login", userData);
+    }, [userData]);   
     
     if (userData === null) {
         return (
@@ -26,15 +27,18 @@ const MyTickets = () => {
         <h1 className="text-center">My Tickets</h1>
         <hr />
         <div className="col-md-12 py-5 bg-light text-center">
-          {isLoggedIn ? (
+        {isLoggedIn ? (
             <div>
-              <h2>My Tickets</h2>
-              <div>
-              <p>Name: {userData.user_info.name}</p>
-              <p>user_id: {userData.user_info.id}</p>
-              <p>Profile Picture: <img src={userData.user_info.profile_pic} alt="Profile" /></p>
-              <p>Score: {userData.user_info.score}</p>
-            </div>
+              {userData ? (
+                <div>
+                  <p>Name: {userData.user_info.name}</p>
+                  <p>id: {userData.user_info.id}</p>
+                  <p>Profile Picture: <img src={userData.user_info.profile_pic} alt="Profile" /></p>
+                  <p>Score: {userData.user_info.score}</p>
+                </div>
+              ) : (
+                <p>Loading...</p>
+              )}
             </div>
           ) : (
             <div>
