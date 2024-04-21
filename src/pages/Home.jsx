@@ -79,7 +79,7 @@ const HomeShowAllTicket = () => {
       <>
         <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
           value={search}
-          inputProps={{ 'aria-label': 'search' }}
+          inputProps={{ 'aria-label': 'search', inputMode: 'text' }}
           autoFocus
           onChange={(e) => {
             setSearch(e.target.value);
