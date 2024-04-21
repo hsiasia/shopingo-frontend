@@ -65,9 +65,11 @@ const HomeShowAllTicket = () => {
   const filterTicket = (cat) => {
     if (data.length > 0) {
       const updatedList = data.filter((item) => {
+        const lowercaseCat = cat.toLowerCase();
         return (
-          item.hashtag.includes(cat) ||
-          item.event_name.toLowerCase().includes(cat.toLowerCase())
+          item.hashtag.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(lowercaseCat)) ||
+        item.event_name.toLowerCase().includes(lowercaseCat)
+
         );
       });
       setFilter(updatedList);
@@ -79,11 +81,11 @@ const HomeShowAllTicket = () => {
       <>
         <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
           value={search}
-          inputProps={{ 'aria-label': 'search' }}
-          focused
+          inputProps={{ 'aria-label': 'search', inputMode: 'text' }}
+          autoFocus
           onChange={(e) => {
             setSearch(e.target.value);
-            // filterTicket(e.target.value);
+            filterTicket(e.target.value);
           }}
         />
         <div className="buttons text-center py-5">
