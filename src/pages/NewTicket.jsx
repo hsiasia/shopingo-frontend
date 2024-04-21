@@ -14,10 +14,72 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import dayjs from 'dayjs';
+
+
 const NewTicket = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const [peopleNumNeeded, setPeopleNumNeeded] = React.useState('');
   const [hashtag1, setHashtag1] = React.useState('');
   const [hashtag2, setHashtag2] = React.useState('');
+
+  // handle date
+  const [selectedDate, setSelectedDate] = React.useState(null);
+  const [selectedTime, setSelectedTime] = React.useState(null);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // 獲取當前時間
+    const currentDateTime = new Date().toISOString();
+
+    // 獲取使用者輸入時間
+    const datePart = dayjs(selectedDate).format('YYYY-MM-DD');
+    const timePart = dayjs(selectedTime).format('HH:mm:ss.SSS');
+    const combinedDateTime = `${datePart}T${timePart}Z`;
+
+    const formData = {
+      "creator": "1",
+      "event_name": event.target.eventName.value,
+      "company_name": event.target.companyName.value,
+      "hashtag": [hashtag1, hashtag2],
+      "location": event.target.location.value,
+      "event_date": combinedDateTime,
+      "scale": peopleNumNeeded,
+      "budget": event.target.amount.value,
+      "detail": event.target.detail.value,
+      "create_datetime": currentDateTime,
+      "update_datetime": currentDateTime,
+      "delete_datetime": null,
+      "score": 0
+    };
+
+    fetch(`${apiUrl}/api/event/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // Handle API response as needed
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  };
+
   const handleChangePeopleNum = (event) => {
     setPeopleNumNeeded(event.target.value);
   };
@@ -36,13 +98,13 @@ const NewTicket = () => {
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div class="form my-3">
                 <label for="Name">Event Name</label>
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="Name"
+                  id="eventName"
                   placeholder="Enter event name"
                 />
               </div>
@@ -50,28 +112,28 @@ const NewTicket = () => {
                 <label for="Name">Date & Time</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
-                    <DatePicker label="Choose date" />
+                    <DatePicker value={selectedDate} label="Choose date" onChange={handleDateChange}/>
                   </DemoContainer>
                   <DemoContainer components={['TimePicker']}>
-                    <TimePicker label="Choose time" />
+                    <TimePicker value={selectedTime} label="Choose time" onChange={handleTimeChange}/>
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
               <div class="form my-3">
                 <label for="Name">Brand Name</label>
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="Name"
+                  id="companyName"
                   placeholder="Enter brand name"
                 />
               </div>
               <div class="form my-3">
                 <label for="Name">Location</label>
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="Name"
+                  id="location"
                   placeholder="Enter location"
                 />
               </div>
@@ -98,7 +160,7 @@ const NewTicket = () => {
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
                     <OutlinedInput
-                      id="outlined-adornment-amount"
+                      id="amount"
                       startAdornment={<InputAdornment position="start">$</InputAdornment>}
                       label="Amount"
                     />
@@ -119,9 +181,9 @@ const NewTicket = () => {
                   value={hashtag1}
                   onChange={handleChangeHashtag1}
                 >
-                  <MenuItem value={1}>Coffee</MenuItem>
-                  <MenuItem value={2}>Tea</MenuItem>
-                  <MenuItem value={3}>Pizza</MenuItem>
+                  <MenuItem value={"Coffee"}>Coffee</MenuItem>
+                  <MenuItem value={"Tea"}>Tea</MenuItem>
+                  <MenuItem value={"Pizza"}>Pizza</MenuItem>
                 </Select>
               </FormControl>
               <FormControl sx={{ m: 1, minWidth: 192 }}>
@@ -131,8 +193,8 @@ const NewTicket = () => {
                   value={hashtag2}
                   onChange={handleChangeHashtag2}
                 >
-                  <MenuItem value={4}>BOGO</MenuItem>
-                  <MenuItem value={5}>Discount</MenuItem>
+                  <MenuItem value={"BOGOF"}>BOGOF</MenuItem>
+                  <MenuItem value={"Discount"}>Discount</MenuItem>
                 </Select>
               </FormControl>
               </div>
@@ -141,7 +203,7 @@ const NewTicket = () => {
                 <br/>
                 <FormControl fullWidth sx={{ m: 1 }} variant="standard">
                 <TextField
-                  id="outlined-multiline-static"
+                  id="detail"
                   placeholder="Enter description"
                   multiline
                   rows={4}
