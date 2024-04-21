@@ -25,6 +25,7 @@ const Login = () => {
   const handleCredentialResponse = (response) => {
     console.log("response", response);
     console.log("Encoded JWT ID token: " + response.credential);
+    console.log("userId: " + response.user_info.id);
     const userData = response.user_info;
     setUser(userData);
     localStorage.setItem('isLoggedIn', true);
