@@ -15,12 +15,20 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import dayjs from 'dayjs';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
 
 
 const NewTicket = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const [peopleNumNeeded, setPeopleNumNeeded] = React.useState('');
+  const [photo, setPhoto] = React.useState(null);
   const [hashtag1, setHashtag1] = React.useState('');
   const [hashtag2, setHashtag2] = React.useState('');
 
@@ -78,10 +86,24 @@ const NewTicket = () => {
     .catch(error => {
       console.error('Error:', error);
     });
+    setOpen(false);
   };
 
   const handleChangePeopleNum = (event) => {
     setPeopleNumNeeded(event.target.value);
+  };
+  const handleChangePhoto = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    const reader = new FileReader(); // Create a new file reader
+    reader.onloadend = () => {
+      // Set the photo state with the data URL of the selected file
+      setPhoto(reader.result);
+    };
+
+    if (file) {
+      // Read the selected file as a data URL
+      reader.readAsDataURL(file);
+    }
   };
   const handleChangeHashtag1 = (event) => {
     setHashtag1(event.target.value);
@@ -90,6 +112,15 @@ const NewTicket = () => {
     setHashtag2(event.target.value);
   }
   
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <Navbar />
@@ -98,7 +129,7 @@ const NewTicket = () => {
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleClickOpen}>
               <div class="form my-3">
                 <label for="Name">Event Name</label>
                 <input
@@ -169,7 +200,23 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Add Photo</label>
                 <br/>
-                <Button variant="outlined">Choose Photo</Button>
+                <img src={photo} alt="photo" width="300" height="300" />
+                <br/>
+                <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<CloudUploadIcon />}
+                    >
+                    Add Photo
+                    <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={handleChangePhoto}
+                        />
+                </Button>
               </div>
               <div class="form my-3">
                 <label for="Name">Choose Hashtag</label>
@@ -213,10 +260,26 @@ const NewTicket = () => {
               <div className="text-center">
                 <button
                   class="my-2 px-4 mx-auto btn btn-dark"
-                  type="submit"
+                  type="button"
+                  onClick={handleClickOpen}
                 >
                   Submit
                 </button>
+                <Dialog
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <DialogTitle>Submit</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Are you sure you want to submit this ticket?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button type="submit" onClick={handleSubmit}>Submit</Button>
+                  </DialogActions>
+                </Dialog>
               </div>
             </form>
           </div>
