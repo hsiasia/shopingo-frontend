@@ -27,6 +27,8 @@ const NewTicket = () => {
   // handle date
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
+  const [signedUrl, setSignedUrl] = React.useState('');
+  const [file, setFile] = React.useState('');
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -34,6 +36,29 @@ const NewTicket = () => {
 
   const handleTimeChange = (time) => {
     setSelectedTime(time);
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+    const file = event.target.files[0].name;
+    const photoformData = {"blob_names": [file]};
+  
+    fetch(`${apiUrl}/api/google/image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(photoformData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      // console.log(data.data[0][0]);
+      // console.log(data.data[0][1]);
+      setSignedUrl(data.data[0][0]);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   };
 
   const handleSubmit = (event) => {
@@ -73,11 +98,32 @@ const NewTicket = () => {
     .then(response => response.json())
     .then(data => {
       console.log(data);
-      // Handle API response as needed
     })
     .catch(error => {
       console.error('Error:', error);
     });
+
+    //儲存圖片
+    fetch(signedUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type // 根據實際文件類型設置
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+      return response;
+    })
+    .then(() => {
+      console.log('Image uploaded successfully');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+    
   };
 
   const handleChangePeopleNum = (event) => {
@@ -169,7 +215,15 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Add Photo</label>
                 <br/>
-                <Button variant="outlined">Choose Photo</Button>
+                <Button variant="outlined" component="label">
+                  Choose photo
+                  <input
+                    type="file"
+                    hidden
+                    onChange={handleFileChange}
+                    //onChange={handleFileChange}
+                  />
+                </Button>
               </div>
               <div class="form my-3">
                 <label for="Name">Choose Hashtag</label>
