@@ -105,7 +105,8 @@ const NewTicket = () => {
 
     //儲存圖片
     fetch(signedUrl, {
-      method: 'PUT',
+      method: 'POST',
+      mode: 'no-cors',
       body: file,
       headers: {
         'Content-Type': file.type // 根據實際文件類型設置
