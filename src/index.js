@@ -19,6 +19,7 @@ import {
   JoinTicket,
   Checkout,
   PageNotFound,
+  Info,
 } from "./pages";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -38,6 +39,7 @@ root.render(
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/ticket/*" element={<PageNotFound />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/info" element={<Info />} />
       </Routes>
     </Provider>
   </BrowserRouter>
