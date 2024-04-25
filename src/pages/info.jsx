@@ -1,72 +1,61 @@
-import React from "react";
-import { Footer, Navbar, Ticket } from "../components";/*baisc website components*/
-import { useSelector, useDispatch } from "react-redux";
-import { addBookmark, delBookmark } from "../redux/action";
-import { Link } from "react-router-dom";
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
+import React, { useState } from "react";
+import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const Bookmark = () => {
-  const state = useSelector((state) => state.handleBookmark);
-  const dispatch = useDispatch();
 
-  const EmptyBookmark = () => {
+import {
+  Footer,
+  Navbar,
+} from "../components"; //baisc website components
+
+interface InfoProps{
+  title: String;
+  content: JSX.Element;
+}
+
+const Info = () => {
+  /*const bars = [
+    "My Events",
+    "Future Events",
+    "Saved Events",
+    "Finished Events",
+  ];
+  let [selectedIndex, setSelectedIndex] = useState(-1);
+  
+  <ul className="list-group">
+  {bars.map((item, index)=> <li className={selectedIndex === index ? "list-group-item active":"list-group-item"} onClick={() => {setSelectedIndex(index);}} key={item}>{item}</li>)}
+  </ul>*/
+
+  function ProductAccordion (props: InfoProps) {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 py-5 bg-light text-center">
-            <h4 className="p-3 display-5">Your Bookmark is Empty</h4>
-            <Link to="/" className="btn  btn-outline-dark mx-4">
-              <i className="fa fa-arrow-left"></i> Continue Browsing
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const removeItem = (ticket) => {
-    dispatch(delBookmark(ticket));
-  };
-
-  const ShowBookmark = () => {
-    return (
-      <>
-        {state.map((item) => {
-          return (
-            <>
-              <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
-                <Grid item xs={12}>
-                  <Ticket ticket={item} />
-                </Grid>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    removeItem(item);
-                  }}
-                  sx={{bgcolor: '#9EC5FF'}}
-                >
-                  cancel {item.event_name} Bookmark
-                </Button>
-              </Grid>
-            </>
-          )
-        })}
-      </>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography>{ props.title }</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            <strong>{ props.content }</strong>
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
     );
   };
 
   return (
     <>
       <Navbar />
-      <div className="container my-3 py-3"> 
-        <h1 className="text-center">Bookmark</h1>
+      <div className="container my-3 py-3">
+        <h1 className="text-center">Personal Info</h1>
         <hr />
-        {state.length > 0 ? <ShowBookmark /> : <EmptyBookmark />}
+        <ProductAccordion title="My Event" content={<strong>Here are the events you've created</strong>}/>
+        <ProductAccordion title="Incoming Event" content={<strong>Here are the events you will be paricipating</strong>}/>
+        <ProductAccordion title="Saved Event" content={<strong>Here are the events you are interested in</strong>}/>
+        <ProductAccordion title="Finished Event" content={<strong>Here are the events you've attend or expired</strong>}/>
+        <hr />
       </div>
       <Footer />
     </>
   );
 };
 
-export default Bookmark;
+export default Info;
