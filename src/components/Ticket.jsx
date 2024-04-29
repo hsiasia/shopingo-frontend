@@ -123,11 +123,6 @@ const Ticket = ({ticket}) => {
             </Grid>
             <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
               <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
-              {/* <CardMedia
-                sx={{height: '300px', objectFit: 'over'}}
-                title={ticket.title}
-                image={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`}
-              /> */}
             </Grid>
             <Grid item xs={12}>
               {ticket.hashtag.map((tag, index) => (

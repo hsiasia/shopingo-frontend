@@ -4,10 +4,11 @@ import { Link, useParams } from "react-router-dom";
 import Marquee from "react-fast-marquee";
 import { useDispatch } from "react-redux";
 import { addBookmark } from "../redux/action";
+import { Footer, Navbar,Ticket } from "../components";
 
-import { Footer, Navbar } from "../components";
+const apiUrl = process.env.REACT_APP_API_URL;
 
-const Ticket = () => {
+const TicketInfo = () => {
   const { id } = useParams();
   const [ticket, setTicket] = useState([]);
   const [similarTickets, setSimilarTickets] = useState([]);
@@ -23,17 +24,18 @@ const Ticket = () => {
   useEffect(() => {
     const getTicket = async () => {
       setLoading(true);
-      setLoading2(true);
-      const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+      //setLoading2(true);
+      const response = await fetch(`${apiUrl}/api/event/?event_id=${id}`);
       const data = await response.json();
-      setTicket(data);
+      setTicket(data.data[0]);
+      console.log(data.data[0]);
       setLoading(false);
-      const response2 = await fetch(
-        `https://fakestoreapi.com/products/category/${data.category}`
-      );
-      const data2 = await response2.json();
-      setSimilarTickets(data2);
-      setLoading2(false);
+      // const response2 = await fetch(
+      //   `https://fakestoreapi.com/products/category/${data.category}`
+      // );
+      // const data2 = await response2.json();
+      // setSimilarTickets(data2);
+      // setLoading2(false);
     };
     getTicket();
   }, [id]);
@@ -64,38 +66,7 @@ const Ticket = () => {
   const ShowTicket = () => {
     return (
       <>
-        <div className="container my-5 py-2">
-          <div className="row">
-            <div className="col-md-6 col-sm-12 py-3">
-              <img
-                className="img-fluid"
-                src={ticket.image}
-                alt={ticket.title}
-                width="400px"
-                height="400px"
-              />
-            </div>
-            <div className="col-md-6 col-md-6 py-5">
-              <h4 className="text-uppercase text-muted">{ticket.category}</h4>
-              <h1 className="display-5">{ticket.title}</h1>
-              <p className="lead">
-                {ticket.rating && ticket.rating.rate}{" "}
-                <i className="fa fa-star"></i>
-              </p>
-              <h3 className="display-6  my-4">${ticket.price}</h3>
-              <p className="lead">{ticket.description}</p>
-              <button
-                className="btn btn-outline-dark"
-                onClick={() => addTicket(ticket)}
-              >
-                Add to Bookmark
-              </button>
-              <Link to="/cart" className="btn btn-dark mx-3">
-                Join Ticket
-              </Link>
-            </div>
-          </div>
-        </div>
+        <Ticket ticket={ticket} />
       </>
     );
   };
@@ -173,7 +144,7 @@ const Ticket = () => {
       <Navbar />
       <div className="container">
         <div className="row">{loading ? <Loading /> : <ShowTicket />}</div>
-        <div className="row my-5 py-5">
+        {/* <div className="row my-5 py-5">
           <div className="d-none d-md-block">
           <h2 className="">You may also Like</h2>
             <Marquee
@@ -184,11 +155,11 @@ const Ticket = () => {
               {loading2 ? <Loading2 /> : <ShowSimilarTicket />}
             </Marquee>
           </div>
-        </div>
+        </div> */}
       </div>
       <Footer />
     </>
   );
 };
 
-export default Ticket;
+export default TicketInfo;
