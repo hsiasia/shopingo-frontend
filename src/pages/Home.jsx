@@ -67,14 +67,16 @@ const HomeShowAllTicket = () => {
     );
   };
   const [search, setSearch] = useState('');
+  const [value, setValue] = React.useState(999);
   const filterTicket = (cat) => {
     if (data.length > 0) {
-      const updatedList = data.filter((item) => {
+        const updatedList = data.filter((item) => {
         const lowercaseCat = cat.toLowerCase();
+        const withinBudget = item.budget <= value;
         return (
-          item.hashtag.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(lowercaseCat)) ||
-        item.event_name.toLowerCase().includes(lowercaseCat)
-
+          (item.hashtag.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(lowercaseCat)) ||
+          item.event_name.toLowerCase().includes(lowercaseCat))
+          && withinBudget
         );
       });
       setFilter(updatedList);
@@ -82,13 +84,13 @@ const HomeShowAllTicket = () => {
   };
   
   const ShowTickets = () => {
-    const [value, setValue] = React.useState(999);
-
     const handleSliderChange = (event, newValue) => {
       setValue(newValue);
+      filterTicket(search);
     };
     const handleInputChange = (event) => {
       setValue(event.target.value === '' ? 0 : Number(event.target.value));
+      filterTicket(search);
     };
     const handleBlur = () => {
       if (value < 0) {
@@ -148,9 +150,7 @@ const HomeShowAllTicket = () => {
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>Dessert</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGOF</button>
         </div>
-        {filter
-        // .filter((ticket) => ticket.price <= value)
-        .map((ticket) => {
+        {filter.map((ticket) => {
           return (
             <Ticket ticket={ticket}/>
           );

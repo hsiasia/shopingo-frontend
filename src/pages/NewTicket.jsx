@@ -21,22 +21,40 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
+import { useNavigate } from 'react-router-dom';
 
 
 const NewTicket = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
+  const navigate = useNavigate();
+
+  const [eventName, setEventName] = React.useState('');
+  const [companyName, setCompanyName] = React.useState('');
+  const [location, setLocation] = React.useState('');
   const [peopleNumNeeded, setPeopleNumNeeded] = React.useState('');
   const [photo, setPhoto] = React.useState(null);
   const [hashtag1, setHashtag1] = React.useState('');
   const [hashtag2, setHashtag2] = React.useState('');
 
-  const [newTicket, setNewTicket] = React.useState('');
-
   // handle date
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
+
+  const [amount, setAmount] = React.useState('');
+  const [detail, setDetail] = React.useState('');
+
+  const handleChangeEventName = (event) => {
+    setEventName(event.target.value);
+  };
+
+  const handleChangeCompanyName = (event) => {
+    setCompanyName(event.target.value);
+  }; 
+
+  const handleChangeLocation = (event) => {
+    setLocation(event.target.value);
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -44,6 +62,13 @@ const NewTicket = () => {
 
   const handleTimeChange = (time) => {
     setSelectedTime(time);
+  };
+
+  const handleChangeAmount = (event) => {
+    setAmount(event.target.value);
+  };
+  const handleChangeDetail = (event) => {
+    setDetail(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -60,14 +85,14 @@ const NewTicket = () => {
 
     const formData = {
       "creator": "1",
-      "event_name": event.target.eventName.value,
-      "company_name": event.target.companyName.value,
+      "event_name": eventName,
+      "company_name": companyName,
       "hashtag": [hashtag1, hashtag2],
-      "location": event.target.location.value,
+      "location": location,
       "event_date": combinedDateTime,
       "scale": peopleNumNeeded,
-      "budget": event.target.amount.value,
-      "detail": event.target.detail.value,
+      "budget": amount,
+      "detail": detail,
       "create_datetime": currentDateTime,
       "update_datetime": currentDateTime,
       "delete_datetime": null,
@@ -90,6 +115,7 @@ const NewTicket = () => {
       console.error('Error:', error);
     });
     setOpen(false);
+    navigate('/');
   };
 
   const handleChangePeopleNum = (event) => {
@@ -132,7 +158,7 @@ const NewTicket = () => {
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-            <form onSubmit={handleClickOpen}>
+            <form>
               <div class="form my-3">
                 <label for="Name">Event Name</label>
                 <input
@@ -140,6 +166,7 @@ const NewTicket = () => {
                   class="form-control"
                   id="eventName"
                   placeholder="Enter event name"
+                  onChange={handleChangeEventName}
                 />
               </div>
               <div class="form my-3">
@@ -160,6 +187,7 @@ const NewTicket = () => {
                   class="form-control"
                   id="companyName"
                   placeholder="Enter brand name"
+                  onChange={handleChangeCompanyName}
                 />
               </div>
               <div class="form my-3">
@@ -169,6 +197,7 @@ const NewTicket = () => {
                   class="form-control"
                   id="location"
                   placeholder="Enter location"
+                  onChange={handleChangeLocation}
                 />
               </div>
               <div class="form my-3">
@@ -197,6 +226,7 @@ const NewTicket = () => {
                       id="amount"
                       startAdornment={<InputAdornment position="start">$</InputAdornment>}
                       label="Amount"
+                      onChange={handleChangeAmount}
                     />
                   </FormControl>
               </div>
@@ -257,6 +287,7 @@ const NewTicket = () => {
                   placeholder="Enter description"
                   multiline
                   rows={4}
+                  onChange={handleChangeDetail}
                 />
                 </FormControl>
               </div>
@@ -280,7 +311,7 @@ const NewTicket = () => {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit" onClick={handleSubmit}>Submit test</Button>
+                    <Button type="submit" onClick={handleSubmit}>Submit</Button>
                   </DialogActions>
                 </Dialog>
               </div>
