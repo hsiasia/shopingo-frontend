@@ -32,6 +32,8 @@ const NewTicket = () => {
   const [hashtag1, setHashtag1] = React.useState('');
   const [hashtag2, setHashtag2] = React.useState('');
 
+  const [newTicket, setNewTicket] = React.useState('');
+
   // handle date
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
@@ -45,6 +47,7 @@ const NewTicket = () => {
   };
 
   const handleSubmit = (event) => {
+    console.log(event);
     event.preventDefault();
 
     // 獲取當前時間
@@ -277,7 +280,7 @@ const NewTicket = () => {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit" onClick={handleSubmit}>Submit</Button>
+                    <Button type="submit" onClick={handleSubmit}>Submit test</Button>
                   </DialogActions>
                 </Dialog>
               </div>
