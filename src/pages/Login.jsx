@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const clientId =
   "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
-
+const apiUrl = process.env.REACT_APP_API_URL;
 
 
 const Login = () => {
@@ -29,7 +29,7 @@ const Login = () => {
 
   const getAPI = (token) => {
     // Make a request to your backend server to exchange the token for user_id
-    fetch('http://34.81.121.53:8000/api/user', {
+    fetch(`${apiUrl}/api/user/login`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -43,8 +43,8 @@ const Login = () => {
     })
     .then(data => {
       // Handle the response data which should contain user_id
-      console.log('User ID:', data.user_id);
-      localStorage.setItem('user_id', data.user_id);
+      console.log('User ID:', data.user_info.id);
+      localStorage.setItem('user_id', data.user_info.id);
     })
     .catch(error => {
       console.error('Error fetching user_id:', error);
