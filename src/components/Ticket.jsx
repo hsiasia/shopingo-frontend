@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBookmark, addJoinTicket } from "../redux/action";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link } from "react-router-dom";
 // import MUI component
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -22,6 +19,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CardActions from '@mui/material/CardActions';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const labelStyle = {
   backgroundColor: '#9EC5FF',
@@ -64,6 +66,7 @@ const Ticket = ({ticket}) => {
   }
   const addjointicket = (ticket) => {
     dispatch(addJoinTicket(ticket))
+    setOpen(false);
   }
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
@@ -78,6 +81,15 @@ const Ticket = ({ticket}) => {
   const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
   // 將日期轉換成使用者易懂的方式
   const formattedEventDate = `${eventDate.getFullYear()} 年 ${eventDate.getMonth() + 1} 月 ${eventDate.getDate()} 日 ${eventDate.getHours()}:${eventDate.getMinutes() < 10 ? '0' : ''}${eventDate.getMinutes()}`;
+
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
       <Card sx={{margin: '10px', width: '1000px'}}>
@@ -112,8 +124,20 @@ const Ticket = ({ticket}) => {
             <Grid container item xs={4}>
               <Grid item xs={6}>
                 <IconButton>
-                  <AddCircleIcon onClick={() => addjointicket(ticket)} sx={{width: 100, height: 100, color: "red"}}/>
+                  <AddCircleIcon onClick={handleClickOpen} sx={{width: 100, height: 100, color: "red"}}/>
                 </IconButton>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Join Ticket</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Are you sure to join this ticket?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <IconButton onClick={handleClose}>Cancel</IconButton>
+                    <IconButton onClick={() => addjointicket(ticket)}>Join</IconButton>
+                  </DialogActions>
+                </Dialog>
               </Grid>
               <Grid item xs={6}>
                 <IconButton>
