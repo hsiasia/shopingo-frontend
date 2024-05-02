@@ -26,14 +26,16 @@ const Login = () => {
     localStorage.setItem('isLoggedIn', true);
     getAPI(response.credential);
   };
-
-  const getAPI = (token) => {
+  
+  const getAPI = async (token) => {
     // Make a request to your backend server to exchange the token for user_id
     fetch(`${apiUrl}/api/user/login`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      },
+      body: JSON.stringify({ jwt_token: token })
     })
     .then(response => {
       if (!response.ok) {
