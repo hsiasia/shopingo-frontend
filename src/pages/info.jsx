@@ -1,4 +1,4 @@
-import React from "react";
+import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -7,11 +7,10 @@ import {
   Navbar,
 } from "../components"; //baisc website components
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 interface InfoProps{
   BarTitle: String;
-  Title:  String;
-  Date: String;
-  Location: String;
 }
 
 const styles = {
@@ -29,6 +28,18 @@ const styles = {
 }
 
 const Info = () => {
+  const [apiData, setApiData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async() => {
+      const result = await fetch(`${apiUrl}/api/event`)
+      result.json().then(json => {
+        console.log(json)
+        setApiData(json.data)
+      })
+    };
+    fetchData();
+  }, []);
 
   function ProductAccordion (props: InfoProps) {
     return (
@@ -38,26 +49,34 @@ const Info = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={styles.tableHeader}>Event</th>
-                  <th style={styles.tableHeader}>Date</th>
-                  <th style={styles.tableHeader}>Location</th>
-                  <th style={styles.tableHeader}>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={styles.tableCell}>{props.Title}</td>
-                  <td style={styles.tableCell}>{props.Date}</td>
-                  <td style={styles.tableCell}>{props.Location}</td>
-                  <td style={styles.tableCell}>
-                    <Button variant="contained" href="">View</Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              <div style={{ height: '300px', overflowY: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Event ID</th>
+                      <th style={styles.tableHeader}>Event</th>
+                      <th style={styles.tableHeader}>Date</th>
+                      <th style={styles.tableHeader}>Location</th>
+                      <th style={styles.tableHeader}>View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {apiData.map(event => (
+                      <tr key={event.id}>
+                        <td style={styles.tableCell}>{event.id}</td>
+                        <td style={styles.tableCell}>{event.event_name}</td>
+                        <td style={styles.tableCell}>{event.event_date}</td>
+                        <td style={styles.tableCell}>{event.location}</td>
+                        <td style={styles.tableCell}>
+                          <Button variant="contained" href={""}>
+                            View
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -70,10 +89,10 @@ const Info = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Personal Info</h1>
         <hr />
-        <ProductAccordion BarTitle="My Events" Title="BOGOF" Date="2002-01-05" Location="Taipei"/>
-        <ProductAccordion BarTitle="Incoming Events" Title="BOGOF" Date="2002-01-05" Location="Taipei"/>
-        <ProductAccordion BarTitle="Saved Events" Title="BOGOF" Date="2002-01-05" Location="Taipei"/>
-        <ProductAccordion BarTitle="Finished Events" Title="BOGOF" Date="2002-01-05" Location="Taipei"/>
+        <ProductAccordion BarTitle="My Events"/>
+        <ProductAccordion BarTitle="Incoming Events"/>
+        <ProductAccordion BarTitle="Saved Events"/>
+        <ProductAccordion BarTitle="Finished Events"/>
         <hr />
       </div>
       <Footer />
