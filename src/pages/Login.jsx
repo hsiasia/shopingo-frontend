@@ -27,7 +27,7 @@ const Login = () => {
     getAPI(response.credential);
   };
   
-  const getAPI = async (token) => {
+  const getAPI = (token) => {
     // Make a request to your backend server to exchange the token for user_id
     fetch(`${apiUrl}/api/user/login`, {
       method: 'POST',
@@ -35,7 +35,7 @@ const Login = () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ jwt_token: token })
+      body: JSON.stringify({ token: token })
     })
     .then(response => {
       if (!response.ok) {
