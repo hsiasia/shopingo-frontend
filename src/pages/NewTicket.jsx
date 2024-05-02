@@ -71,6 +71,7 @@ const NewTicket = () => {
   };
   const handleChangeDetail = (event) => {
     setDetail(event.target.value);
+  }
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     const file = event.target.files[0].name;
@@ -278,8 +279,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Add Photo</label>
                 <br/>
-
-                <img src={file} alt="photo" width="300" height="300" />
+                {/* <img src={file} alt="photo" width="300" height="300" /> */}
                 <br/>
                 <Button
                     component="label"
@@ -295,15 +295,6 @@ const NewTicket = () => {
                         style={{ display: 'none' }}
                         onChange={handleFileChange}
                         />
-
-//                 <Button variant="outlined" component="label">
-//                   Choose photo
-//                   <input
-//                     type="file"
-//                     hidden
-//                     onChange={handleFileChange}
-//                     //onChange={handleFileChange}
-//                   />
                 </Button>
               </div>
               <div class="form my-3">
