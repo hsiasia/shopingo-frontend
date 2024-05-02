@@ -30,7 +30,7 @@ const Login = () => {
   const getAPI = (token) => {
     // Make a request to your backend server to exchange the token for user_id
     fetch(`${apiUrl}/api/user/login`, {
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
       }
