@@ -1,17 +1,13 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
 import {
   Footer,
   Navbar,
 } from "../components"; //baisc website components
+import { Link } from 'react-router-dom';
 
 const apiUrl = process.env.REACT_APP_API_URL;
-
-interface InfoProps{
-  BarTitle: String;
-}
 
 const styles = {
   tableHeader: {
@@ -41,11 +37,11 @@ const Info = () => {
     fetchData();
   }, []);
 
-  function ProductAccordion (props: InfoProps) {
+  function ProductAccordion (InfoProps) {
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <typography>{props.BarTitle}</typography>
+            <Typography>{InfoProps.BarTitle}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
@@ -68,9 +64,11 @@ const Info = () => {
                         <td style={styles.tableCell}>{event.event_date}</td>
                         <td style={styles.tableCell}>{event.location}</td>
                         <td style={styles.tableCell}>
-                          <Button variant="contained" href={""}>
-                            View
-                          </Button>
+                          <Link to={`/ticket/${event.id}`}>
+                            <Button variant="contained" href={""}>
+                              View
+                            </Button>
+                          </Link>
                         </td>
                       </tr>
                     ))}
