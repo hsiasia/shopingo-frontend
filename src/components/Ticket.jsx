@@ -148,8 +148,14 @@ const Ticket = ({ticket}) => {
             <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
               <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
             </Grid>
-            <Grid item xs={12}>
+            {/* map 問題待確認 */}
+            {/* <Grid item xs={12}>
               {ticket.hashtag.map((tag, index) => (
+                <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+              ))}
+            </Grid> */}
+            <Grid item xs={12}>
+              {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
                 <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
               ))}
             </Grid>
