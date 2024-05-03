@@ -279,8 +279,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Add Photo</label>
                 <br/>
-
-                <img src={file} alt="photo" width="300" height="300" />
+                {/* <img src={file} alt="photo" width="300" height="300" /> */}
                 <br/>
                 <Button
                     component="label"
