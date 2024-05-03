@@ -23,7 +23,7 @@ const Navbar = () => {
         setIsLoggedIn(false); // 設置登入狀態為false
         localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
         setOpen(false);
-      };
+    };
     
     
     const handleClickOpen = () => {
@@ -62,8 +62,11 @@ const Navbar = () => {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
                         {!isLoggedIn ? (
+                            <>
                             <button onClick={handleClickOpen} className="btn btn-link p-0">
-                            <Dialog open={open} onClose={handleClose}>
+                            <Avatar src="/broken-image.jpg" />
+                          </button>
+                          <Dialog open={open} onClose={handleClose}>
                                 <DialogTitle>Logout</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
@@ -75,8 +78,7 @@ const Navbar = () => {
                                     <Button onClick={handleLogout}>Logout</Button>
                                 </DialogActions>
                             </Dialog>
-                            <Avatar src="/broken-image.jpg" />
-                          </button>
+                            </>
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
