@@ -66,7 +66,7 @@ const TicketInfo = () => {
   const ShowTicket = () => {
     return (
       <>
-        <Ticket ticket={ticket} />
+        <Ticket ticket={ticket} defaultExpanded={true}/>
       </>
     );
   };
