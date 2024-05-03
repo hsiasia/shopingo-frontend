@@ -71,7 +71,7 @@ const NewTicket = () => {
   };
   const handleChangeDetail = (event) => {
     setDetail(event.target.value);
-  }
+  };
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     const file = event.target.files[0].name;

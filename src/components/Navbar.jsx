@@ -2,11 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const Navbar = () => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         const loggedIn = localStorage.getItem('isLoggedIn');
@@ -15,7 +22,16 @@ const Navbar = () => {
     const handleLogout = () => {
         setIsLoggedIn(false); // 設置登入狀態為false
         localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
-      };
+        setOpen(false);
+    };
+    
+    
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    }
     
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -48,10 +64,24 @@ const Navbar = () => {
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
-                        {isLoggedIn ? (
-                            <button onClick={handleLogout} className="btn btn-link p-0">
+                        {!isLoggedIn ? (
+                            <>
+                            <button onClick={handleClickOpen} className="btn btn-link p-0">
                             <Avatar src="/broken-image.jpg" />
                           </button>
+                          <Dialog open={open} onClose={handleClose}>
+                                <DialogTitle>Logout</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText>
+                                    Are you sure to logout?
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={handleClose}>Cancel</Button>
+                                    <Button onClick={handleLogout}>Logout</Button>
+                                </DialogActions>
+                            </Dialog>
+                            </>
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
