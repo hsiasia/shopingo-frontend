@@ -48,10 +48,12 @@ const chipStyle = {
   margin: '3px'
 };
 
+// 處理展開細節
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
+  display: expand ? 'none' : 'block', // 如果展開，則隱藏
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
   transition: theme.transitions.create('transform', {
@@ -59,7 +61,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const Ticket = ({ticket}) => {
+const Ticket = ({ticket, defaultExpanded}) => {
   const dispatch = useDispatch();
   const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
@@ -68,10 +70,13 @@ const Ticket = ({ticket}) => {
     dispatch(addJoinTicket(ticket))
     setOpen(false);
   }
-  const [expanded, setExpanded] = React.useState(false);
+
+  // 處理展開
+  const [expanded, setExpanded] = React.useState(defaultExpanded);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
   // 計算當前時間與活動差距
   const eventDate = new Date(ticket.event_date);
   const currentDate = new Date();
@@ -79,6 +84,7 @@ const Ticket = ({ticket}) => {
   const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+
   // 將日期轉換成使用者易懂的方式
   const formattedEventDate = `${eventDate.getFullYear()} 年 ${eventDate.getMonth() + 1} 月 ${eventDate.getDate()} 日 ${eventDate.getHours()}:${eventDate.getMinutes() < 10 ? '0' : ''}${eventDate.getMinutes()}`;
 
@@ -145,52 +151,6 @@ const Ticket = ({ticket}) => {
                 </IconButton>
               </Grid>
             </Grid>
-            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-              <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
-            </Grid>
-            {/* map 問題待確認 */}
-            {/* <Grid item xs={12}>
-              {ticket.hashtag.map((tag, index) => (
-                <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
-              ))}
-            </Grid> */}
-            <Grid item xs={12}>
-              {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
-                <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
-              ))}
-            </Grid>
-            <Grid container>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>LOC</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>DATE</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
-              </Grid>
-            </Grid>
           </Grid>
           <CardActions disableSpacing>
             <ExpandMore
@@ -204,9 +164,52 @@ const Ticket = ({ticket}) => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Typography paragraph>
-                
-              </Typography>
+              <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+                <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
+              </Grid>
+              {/* map 問題待確認 */}
+              {/* <Grid item xs={12}>
+                {ticket.hashtag.map((tag, index) => (
+                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                ))}
+              </Grid> */}
+              <Grid item xs={12}>
+                {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
+                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                ))}
+              </Grid>
+              <Grid container>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>LOC</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>DATE</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
+                </Grid>
+              </Grid>
             </CardContent>
           </Collapse>
         </CardContent>
