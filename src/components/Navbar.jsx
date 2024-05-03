@@ -20,9 +20,9 @@ const Navbar = () => {
         setIsLoggedIn(loggedIn);
     }, []);
     const handleLogout = () => {
+        setOpen(false);
         setIsLoggedIn(false); // 設置登入狀態為false
         localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
-        setOpen(false);
     };
     
     
