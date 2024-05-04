@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBookmark, addJoinTicket } from "../redux/action";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link } from "react-router-dom";
 // import MUI component
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -22,6 +19,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CardActions from '@mui/material/CardActions';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const labelStyle = {
   backgroundColor: '#9EC5FF',
@@ -46,10 +48,12 @@ const chipStyle = {
   margin: '3px'
 };
 
+// 處理展開細節
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
+  display: expand ? 'none' : 'block', // 如果展開，則隱藏
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
   transition: theme.transitions.create('transform', {
@@ -57,18 +61,22 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const Ticket = ({ticket}) => {
+const Ticket = ({ticket, defaultExpanded}) => {
   const dispatch = useDispatch();
   const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
   }
   const addjointicket = (ticket) => {
     dispatch(addJoinTicket(ticket))
+    setOpen(false);
   }
-  const [expanded, setExpanded] = React.useState(false);
+
+  // 處理展開
+  const [expanded, setExpanded] = React.useState(defaultExpanded);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
   // 計算當前時間與活動差距
   const eventDate = new Date(ticket.event_date);
   const currentDate = new Date();
@@ -76,8 +84,18 @@ const Ticket = ({ticket}) => {
   const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((diffInMs % (1000 * 60 * 60)) / (1000 * 60));
+
   // 將日期轉換成使用者易懂的方式
   const formattedEventDate = `${eventDate.getFullYear()} 年 ${eventDate.getMonth() + 1} 月 ${eventDate.getDate()} 日 ${eventDate.getHours()}:${eventDate.getMinutes() < 10 ? '0' : ''}${eventDate.getMinutes()}`;
+
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
       <Card sx={{margin: '10px', width: '1000px'}}>
@@ -112,58 +130,25 @@ const Ticket = ({ticket}) => {
             <Grid container item xs={4}>
               <Grid item xs={6}>
                 <IconButton>
-                  <AddCircleIcon onClick={() => addjointicket(ticket)} sx={{width: 100, height: 100, color: "red"}}/>
+                  <AddCircleIcon onClick={handleClickOpen} sx={{width: 100, height: 100, color: "red"}}/>
                 </IconButton>
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Join Ticket</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Are you sure to join this ticket?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <IconButton onClick={handleClose}>Cancel</IconButton>
+                    <IconButton onClick={() => addjointicket(ticket)}>Join</IconButton>
+                  </DialogActions>
+                </Dialog>
               </Grid>
               <Grid item xs={6}>
                 <IconButton>
                   <BookmarkIcon onClick={() => addbookmark(ticket)} sx={{width: 100, height: 100, color: "#9EC5FF"}}/>
                 </IconButton>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-              <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
-              {/* <CardMedia
-                sx={{height: '300px', objectFit: 'over'}}
-                title={ticket.title}
-                image={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`}
-              /> */}
-            </Grid>
-            <Grid item xs={12}>
-              {ticket.hashtag.map((tag, index) => (
-                <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
-              ))}
-            </Grid>
-            <Grid container>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>LOC</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>DATE</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
-              </Grid>
-              <Grid item xs={10}>
-                <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -179,9 +164,52 @@ const Ticket = ({ticket}) => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Typography paragraph>
-                
-              </Typography>
+              <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+                <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
+              </Grid>
+              {/* map 問題待確認 */}
+              {/* <Grid item xs={12}>
+                {ticket.hashtag.map((tag, index) => (
+                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                ))}
+              </Grid> */}
+              <Grid item xs={12}>
+                {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
+                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                ))}
+              </Grid>
+              <Grid container>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>LOC</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>DATE</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
+                </Grid>
+              </Grid>
             </CardContent>
           </Collapse>
         </CardContent>
