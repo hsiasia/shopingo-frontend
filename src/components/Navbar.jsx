@@ -47,9 +47,6 @@ const Navbar = () => {
                             <NavLink className="nav-link" to="/">Home </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/ticket">Search</NavLink>
-                        </li>
-                        <li className="nav-item">
                             <NavLink className="nav-link" to="/newticket">NewTicket</NavLink>
                         </li>
                         <li className="nav-item">
