@@ -4,6 +4,12 @@ import React, { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import TextField from '@mui/material/TextField';
+import Slider from '@mui/material/Slider';
+import Input from '@mui/material/Input';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { TroubleshootRounded } from "@mui/icons-material";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -62,14 +68,16 @@ const HomeShowAllTicket = () => {
     );
   };
   const [search, setSearch] = useState('');
+  const [value, setValue] = React.useState(999);
   const filterTicket = (cat) => {
     if (data.length > 0) {
-      const updatedList = data.filter((item) => {
+        const updatedList = data.filter((item) => {
         const lowercaseCat = cat.toLowerCase();
+        const withinBudget = item.budget <= value;
         return (
-          item.hashtag.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(lowercaseCat)) ||
-        item.event_name.toLowerCase().includes(lowercaseCat)
-
+          (item.hashtag.some(tag => typeof tag === 'string' && tag.toLowerCase().includes(lowercaseCat)) ||
+          item.event_name.toLowerCase().includes(lowercaseCat))
+          && withinBudget
         );
       });
       setFilter(updatedList);
@@ -77,8 +85,24 @@ const HomeShowAllTicket = () => {
   };
   
   const ShowTickets = () => {
+    const handleSliderChange = (event, newValue) => {
+      setValue(newValue);
+      filterTicket(search);
+    };
+    const handleInputChange = (event) => {
+      setValue(event.target.value === '' ? 0 : Number(event.target.value));
+      filterTicket(search);
+    };
+    const handleBlur = () => {
+      if (value < 0) {
+        setValue(0);
+      } else if (value > 20) {
+        setValue(20);
+      }
+    };
     return (
       <>
+    <div className=" text-center">
         <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
           value={search}
           inputProps={{ 'aria-label': 'search', inputMode: 'text' }}
@@ -88,6 +112,38 @@ const HomeShowAllTicket = () => {
             filterTicket(e.target.value);
           }}
         />
+      </div>
+      <br />
+      <Box sx={{ width: 450, marginTop: 5 }}>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item>
+          <Typography>Budget</Typography>
+        </Grid>
+        <Grid item xs>
+          <Slider
+            value={typeof value === 'number' ? value : 0}
+            onChange={handleSliderChange}
+            aria-labelledby="input-slider"
+            max={999}
+          />
+        </Grid>
+        <Grid item>
+          <Input
+            value={value}
+            size="small"
+            onBlur={handleBlur}
+            onChange={handleInputChange}
+            inputProps={{
+              step: 10,
+              min: 0,
+              max: 30,
+              type: 'number',
+              'aria-labelledby': 'input-slider',
+            }}
+          />
+        </Grid>
+      </Grid>
+    </Box>
         <div className="buttons text-center py-5">
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => setFilter(data)}>All</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("coffee")}>Coffee</button>
@@ -95,7 +151,6 @@ const HomeShowAllTicket = () => {
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>Dessert</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGOF</button>
         </div>
-
         {filter.map((ticket) => {
           return (
             <Ticket ticket={ticket}/>

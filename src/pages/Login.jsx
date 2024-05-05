@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Footer, Navbar } from "../components";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 const clientId =
   "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
+const apiUrl = process.env.REACT_APP_API_URL;
+
 
 const Login = () => {
-  const dispatch = useDispatch();
   useEffect(() => {
     window.google?.accounts.id.initialize({
       client_id: clientId,
@@ -24,7 +24,37 @@ const Login = () => {
     console.log("response", response);
     console.log("Encoded JWT ID token: " + response.credential);
     localStorage.setItem('isLoggedIn', true);
+    getAPI(response.credential);
   };
+
+  const getAPI = (token) => {
+    // Make a request to your backend server to exchange the token for user_id
+    fetch(`${apiUrl}/api/user/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({token: token})
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user_id');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handle the response data which should contain user_id
+      console.log('User ID:', data.user_info.id);
+      console.log('User Name:', data.user_info);
+      localStorage.setItem('user_id', data.user_info.id);
+    })
+    .catch(error => {
+      console.error('Error fetching user_id:', error);
+    });
+  };
+  
+  
 
   return (
     <>
