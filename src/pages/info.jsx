@@ -24,20 +24,47 @@ const styles = {
 }
 
 const Info = () => {
-  const [apiData, setApiData] = useState([]);
+  const currentDate = new Date();
+  const [EventPast, setEventPast] = useState([]);
+  const [EventFuture, setEventFuture] = useState([]);
+  const filterTime = (Future) => {
+    if (apiData.length > 0) {
+      if(Future){
+        const updatedList = apiData.filter((item) => {
+        const target = item.event_date > currentDate;
+        return (target);
+        });
+        setEventFuture(updatedList);
+      }
+      else{
+        const updatedList = apiData.filter((item) => {
+          const target = item.event_date <= currentDate;
+          return (target);
+        });
+        setEventPast(updatedList);
+      }
+    }
+  };
 
+  const [apiData, setApiData] = useState([]);
   useEffect(() => {
-    const fetchData = async() => {
-      const result = await fetch(`${apiUrl}/api/event`)
-      result.json().then(json => {
-        console.log(json)
-        setApiData(json.data)
-      })
-    };
+    const fetchData = async () => {
+      const result = await fetch(`${apiUrl}/api/event`);
+          const json = await result.json();
+          const updatedData = json.data.map(item => {
+            const eventDate = new Date(item.event_date); 
+            return { ...item, event_date: eventDate }; 
+          });
+          setApiData(updatedData);}
     fetchData();
   }, []);
 
-  function ProductAccordion (InfoProps) {
+  useEffect(() => {
+    filterTime(true); 
+    filterTime(false); 
+  }, [apiData]);
+  
+  function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -57,11 +84,11 @@ const Info = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {apiData.map(event => (
+                    {InfoProps.Data && InfoProps.Data.map(event => (
                       <tr key={event.id}>
                         <td style={styles.tableCell}>{event.id}</td>
                         <td style={styles.tableCell}>{event.event_name}</td>
-                        <td style={styles.tableCell}>{event.event_date}</td>
+                        <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
                         <td style={styles.tableCell}>{event.location}</td>
                         <td style={styles.tableCell}>
                           <Link to={`/ticket/${event.id}`}>
@@ -87,10 +114,10 @@ const Info = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Personal Info</h1>
         <hr />
-        <ProductAccordion BarTitle="My Events"/>
-        <ProductAccordion BarTitle="Incoming Events"/>
-        <ProductAccordion BarTitle="Saved Events"/>
-        <ProductAccordion BarTitle="Finished Events"/>
+        <Comp_ListBar BarTitle="My Events" Data={apiData}/>
+        <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
+        <Comp_ListBar BarTitle="Incoming Events" Data={EventFuture}/>
+        <Comp_ListBar BarTitle="Finished Events" Data={EventPast}/>
         <hr />
       </div>
       <Footer />
