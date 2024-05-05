@@ -30,22 +30,25 @@ const labelStyle = {
   color: 'white',
   textAlign: 'center',
   borderRadius: '10px',
-  margin: '5px'
+  margin: '5px',
+  fontSize: '16px'
 };
 
 const contentStyle = {
   backgroundColor: 'white',
   textAlign: 'left',
   borderRadius: '10px',
-  margin: '3px'
+  margin: '3px',
+  fontSize: '16px'
 };
 
 const chipStyle = {
   fontSize: '22px',
-  width: '130px',
+  width: '100px',
   height: '40px',
   borderRadius: '10px',
-  margin: '3px'
+  margin: '3px',
+  fontSize: '16px'
 };
 
 // 處理展開細節
@@ -97,40 +100,40 @@ const Ticket = ({ticket, defaultExpanded}) => {
   };
 
   return (
-    <Box sx={{display: 'flex', bgcolor: '#FEF1F0', justifyContent: 'center'}}>
-      <Card sx={{margin: '10px', width: '1000px'}}>
+    <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
+      <Card sx={{margin: '8px', width: '800px'}}>
         <CardHeader
           title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
           sx={{
             bgcolor: '#FF9292',
             color: 'white', 
+            fontSize: '16px',
+            textAlign: 'center' // 新增居中對齐
           }}
         />
         <CardContent container>
           <Grid container spacing={2}>
-            <Grid container item xs={8}>
-              <Grid item xs={1}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+            <Grid container item xs={10} alignItems="center">
+              <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center'}}>
+                <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />
               </Grid>
-              <Grid item xs={5}>
-                <Typography variant="h4" xs={2}>{ticket.creator}</Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <Box sx={{display: 'flex', bgcolor: '#FFE4E3', borderRadius: '10px', justifyContent: 'center'}}>
-                  <Rating value={ticket.score} readOnly size="large"></Rating>
-                  <Typography variant="h5">{ticket.score}</Typography>
-                  <Typography variant="h5">(12)</Typography>
+              <Grid item xs={4}>
+                <Typography variant="h6">{ticket.creator}</Typography>
+                <Box sx={{display: 'flex', bgcolor: 'white', borderRadius: '10px', alignItems: 'center'}}>
+                  <Rating value={ticket.score} readOnly size="small"></Rating>
+                  <Typography variant="h7" mx={1}>{ticket.score}</Typography>
+                  <Typography variant="h7">(12)</Typography>
                 </Box>
               </Grid>
-              <Grid item>
-                <Typography variant="h3">{ticket.event_name}</Typography>
-                <Typography variant="h6" color="gray">{ticket.company_name}</Typography>
+              <Grid item xs={7}>
+                <Typography variant="h5">{ticket.event_name}</Typography>
+                <Typography variant="h7" color="gray">{ticket.company_name}</Typography>
               </Grid>
             </Grid>
-            <Grid container item xs={4}>
+            <Grid container item xs={2}>
               <Grid item xs={6}>
                 <IconButton>
-                  <AddCircleIcon onClick={handleClickOpen} sx={{width: 100, height: 100, color: "red"}}/>
+                  <AddCircleIcon onClick={handleClickOpen} sx={{width: 50, height: 50, color: "#FF9292"}}/>
                 </IconButton>
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Join Ticket</DialogTitle>
@@ -147,21 +150,24 @@ const Ticket = ({ticket, defaultExpanded}) => {
               </Grid>
               <Grid item xs={6}>
                 <IconButton>
-                  <BookmarkIcon onClick={() => addbookmark(ticket)} sx={{width: 100, height: 100, color: "#9EC5FF"}}/>
+                  <BookmarkIcon onClick={() => addbookmark(ticket)} sx={{width: 50, height: 50, color: "#BDBDBD"}}/>
                 </IconButton>
               </Grid>
             </Grid>
           </Grid>
-          <CardActions disableSpacing>
-            <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </ExpandMore>
-          </CardActions>
+          <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+            <CardActions disableSpacing>
+              <ExpandMore
+                expand={expanded}
+                onClick={handleExpandClick}
+                aria-expanded={expanded}
+                sx={{fontSize: '16px'}}
+              >
+                Show more
+                <ExpandMoreIcon />
+              </ExpandMore>
+            </CardActions>
+          </Grid>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
@@ -178,7 +184,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
                   <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
                 ))}
               </Grid>
-              <Grid container>
+              <Grid container sx={{alignItems: 'center'}}>
                 <Grid item xs={2}>
                   <Typography variant="h5" sx={labelStyle}>LOC</Typography>
                 </Grid>
