@@ -23,7 +23,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useNavigate } from 'react-router-dom';
 
-
 const NewTicket = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -41,7 +40,7 @@ const NewTicket = () => {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
   const [signedUrl, setSignedUrl] = React.useState('');
-  const [file, setFile] = React.useState('');
+  const [selectedfile, setFile] = React.useState('');
 
   const [amount, setAmount] = React.useState('');
   const [detail, setDetail] = React.useState('');
@@ -74,8 +73,8 @@ const NewTicket = () => {
   };
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    const file = event.target.files[0].name;
-    const photoformData = {"blob_names": [file]};
+    const fileName = event.target.files[0].name;
+    const photoformData = {"blob_names": [fileName], "event_id": '1'};
   
     fetch(`${apiUrl}/api/google/image`, {
       method: 'POST',
@@ -86,13 +85,43 @@ const NewTicket = () => {
     })
     .then(response => response.json())
     .then(data => {
-      // console.log(data.data[0][0]);
-      // console.log(data.data[0][1]);
+      console.log(data.data[0][1]);
       setSignedUrl(data.data[0][0]);
     })
     .catch(error => {
       console.error('Error:', error);
     });
+  };
+
+  const postFormData = (url, formData) => {
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .catch(error => {
+      console.error('Error:', error);
+      throw error; // 可以根據需要決定是否重新拋出錯誤
+    });
+  };
+  
+
+  const uploadImage = async (signedUrl, file) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      await fetch(signedUrl, {
+        method: 'PUT',
+        body: formData,
+      });
+      console.log('圖片上傳成功');
+    } catch (error) {
+      console.error('上傳圖片時發生錯誤:', error);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -123,42 +152,15 @@ const NewTicket = () => {
       "score": 0
     };
 
-    fetch(`${apiUrl}/api/event/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+    // 送出表單資料
+    postFormData(`${apiUrl}/api/event/`, formData)
+      .then(data => {
+        console.log(data);
+      });
     
+    // 上傳圖片到雲端
+    uploadImage(signedUrl, selectedfile);
    
-    //儲存圖片
-    fetch(signedUrl, {
-      method: 'PUT',
-      body: file,
-      headers: {
-        'Content-Type': file.type // 根據實際文件類型設置
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-      return response;
-    })
-    .then(() => {
-      console.log('Image uploaded successfully');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
     setOpen(false);
     navigate('/');
   };
