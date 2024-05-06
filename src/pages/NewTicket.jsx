@@ -1,50 +1,49 @@
 import React from "react";
 import { Footer, Navbar } from "../components";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import dayjs from 'dayjs';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { useNavigate } from 'react-router-dom';
-
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import dayjs from "dayjs";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useNavigate } from "react-router-dom";
 
 const NewTicket = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
 
-  const [eventName, setEventName] = React.useState('');
-  const [companyName, setCompanyName] = React.useState('');
-  const [location, setLocation] = React.useState('');
-  const [peopleNumNeeded, setPeopleNumNeeded] = React.useState('');
+  const [eventName, setEventName] = React.useState("");
+  const [companyName, setCompanyName] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [peopleNumNeeded, setPeopleNumNeeded] = React.useState("");
   const [photo, setPhoto] = React.useState(null);
-  const [hashtag1, setHashtag1] = React.useState('');
-  const [hashtag2, setHashtag2] = React.useState('');
+  const [hashtag1, setHashtag1] = React.useState("");
+  const [hashtag2, setHashtag2] = React.useState("");
 
   // handle date
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
-  const [signedUrl, setSignedUrl] = React.useState('');
-  const [file, setFile] = React.useState('');
+  const [signedUrl, setSignedUrl] = React.useState("");
+  const [selectedfile, setFile] = React.useState("");
 
-  const [amount, setAmount] = React.useState('');
-  const [detail, setDetail] = React.useState('');
+  const [amount, setAmount] = React.useState("");
+  const [detail, setDetail] = React.useState("");
 
   const handleChangeEventName = (event) => {
     setEventName(event.target.value);
@@ -52,7 +51,7 @@ const NewTicket = () => {
 
   const handleChangeCompanyName = (event) => {
     setCompanyName(event.target.value);
-  }; 
+  };
 
   const handleChangeLocation = (event) => {
     setLocation(event.target.value);
@@ -74,25 +73,54 @@ const NewTicket = () => {
   };
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    const file = event.target.files[0].name;
-    const photoformData = {"blob_names": [file]};
-  
+    const fileName = event.target.files[0].name;
+    const photoformData = { blob_names: [fileName]};
+
     fetch(`${apiUrl}/api/google/image`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(photoformData)
+      body: JSON.stringify(photoformData),
     })
-    .then(response => response.json())
-    .then(data => {
-      // console.log(data.data[0][0]);
-      // console.log(data.data[0][1]);
-      setSignedUrl(data.data[0][0]);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data[0][1]);
+        setSignedUrl(data.data[0][0]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const postFormData = (url, formData) => {
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
     })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then((response) => response.json())
+      .catch((error) => {
+        console.error("Error:", error);
+        throw error; // 可以根據需要決定是否重新拋出錯誤
+      });
+  };
+
+  const uploadImage = async (signedUrl, file) => {
+    try {
+      await fetch(signedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+        },
+        body: file,
+      });
+      console.log("圖片上傳成功");
+    } catch (error) {
+      console.error("上傳圖片時發生錯誤:", error);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -103,65 +131,36 @@ const NewTicket = () => {
     const currentDateTime = new Date().toISOString();
 
     // 獲取使用者輸入時間
-    const datePart = dayjs(selectedDate).format('YYYY-MM-DD');
-    const timePart = dayjs(selectedTime).format('HH:mm:ss.SSS');
+    const datePart = dayjs(selectedDate).format("YYYY-MM-DD");
+    const timePart = dayjs(selectedTime).format("HH:mm:ss.SSS");
     const combinedDateTime = `${datePart}T${timePart}Z`;
 
     const formData = {
-      "creator": "1",
-      "event_name": eventName,
-      "company_name": companyName,
-      "hashtag": [hashtag1, hashtag2],
-      "location": location,
-      "event_date": combinedDateTime,
-      "scale": peopleNumNeeded,
-      "budget": amount,
-      "detail": detail,
-      "create_datetime": currentDateTime,
-      "update_datetime": currentDateTime,
-      "delete_datetime": null,
-      "score": 0
+      creator: "1",
+      event_name: eventName,
+      company_name: companyName,
+      hashtag: [hashtag1, hashtag2],
+      location: location,
+      event_date: combinedDateTime,
+      scale: peopleNumNeeded,
+      budget: amount,
+      detail: detail,
+      create_datetime: currentDateTime,
+      update_datetime: currentDateTime,
+      delete_datetime: null,
+      score: 0,
     };
 
-    fetch(`${apiUrl}/api/event/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
+    // 送出表單資料
+    postFormData(`${apiUrl}/api/event/`, formData).then((data) => {
       console.log(data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
     });
-    
-   
-    //儲存圖片
-    fetch(signedUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: file,
-      headers: {
-        'Content-Type': file.type // 根據實際文件類型設置
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-      return response;
-    })
-    .then(() => {
-      console.log('Image uploaded successfully');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+
+    // 上傳圖片到雲端
+    uploadImage(signedUrl, selectedfile);
+
     setOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   const handleChangePeopleNum = (event) => {
@@ -182,11 +181,11 @@ const NewTicket = () => {
   };
   const handleChangeHashtag1 = (event) => {
     setHashtag1(event.target.value);
-  }
+  };
   const handleChangeHashtag2 = (event) => {
     setHashtag2(event.target.value);
-  }
-  
+  };
+
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -218,11 +217,19 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Date & Time</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker value={selectedDate} label="Choose date" onChange={handleDateChange}/>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      value={selectedDate}
+                      label="Choose date"
+                      onChange={handleDateChange}
+                    />
                   </DemoContainer>
-                  <DemoContainer components={['TimePicker']}>
-                    <TimePicker value={selectedTime} label="Choose time" onChange={handleTimeChange}/>
+                  <DemoContainer components={["TimePicker"]}>
+                    <TimePicker
+                      value={selectedTime}
+                      label="Choose time"
+                      onChange={handleTimeChange}
+                    />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
@@ -248,93 +255,99 @@ const NewTicket = () => {
               </div>
               <div class="form my-3">
                 <label for="Name">People Number Needed</label>
-                  <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">People Needed</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={peopleNumNeeded}
-                        onChange={handleChangePeopleNum}
-                      >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      People Needed
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={peopleNumNeeded}
+                      onChange={handleChangePeopleNum}
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
               </div>
               <div class="form my-3">
-                  <label for="Name">People Number Needed</label>
-                  <FormControl fullWidth sx={{ m: 1 }}>
-                    <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-                    <OutlinedInput
-                      id="amount"
-                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                      label="Amount"
-                      onChange={handleChangeAmount}
-                    />
-                  </FormControl>
+                <label for="Name">People Number Needed</label>
+                <FormControl fullWidth sx={{ m: 1 }}>
+                  <InputLabel htmlFor="outlined-adornment-amount">
+                    Amount
+                  </InputLabel>
+                  <OutlinedInput
+                    id="amount"
+                    startAdornment={
+                      <InputAdornment position="start">$</InputAdornment>
+                    }
+                    label="Amount"
+                    onChange={handleChangeAmount}
+                  />
+                </FormControl>
               </div>
               <div class="form my-3">
                 <label for="Name">Add Photo</label>
-                <br/>
+                <br />
                 {/* <img src={file} alt="photo" width="300" height="300" /> */}
-                <br/>
+                <br />
                 <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                    >
-                    Add Photo
-                    <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        onChange={handleFileChange}
-                        />
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  tabIndex={-1}
+                  startIcon={<CloudUploadIcon />}
+                >
+                  Add Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
                 </Button>
               </div>
               <div class="form my-3">
                 <label for="Name">Choose Hashtag</label>
-                <br/>
+                <br />
                 <FormControl sx={{ m: 1, minWidth: 192 }}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={hashtag1}
-                  onChange={handleChangeHashtag1}
-                >
-                  <MenuItem value={"Coffee"}>Coffee</MenuItem>
-                  <MenuItem value={"Tea"}>Tea</MenuItem>
-                  <MenuItem value={"Pizza"}>Pizza</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 192 }}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={hashtag2}
-                  onChange={handleChangeHashtag2}
-                >
-                  <MenuItem value={"BOGOF"}>BOGOF</MenuItem>
-                  <MenuItem value={"Discount"}>Discount</MenuItem>
-                </Select>
-              </FormControl>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={hashtag1}
+                    onChange={handleChangeHashtag1}
+                  >
+                    <MenuItem value={"Coffee"}>Coffee</MenuItem>
+                    <MenuItem value={"Tea"}>Tea</MenuItem>
+                    <MenuItem value={"Pizza"}>Pizza</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ m: 1, minWidth: 192 }}>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={hashtag2}
+                    onChange={handleChangeHashtag2}
+                  >
+                    <MenuItem value={"BOGOF"}>BOGOF</MenuItem>
+                    <MenuItem value={"Discount"}>Discount</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
               <div class="form my-3">
                 <label for="Name">Description</label>
-                <br/>
+                <br />
                 <FormControl fullWidth sx={{ m: 1 }} variant="standard">
-                <TextField
-                  id="detail"
-                  placeholder="Enter description"
-                  multiline
-                  rows={4}
-                  onChange={handleChangeDetail}
-                />
+                  <TextField
+                    id="detail"
+                    placeholder="Enter description"
+                    multiline
+                    rows={4}
+                    onChange={handleChangeDetail}
+                  />
                 </FormControl>
               </div>
               <div className="text-center">
@@ -345,10 +358,7 @@ const NewTicket = () => {
                 >
                   Submit
                 </button>
-                <Dialog
-                  open={open}
-                  onClose={handleClose}
-                >
+                <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>Submit</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
@@ -357,7 +367,9 @@ const NewTicket = () => {
                   </DialogContent>
                   <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button type="submit" onClick={handleSubmit}>Submit</Button>
+                    <Button type="submit" onClick={handleSubmit}>
+                      Submit
+                    </Button>
                   </DialogActions>
                 </Dialog>
               </div>
