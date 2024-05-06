@@ -1,6 +1,5 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
-import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -51,6 +50,7 @@ const Info = () => {
   };
 
   const [apiData, setApiData] = useState([]);
+  const [userID, setUserID] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetch(`${apiUrl}/api/event`);
@@ -61,6 +61,7 @@ const Info = () => {
           });
           setApiData(updatedData);}
     fetchData();
+    //setUserID(localStorage.getItem('user_id'));
   }, []);
 
   useEffect(() => {
