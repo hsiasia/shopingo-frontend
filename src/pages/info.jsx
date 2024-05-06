@@ -74,18 +74,24 @@ const Info = () => {
 
   function Personal ({User}) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-    <Avatar alt={User.name} src={User.profile_pic} style={{ marginRight: '10px' }} />
-    <strong>{User.name}</strong>
-  </div>
-  <Rating name="read-only" defaultValue={0} value={User.score} size="large" precision={0.5} readOnly/>
-  <Link to="/Login" style={{ textDecoration: 'none', marginTop: '10px' }}>
-    <Button variant="outlined" color="primary">
-      <LoginIcon />{' '}Login
-    </Button>
-  </Link>
-</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <Avatar alt={User.name} src={User.profile_pic} style={{ marginRight: '10px' }} />
+            <strong>{User.name}</strong>
+          </div>
+          <div>
+            <Rating name="read-only" defaultValue={0} value={User.score} size="large" precision={0.5} readOnly/>
+          </div>
+        </div>
+        <div>
+          <Link to="/Login" style={{ textDecoration: 'none' }}>
+            <Button variant="outlined" color="primary">
+              <LoginIcon />Login
+            </Button>
+          </Link>
+        </div>
+      </div>
     )
   };
 
