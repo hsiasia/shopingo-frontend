@@ -74,7 +74,7 @@ const NewTicket = () => {
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     const fileName = event.target.files[0].name;
-    const photoformData = { blob_names: [fileName], event_id: "1" };
+    const photoformData = { blob_names: [fileName]};
 
     fetch(`${apiUrl}/api/google/image`, {
       method: "POST",
