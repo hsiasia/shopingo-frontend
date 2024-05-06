@@ -1,5 +1,8 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
+import Avatar from '@mui/material/Avatar';
+import Rating from '@mui/material/Rating';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -68,7 +71,24 @@ const Info = () => {
     filterTime(true); 
     filterTime(false); 
   }, [apiData]);
-  
+
+  function Personal ({User}) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+    <Avatar alt={User.name} src={User.profile_pic} style={{ marginRight: '10px' }} />
+    <strong>{User.name}</strong>
+  </div>
+  <Rating name="read-only" defaultValue={0} value={User.score} size="large" precision={0.5} readOnly/>
+  <Link to="/Login" style={{ textDecoration: 'none', marginTop: '10px' }}>
+    <Button variant="outlined" color="primary">
+      <LoginIcon />{' '}Login
+    </Button>
+  </Link>
+</div>
+    )
+  };
+
   function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
@@ -168,12 +188,19 @@ const Info = () => {
         </Accordion>
     );
   };
+  
+  const DefaultUser = {
+    name: "Anonymous",
+    score: 0,
+    profile_pic:"https://example.com/profile.jpg"
+  };
 
   return (
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Personal Info</h1>
+        <h1 className="text-center">User Info</h1>
+        <Personal User={DefaultUser}/>
         <hr />
         <Comp_ListBar_MyTicket BarTitle="My Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
