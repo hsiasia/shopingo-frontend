@@ -184,6 +184,28 @@ const Info = () => {
   };
 
   function Comp_ListBar_MyTicket (InfoProps) {
+    const [MyTicket, setMyTicket] = useState(InfoProps.Data.filter((item) => item.user_id === userID));
+    const handleDelete = (id) => {
+      fetch(`${apiUrl}/api/event/?event_id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete event');
+          }
+          console.log('Event deleted successfully');
+          setMyTicket(MyTicket.filter((item) => item.id !== id));
+        })
+        .catch(error => {
+          console.error('Error deleting event:', error);
+        });
+    }
+
+
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -224,7 +246,7 @@ const Info = () => {
                           </Button>
                         </td>
                         <td style={styles.tableCell}>
-                          <Button variant="outlined" href={""} color="error">
+                          <Button variant="outlined" href={""} color="error" onClick={() => handleDelete(event.id)}>
                               <DeleteIcon />
                           </Button>
                         </td>
