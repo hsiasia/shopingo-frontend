@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Footer, Navbar } from "../components";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -23,7 +23,84 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 
+const apiKey = process.env.REACT_APP_API_KEY;
+
 const NewTicket = () => {
+  const [map, setMap] = useState(null);
+  const [autocomplete, setAutocomplete] = useState(null);
+  const [infowindow, setInfowindow] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [bias, setBias] = useState(true);
+  const [strictBounds, setStrictBounds] = useState(false);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1`;
+    script.defer = true;
+    script.onload = initMap;
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  const initMap = () => {
+    const mapInstance = new window.google.maps.Map(document.getElementById("map"), {
+      center: { lat: 25.0170, lng: 121.5397 },
+      zoom: 13,
+      mapTypeControl: false,
+    });
+    setMap(mapInstance);
+
+    const autocompleteInstance = new window.google.maps.places.Autocomplete(
+      document.getElementById("pac-input"),
+      { fields: ["formatted_address", "geometry", "name"], strictBounds: false }
+    );
+    setAutocomplete(autocompleteInstance);
+    autocompleteInstance.bindTo("bounds", mapInstance);
+
+    const infowindowInstance = new window.google.maps.InfoWindow();
+    setInfowindow(infowindowInstance);
+
+    const markerInstance = new window.google.maps.Marker({
+      map: mapInstance,
+      anchorPoint: new window.google.maps.Point(0, -29),
+    });
+    setMarker(markerInstance);
+
+    autocompleteInstance.addListener("place_changed", () => {
+      infowindowInstance.close();
+      markerInstance.setVisible(false);
+
+      const place = autocompleteInstance.getPlace();
+
+      if (!place.geometry || !place.geometry.location) {
+        window.alert("No details available for input: '" + place.name + "'");
+        return;
+      }
+
+      if (place.geometry.viewport) {
+        mapInstance.fitBounds(place.geometry.viewport);
+      } else {
+        mapInstance.setCenter(place.geometry.location);
+        mapInstance.setZoom(17);
+      }
+
+      markerInstance.setPosition(place.geometry.location);
+      console.log(place.geometry.location.lat());
+      console.log(place.geometry.location.lng());
+      markerInstance.setVisible(true);
+      infowindowInstance.open(mapInstance, markerInstance);
+
+        // 結合 place.name 和 place.formatted_address
+      const locationValue = `${place.name}, ${place.formatted_address}`;
+      setInputValue(locationValue);
+      setLocation(locationValue);
+    });
+  };
+  // 上面為 map
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
@@ -53,9 +130,9 @@ const NewTicket = () => {
     setCompanyName(event.target.value);
   };
 
-  const handleChangeLocation = (event) => {
-    setLocation(event.target.value);
-  };
+  // const handleChangeLocation = (event) => {
+  //   setLocation(event.target.value);
+  // };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -134,6 +211,7 @@ const NewTicket = () => {
     const datePart = dayjs(selectedDate).format("YYYY-MM-DD");
     const timePart = dayjs(selectedTime).format("HH:mm:ss.SSS");
     const combinedDateTime = `${datePart}T${timePart}Z`;
+    console.log(location);
 
     const formData = {
       creator: "1",
@@ -249,9 +327,15 @@ const NewTicket = () => {
                   type="text"
                   class="form-control"
                   id="location"
-                  placeholder="Enter location"
-                  onChange={handleChangeLocation}
+                  placeholder="Choose location below"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  //onChange={handleChangeLocation}
                 />
+              </div>
+              <div class="form my-3">
+                <input id="pac-input" type="text" placeholder="Enter a location" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                <div id="map" style={{ height: "300px", width: "100%" }}></div>
               </div>
               <div class="form my-3">
                 <label for="Name">People Number Needed</label>
