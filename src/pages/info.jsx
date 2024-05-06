@@ -1,5 +1,9 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Footer,
@@ -93,9 +97,65 @@ const Info = () => {
                         <td style={styles.tableCell}>
                           <Link to={`/ticket/${event.id}`}>
                             <Button variant="contained" href={""}>
-                              View
+                              <VisibilityIcon />
                             </Button>
                           </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+    );
+  };
+
+  function Comp_ListBar_MyTicket (InfoProps) {
+    return (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>{InfoProps.BarTitle}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <div style={{ height: '300px', overflowY: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Event ID</th>
+                      <th style={styles.tableHeader}>Event</th>
+                      <th style={styles.tableHeader}>Date</th>
+                      <th style={styles.tableHeader}>Location</th>
+                      <th style={styles.tableHeader}>View</th>
+                      <th style={styles.tableHeader}>Edit</th>
+                      <th style={styles.tableHeader}>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {InfoProps.Data && InfoProps.Data.map(event => (
+                      <tr key={event.id}>
+                        <td style={styles.tableCell}>{event.id}</td>
+                        <td style={styles.tableCell}>{event.event_name}</td>
+                        <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
+                        <td style={styles.tableCell}>{event.location}</td>
+                        <td style={styles.tableCell}>
+                          <Link to={`/ticket/${event.id}`}>
+                            <Button variant="contained" href={""}>
+                              <VisibilityIcon />
+                            </Button>
+                          </Link>
+                        </td>
+                        <td style={styles.tableCell}>
+                          <Button variant="outlined" href={""} color="success">
+                              <EditIcon />
+                          </Button>
+                        </td>
+                        <td style={styles.tableCell}>
+                          <Button variant="outlined" href={""} color="error">
+                              <DeleteIcon />
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -114,7 +174,7 @@ const Info = () => {
       <div className="container my-3 py-3">
         <h1 className="text-center">Personal Info</h1>
         <hr />
-        <Comp_ListBar BarTitle="My Events" Data={apiData}/>
+        <Comp_ListBar_MyTicket BarTitle="My Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Incoming Events" Data={EventFuture}/>
         <Comp_ListBar BarTitle="Finished Events" Data={EventPast}/>
