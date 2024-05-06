@@ -88,6 +88,7 @@ const Info = () => {
     setUserID(localStorage.getItem('user_id'));
     setToken(localStorage.getItem('auth_token'));
     console.log(Date())
+
     fetch(`${apiUrl}/api/user?user_id=${userID}`, {
       method: 'GET',
       headers: {
@@ -103,10 +104,13 @@ const Info = () => {
       })
       .then(data => {
         console.log('User Info:', data.data[0]);
-        setUserData(data.data[0])
+        if (data.data[0]){
+          setUserData(data.data[0]); 
+        }
       })
       .catch(error => {
         console.error('Error fetching user info:', error);
+        setUserData(DefaultUser); 
       });
   }, [apiData]);
 
@@ -115,11 +119,13 @@ const Info = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <Avatar alt={User.name} src={User.profile_pic} style={{ marginRight: '10px' }} />
-            <strong>{User.name}</strong>
+            <Avatar alt={User && User.name} src={User && User.profile_pic} style={{ marginRight: '10px' }} />
+            <div style={{ fontSize: '24px' }}>
+              <strong>{User && User.name}</strong>
+            </div>
           </div>
           <div>
-            <Rating name="read-only" defaultValue={0} value={User.score} size="large" precision={0.5} readOnly/>
+            <Rating name="read-only" defaultValue={0} value={User && User.score} size="large" precision={0.5} readOnly/>
           </div>
         </div>
         <div>
