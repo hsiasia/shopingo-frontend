@@ -30,6 +30,10 @@ const styles = {
 }
 
 const Info = () => {
+  //TOBE DELETE WHEN PUBLISHED
+  localStorage.setItem('user_id', "105302000994518372665");
+  localStorage.setItem('auth_token',  "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFjM2UzZTU1ODExMWM3YzdhNzVjNWI2NTEzNGQyMmY2M2VlMDA2ZDAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDQzNTE0OTgxOTkxLTUwbnJkcTZjc3QzdGVjbzNmdDJtMzZoMDZyOTBxc3E4LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTA0MzUxNDk4MTk5MS01MG5yZHE2Y3N0M3RlY28zZnQybTM2aDA2cjkwcXNxOC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTMwMjAwMDk5NDUxODM3MjY2NSIsImVtYWlsIjoid2VpLmx1bi5icnlhbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmJmIjoxNzE1MDA1NDg4LCJuYW1lIjoiTHVuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0x0aFFBNVdja0FqUHhYZ0RuY2FjekstUWRrSjFQUXdzYlhyZ21iMmZBRDF3SWdoaWN2d2c9czk2LWMiLCJnaXZlbl9uYW1lIjoiTHVuIiwiaWF0IjoxNzE1MDA1Nzg4LCJleHAiOjE3MTUwMDkzODgsImp0aSI6ImM1MTNiNGFiNjM2ZmM1NjBlMWM1ZmNkMDhmNDJlNTAzYzY1MDNmYzIifQ.mr1ZbSYXcid912rBiWTHh_d3VuLNCe6OVZU5Gjk-J1PKlI5oB95Ti_gfDTkEAvcI1eVZfUg4t1EyyYv0RmNefQSZICc-paCfqUsnx1pm_kQuGm38jgMIFZrgyvzM8LxoRoxMCI5xtWcC-TuadNj2isCry27ExpyGWpbN9exzb7EDTg6_d-tkk9ovktHpJ2DmkByjUVtBaQO_mQ2jUHdPoq4EgFnzQFvN_lhN1veLB5Wt60PUGo_pdZMYXIA418SuHSFg2QDBLYFmGq6BYt5Eux0cmY8DKABzJfUAEePkjVUu5pq0VgylZ2GFQDdAPN3WSF6E9LHxo4GNeJ2S9PD0sg");
+
   const currentDate = new Date();
   const [EventPast, setEventPast] = useState([]);
   const [EventFuture, setEventFuture] = useState([]);
@@ -53,7 +57,6 @@ const Info = () => {
   };
 
   const [apiData, setApiData] = useState([]);
-  const [userID, setUserID] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetch(`${apiUrl}/api/event`);
@@ -64,12 +67,47 @@ const Info = () => {
           });
           setApiData(updatedData);}
     fetchData();
-    //setUserID(localStorage.getItem('user_id'));
   }, []);
 
   useEffect(() => {
     filterTime(true); 
     filterTime(false); 
+  }, [apiData]);
+  
+  const DefaultUser = {
+    name: "Anonymous",
+    score: 0,
+    profile_pic:"https://example.com/profile.jpg"
+  };
+  
+  const [userID,setUserID] = useState("");
+  const [token,setToken] = useState("");
+  const [userData, setUserData] = useState(DefaultUser);
+
+  useEffect(() => {
+    setUserID(localStorage.getItem('user_id'));
+    setToken(localStorage.getItem('auth_token'));
+    console.log(Date())
+    fetch(`${apiUrl}/api/user?user_id=${userID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user info');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('User Info:', data.data[0]);
+        setUserData(data.data[0])
+      })
+      .catch(error => {
+        console.error('Error fetching user info:', error);
+      });
   }, [apiData]);
 
   function Personal ({User}) {
@@ -194,19 +232,13 @@ const Info = () => {
         </Accordion>
     );
   };
-  
-  const DefaultUser = {
-    name: "Anonymous",
-    score: 0,
-    profile_pic:"https://example.com/profile.jpg"
-  };
 
   return (
     <>
       <Navbar />
       <div className="container my-3 py-3">
         <h1 className="text-center">User Info</h1>
-        <Personal User={DefaultUser}/>
+        <Personal User={userData}/>
         <hr />
         <Comp_ListBar_MyTicket BarTitle="My Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
