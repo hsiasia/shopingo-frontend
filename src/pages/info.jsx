@@ -1,5 +1,11 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
+import LoginIcon from '@mui/icons-material/Login';
+import Avatar from '@mui/material/Avatar';
+import Rating from '@mui/material/Rating';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Footer,
@@ -24,6 +30,10 @@ const styles = {
 }
 
 const Info = () => {
+  //TOBE DELETE WHEN PUBLISHED
+  localStorage.setItem('user_id', "105302000994518372665");
+  localStorage.setItem('auth_token',  "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFjM2UzZTU1ODExMWM3YzdhNzVjNWI2NTEzNGQyMmY2M2VlMDA2ZDAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDQzNTE0OTgxOTkxLTUwbnJkcTZjc3QzdGVjbzNmdDJtMzZoMDZyOTBxc3E4LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTA0MzUxNDk4MTk5MS01MG5yZHE2Y3N0M3RlY28zZnQybTM2aDA2cjkwcXNxOC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTMwMjAwMDk5NDUxODM3MjY2NSIsImVtYWlsIjoid2VpLmx1bi5icnlhbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmJmIjoxNzE1MDA1NDg4LCJuYW1lIjoiTHVuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0x0aFFBNVdja0FqUHhYZ0RuY2FjekstUWRrSjFQUXdzYlhyZ21iMmZBRDF3SWdoaWN2d2c9czk2LWMiLCJnaXZlbl9uYW1lIjoiTHVuIiwiaWF0IjoxNzE1MDA1Nzg4LCJleHAiOjE3MTUwMDkzODgsImp0aSI6ImM1MTNiNGFiNjM2ZmM1NjBlMWM1ZmNkMDhmNDJlNTAzYzY1MDNmYzIifQ.mr1ZbSYXcid912rBiWTHh_d3VuLNCe6OVZU5Gjk-J1PKlI5oB95Ti_gfDTkEAvcI1eVZfUg4t1EyyYv0RmNefQSZICc-paCfqUsnx1pm_kQuGm38jgMIFZrgyvzM8LxoRoxMCI5xtWcC-TuadNj2isCry27ExpyGWpbN9exzb7EDTg6_d-tkk9ovktHpJ2DmkByjUVtBaQO_mQ2jUHdPoq4EgFnzQFvN_lhN1veLB5Wt60PUGo_pdZMYXIA418SuHSFg2QDBLYFmGq6BYt5Eux0cmY8DKABzJfUAEePkjVUu5pq0VgylZ2GFQDdAPN3WSF6E9LHxo4GNeJ2S9PD0sg");
+
   const currentDate = new Date();
   const [EventPast, setEventPast] = useState([]);
   const [EventFuture, setEventFuture] = useState([]);
@@ -64,6 +74,71 @@ const Info = () => {
     filterTime(false); 
   }, [apiData]);
   
+  const DefaultUser = {
+    name: "Anonymous",
+    score: 0,
+    profile_pic:"https://example.com/profile.jpg"
+  };
+  
+  const [userID,setUserID] = useState("");
+  const [token,setToken] = useState("");
+  const [userData, setUserData] = useState(DefaultUser);
+
+  useEffect(() => {
+    setUserID(localStorage.getItem('user_id'));
+    setToken(localStorage.getItem('auth_token'));
+    console.log(Date())
+
+    fetch(`${apiUrl}/api/user?user_id=${userID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch user info');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('User Info:', data.data[0]);
+        if (data.data[0]){
+          setUserData(data.data[0]); 
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching user info:', error);
+        setUserData(DefaultUser); 
+      });
+  }, [apiData]);
+
+  function Personal ({User}) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+            <Avatar alt={User && User.name} src={User && User.profile_pic} style={{ marginRight: '10px' }} />
+            <div style={{ fontSize: '24px' }}>
+              <strong>{User && User.name}</strong>
+            </div>
+          </div>
+          <div>
+            <Rating name="read-only" defaultValue={0} value={User && User.score} size="large" precision={0.5} readOnly/>
+          </div>
+        </div>
+        <div>
+          <Link to="/Login" style={{ textDecoration: 'none' }}>
+            <Button variant="outlined" color="primary">
+              <LoginIcon />Login
+            </Button>
+          </Link>
+        </div>
+      </div>
+    )
+  };
+
   function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
@@ -93,9 +168,65 @@ const Info = () => {
                         <td style={styles.tableCell}>
                           <Link to={`/ticket/${event.id}`}>
                             <Button variant="contained" href={""}>
-                              View
+                              <VisibilityIcon />
                             </Button>
                           </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+    );
+  };
+
+  function Comp_ListBar_MyTicket (InfoProps) {
+    return (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>{InfoProps.BarTitle}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <div style={{ height: '300px', overflowY: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Event ID</th>
+                      <th style={styles.tableHeader}>Event</th>
+                      <th style={styles.tableHeader}>Date</th>
+                      <th style={styles.tableHeader}>Location</th>
+                      <th style={styles.tableHeader}>View</th>
+                      <th style={styles.tableHeader}>Edit</th>
+                      <th style={styles.tableHeader}>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {InfoProps.Data && InfoProps.Data.map(event => (
+                      <tr key={event.id}>
+                        <td style={styles.tableCell}>{event.id}</td>
+                        <td style={styles.tableCell}>{event.event_name}</td>
+                        <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
+                        <td style={styles.tableCell}>{event.location}</td>
+                        <td style={styles.tableCell}>
+                          <Link to={`/ticket/${event.id}`}>
+                            <Button variant="contained" href={""}>
+                              <VisibilityIcon />
+                            </Button>
+                          </Link>
+                        </td>
+                        <td style={styles.tableCell}>
+                          <Button variant="outlined" href={""} color="success">
+                              <EditIcon />
+                          </Button>
+                        </td>
+                        <td style={styles.tableCell}>
+                          <Button variant="outlined" href={""} color="error">
+                              <DeleteIcon />
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -112,9 +243,10 @@ const Info = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Personal Info</h1>
+        <h1 className="text-center">User Info</h1>
+        <Personal User={userData}/>
         <hr />
-        <Comp_ListBar BarTitle="My Events" Data={apiData}/>
+        <Comp_ListBar_MyTicket BarTitle="My Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Incoming Events" Data={EventFuture}/>
         <Comp_ListBar BarTitle="Finished Events" Data={EventPast}/>
