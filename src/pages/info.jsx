@@ -191,6 +191,9 @@ const Info = () => {
   function Comp_ListBar_MyTicket (InfoProps) {
     const [MyTicket, setMyTicket] = useState(InfoProps.Data.filter((item) => item.user_id === userID));
     const [openDialog, setOpenDialog] = useState({});
+    const toEditTicketPage = (id) => {
+      window.location.href = `/editticket/${id}`;
+    }
     const handleClickOpen = (id) => {
       setOpenDialog({ ...openDialog, [id]: true });
     };
@@ -253,7 +256,7 @@ const Info = () => {
                           </Link>
                         </td>
                         <td style={styles.tableCell}>
-                          <Button variant="outlined" href={""} color="success">
+                          <Button variant="outlined" href={""} color="success" onClick={() => toEditTicketPage(event.id)}>
                               <EditIcon />
                           </Button>
                         </td>

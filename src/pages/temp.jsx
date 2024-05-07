@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Footer, Navbar } from "../components";
-import { useParams, useNavigate } from "react-router-dom";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,21 +16,41 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import dayjs from "dayjs";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const EditTicket = () => {
+const mockData = {
+    eventName: "ColdStone Gogo",
+    date: "2024-12-12",
+    time: "12:00 PM",
+    brandName: "ColdStone",
+    location: "Taipei City",
+    peopleNumNeeded: 2,
+    price: 180,
+    photo: "https://source.unsplash.com/random",
+    hashtag1: "Coffee",
+    hashtag2: "BOGO",
+    description: "Come and get your ice cream!"
+    };
 
-    // get the ticket
+const EditTicket = () => {
     const { id } = useParams();
-    const [ticket, setTicket] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const [eventName, setEventName] = useState(mockData.eventName);
+    const [date, setDate] = useState(dayjs(mockData.date));
+    const [time, setTime] = useState(dayjs(mockData.time, "HH:mm A"));
+    const [brandName, setBrandName] = useState(mockData.brandName);
+    const [location, setLocation] = useState(mockData.location);
+    const [peopleNumNeeded, setPeopleNumNeeded] = React.useState(mockData.peopleNumNeeded);
+    const [price, setPrice] = React.useState(mockData.price);
+    const [photo, setPhoto] = React.useState(mockData.photo);
+    const [hashtag1, setHashtag1] = React.useState(mockData.hashtag1);
+    const [hashtag2, setHashtag2] = React.useState(mockData.hashtag2);
+    const [description, setDescription] = React.useState(mockData.description);
+    const peopleOptions = [1, 2, 3];
+    const hashtagOptions1 = ["Coffee", "Tea", "Pizza", "Burger", "Sushi"];
+    const hashtagOptions2 = ["BOGO", "Discount", "Free", "Coupon", "Sale"];
+    
+    // get ticket data
     useEffect(() => {
       const getTicket = async () => {
         setLoading(true);
@@ -39,192 +58,70 @@ const EditTicket = () => {
         const response = await fetch(`${apiUrl}/api/event/?event_id=${id}`);
         const data = await response.json();
         setTicket(data.data[0]);
-        console.log(data.data[0]);        
+        console.log(data.data[0]);
         setLoading(false);
       };
       getTicket();
     }, [id]);
-
-    useEffect(() => {
-      if (ticket) {
-        setEventName(ticket.hashtag);
-        setSelectedDate(dayjs(ticket.event_date));
-        setSelectedTime(dayjs(ticket.event_date));
-        setCompanyName(ticket.company_name);
-        setLocation(ticket.location);
-        setPeopleNumNeeded(ticket.scale);
-        setAmount(ticket.budget);
-        setHashtag1(ticket.hashtag);
-        setHashtag2(ticket.hashtag);
-        setDetail(ticket.detail);
-        console.log(typeof(ticket.hashtag));
-      }
-    }, [ticket]);
-
-    const [eventName, setEventName] = React.useState(ticket.event_name);
-    const [companyName, setCompanyName] = React.useState(ticket.company_name);
-    const [location, setLocation] = React.useState(ticket.location);
-    const [peopleNumNeeded, setPeopleNumNeeded] = React.useState(ticket.scale);
-    const [hashtag1, setHashtag1] = React.useState(ticket.hashtag);
-    const [hashtag2, setHashtag2] = React.useState(ticket.hashtag);
-
-    // handle date
-    const [selectedDate, setSelectedDate] = React.useState(null);
-    const [selectedTime, setSelectedTime] = React.useState(null);
-    const [signedUrl, setSignedUrl] = React.useState("");
-    const [selectedfile, setFile] = React.useState("");
-
-    const [amount, setAmount] = React.useState(ticket.budget);
-    const [detail, setDetail] = React.useState(ticket.detail);
+    const formData = {
+      creator: "1",
+      event_name: eventName,
+      company_name: companyName,
+      hashtag: [hashtag1, hashtag2],
+      location: location,
+      event_date: combinedDateTime,
+      scale: peopleNumNeeded,
+      budget: amount,
+      detail: detail,
+      create_datetime: currentDateTime,
+      update_datetime: currentDateTime,
+      delete_datetime: null,
+      score: 0,
+    };
 
     const handleChangeEventName = (event) => {
-      setEventName(event.target.value);
+        setEventName(event.target.value);
+        };
+    const handleChangeDate = (newDate) => {
+        setDate(newDate);
+        };
+    const handleChangeTime = (newTime) => {
+        setTime(newTime);
+        };
+    const handleChangeBrandName = (event) => {
+        setBrandName(event.target.value);
     };
-  
-    const handleChangeCompanyName = (event) => {
-      setCompanyName(event.target.value);
-    };
-
     const handleChangeLocation = (event) => {
-      setLocation(event.target.value);
+        setLocation(event.target.value);
     };
-
-    const handleDateChange = (date) => {
-      setSelectedDate(date);
-    };
-  
-    const handleTimeChange = (time) => {
-      setSelectedTime(time);
-    };
-  
-    const handleChangeAmount = (event) => {
-      setAmount(event.target.value);
-    };
-    const handleChangeDetail = (event) => {
-      setDetail(event.target.value);
-    };
-
-    const handleFileChange = (event) => {
-      setFile(event.target.files[0]);
-      const fileName = event.target.files[0].name;
-      const photoformData = { blob_names: [fileName]};
-  
-      fetch(`${apiUrl}/api/google/image`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(photoformData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.data[0][1]);
-          setSignedUrl(data.data[0][0]);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    };
-
     const handleChangePeopleNum = (event) => {
-      setPeopleNumNeeded(event.target.value);
+        setPeopleNumNeeded(event.target.value);
     };
-
-    const handleChangeHashtag1 = (event) => {
-      setHashtag1(event.target.value);
+    const handleChangePrice = (event) => {
+        setPrice(event.target.value);
     };
-    const handleChangeHashtag2 = (event) => {
-      setHashtag2(event.target.value);
-    };
-
-    const postFormData = (url, formData) => {
-      return fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => response.json())
-        .catch((error) => {
-          console.error("Error:", error);
-          throw error; // 可以根據需要決定是否重新拋出錯誤
-        });
-    };
-
-    const uploadImage = async (signedUrl, file) => {
-      try {
-        await fetch(signedUrl, {
-          method: "PUT",
-          headers: {
-            "Content-Type": file.type,
-          },
-          body: file,
-        });
-        console.log("圖片上傳成功");
-      } catch (error) {
-        console.error("上傳圖片時發生錯誤:", error);
-      }
-    };
-
-    const handleSave = (event) => {
-      console.log(event);
-      event.preventDefault();
-  
-      // 獲取當前時間
-      const currentDateTime = new Date().toISOString();
-  
-      // 獲取使用者輸入時間
-      const datePart = dayjs(selectedDate).format("YYYY-MM-DD");
-      const timePart = dayjs(selectedTime).format("HH:mm:ss.SSS");
-      const combinedDateTime = `${datePart}T${timePart}Z`;
-      console.log(location);
-  
-      const formData = {
-        creator: id,
-        event_name: eventName,
-        company_name: companyName,
-        hashtag: [hashtag1, hashtag2],
-        location: location,
-        event_date: combinedDateTime,
-        scale: peopleNumNeeded,
-        budget: amount,
-        detail: detail,
-        create_datetime: currentDateTime,
-        update_datetime: currentDateTime,
-        delete_datetime: null,
-        score: ticket.score,
-      };
-  
-      // 送出表單資料
-      postFormData(`${apiUrl}/api/event/`, formData).then((data) => {
-        console.log(data);
-      });
-  
-      // 上傳圖片到雲端
-      uploadImage(signedUrl, selectedfile);
-  
-      setOpen(false);
-      navigate(`/ticket/${id}`);
-    };
-
-    const peopleOptions = [1, 2, 3];
-    const hashtagOptions1 = ["coffee", "Tea", "Pizza", "Burger", "Sushi"];
-    const hashtagOptions2 = ["BOGOF", "Discount", "Free", "Coupon", "Sale"];
+    const handleChangePhoto = (event) => {
+        const file = event.target.files[0]; // Get the selected file
+        const reader = new FileReader(); // Create a new file reader
+        reader.onloadend = () => {
+          // Set the photo state with the data URL of the selected file
+          setPhoto(reader.result);
+        };
     
-    const [open, setOpen] = React.useState(false);
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
-
-    const backToTicket = () => {
-      navigate("/info");
-    };
-
+        if (file) {
+          // Read the selected file as a data URL
+          reader.readAsDataURL(file);
+        }
+      };
+    const handleChangeHashtag1 = (event) => {
+        setHashtag1(event.target.value);
+    }
+    const handleChangeHashtag2 = (event) => {
+        setHashtag2(event.target.value);
+    }
+    const handleChangeDescription = (event) => {
+        setDescription(event.target.value);
+    }
 
   // 在 profile那邊的 my ticket 點擊 edit 後，會跳轉到這個頁面
   return (
@@ -251,15 +148,15 @@ const EditTicket = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                   <DatePicker
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    value={date}
+                    onChange={handleChangeDate}
                     renderInput={(params) => <input {...params.inputProps} />}
                     />
                   </DemoContainer>
                   <DemoContainer components={['TimePicker']}>
                     <TimePicker 
-                    value={selectedTime}
-                    onChange={handleTimeChange}
+                    value={time}
+                    onChange={handleChangeTime}
                     renderInput={(params) => <input {...params.inputProps} />}
                     />
                   </DemoContainer>
@@ -271,8 +168,8 @@ const EditTicket = () => {
                   type="email"
                   class="form-control"
                   id="Name"
-                  value={companyName}
-                  onChange={handleChangeCompanyName}
+                  value={brandName}
+                  onChange={handleChangeBrandName}
                 />
               </div>
               <div class="form my-3">
@@ -309,16 +206,15 @@ const EditTicket = () => {
                     <OutlinedInput
                       id="outlined-adornment-amount"
                       startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                      value={amount}
-                      onChange={handleChangeAmount}
+                      value={price}
+                      onChange={handleChangePrice}
                     />
                   </FormControl>
               </div>
               <div class="form my-3">
                 <label for="Name">Photo</label>
                 <br/>
-                {/* <img src={file} alt="photo" width="300" height="300" /> */}
-                <img src={`${process.env.PUBLIC_URL}/assets/${id}.jpg`} height="300px"/>
+                <img src={photo} alt="photo" width="300" height="300" />
                 <br/>
                 <br/>
                 <Button
@@ -333,12 +229,12 @@ const EditTicket = () => {
                         type="file"
                         accept="image/*"
                         style={{ display: 'none' }}
-                        onChange={handleFileChange}
+                        onChange={handleChangePhoto}
                         /><input
                         type="file"
                         accept="image/*"
                         style={{ display: 'none' }}
-                        onChange={handleFileChange}
+                        onChange={handleChangePhoto}
                     />
                 </Button>
               </div>
@@ -376,8 +272,8 @@ const EditTicket = () => {
                 <FormControl fullWidth sx={{ m: 1 }} variant="standard">
                 <TextField
                   id="outlined-multiline-static"
-                  value={detail}
-                  onChange={handleChangeDetail}
+                  value={description}
+                  onChange={handleChangeDescription}
                   multiline
                   rows={4}
                 />
@@ -385,22 +281,10 @@ const EditTicket = () => {
               </div>
               <div className="text-center">
                 <Stack direction="row" spacing={2}>
-                    <Button variant="contained" onClick={handleClickOpen}>
+                    <Button variant="contained">
                         Save
                     </Button>
-                    <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>Save</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Are you sure you want to save the changes?
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button onClick={handleSave}>Save</Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Button variant="outlined" onClick={backToTicket}>
+                    <Button variant="outlined">
                         Cancel
                     </Button>
                 </Stack>
