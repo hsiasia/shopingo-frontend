@@ -39,34 +39,42 @@ const EditTicket = () => {
         const response = await fetch(`${apiUrl}/api/event/?event_id=${id}`);
         const data = await response.json();
         setTicket(data.data[0]);
-        console.log(data.data[0]);        
+        setHashtag1(data.data[0].hashtag[0]);
+        setHashtag2(data.data[0].hashtag[1]);
+        // setPeopleNumNeeded(data.data[0].scale.toString());
+        setPeopleNumNeeded(data.data[0].scale);
+        console.log(data.data[0].scale);
         setLoading(false);
       };
       getTicket();
     }, [id]);
 
     useEffect(() => {
-      if (ticket) {
-        setEventName(ticket.hashtag);
+      if (ticket && ticket.hashtag) {
+        setEventName(ticket.event_name);
         setSelectedDate(dayjs(ticket.event_date));
         setSelectedTime(dayjs(ticket.event_date));
         setCompanyName(ticket.company_name);
         setLocation(ticket.location);
-        setPeopleNumNeeded(ticket.scale);
+        // setPeopleNumNeeded(ticket.scale);
         setAmount(ticket.budget);
-        setHashtag1(ticket.hashtag);
-        setHashtag2(ticket.hashtag);
+        setHashtag(ticket.hashtag);
+        // setHashtag1(ticket.hashtag);
+        // setHashtag2(ticket.hashtag);
         setDetail(ticket.detail);
-        console.log(typeof(ticket.hashtag));
+        // alert(ticket.hashtag);
       }
     }, [ticket]);
 
+    const [hashtag, setHashtag] = React.useState(ticket.hashtag);
     const [eventName, setEventName] = React.useState(ticket.event_name);
     const [companyName, setCompanyName] = React.useState(ticket.company_name);
     const [location, setLocation] = React.useState(ticket.location);
-    const [peopleNumNeeded, setPeopleNumNeeded] = React.useState(ticket.scale);
-    const [hashtag1, setHashtag1] = React.useState(ticket.hashtag);
-    const [hashtag2, setHashtag2] = React.useState(ticket.hashtag);
+    const [peopleNumNeeded, setPeopleNumNeeded] = React.useState("");
+    
+    const [hashtag1, setHashtag1] = React.useState("");
+    const [hashtag2, setHashtag2] = React.useState("");
+    
 
     // handle date
     const [selectedDate, setSelectedDate] = React.useState(null);
@@ -155,7 +163,7 @@ const EditTicket = () => {
     const uploadImage = async (signedUrl, file) => {
       try {
         await fetch(signedUrl, {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": file.type,
           },
@@ -197,7 +205,7 @@ const EditTicket = () => {
       };
   
       // 送出表單資料
-      postFormData(`${apiUrl}/api/event/`, formData).then((data) => {
+      postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
         console.log(data);
       });
   
@@ -304,7 +312,7 @@ const EditTicket = () => {
                   </Box>
               </div>
               <div class="form my-3">
-                  <label for="Name">People Number Needed</label>
+                  <label for="Name">Budget</label>
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <OutlinedInput
                       id="outlined-adornment-amount"
