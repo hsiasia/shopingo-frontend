@@ -24,6 +24,8 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
 
 const apiKey = process.env.REACT_APP_API_KEY;
+const userLatitude = localStorage.getItem('latitude');
+const userLongitude = localStorage.getItem('longitude');
 
 const NewTicket = () => {
   const [map, setMap] = useState(null);
@@ -48,8 +50,8 @@ const NewTicket = () => {
 
   const initMap = () => {
     const mapInstance = new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 25.0170, lng: 121.5397 },
-      zoom: 13,
+      center: { lat: parseFloat(userLatitude), lng: parseFloat(userLongitude)} || { lat: 25.0170, lng: 121.5397 },
+      zoom: 15,
       mapTypeControl: false,
     });
     setMap(mapInstance);
@@ -89,6 +91,7 @@ const NewTicket = () => {
       }
 
       markerInstance.setPosition(place.geometry.location);
+      // 之後要回傳地址選這邊
       console.log(place.geometry.location.lat());
       console.log(place.geometry.location.lng());
       markerInstance.setVisible(true);
@@ -201,7 +204,6 @@ const NewTicket = () => {
   };
 
   const handleSubmit = (event) => {
-    console.log(event);
     event.preventDefault();
 
     // 獲取當前時間
@@ -211,7 +213,6 @@ const NewTicket = () => {
     const datePart = dayjs(selectedDate).format("YYYY-MM-DD");
     const timePart = dayjs(selectedTime).format("HH:mm:ss.SSS");
     const combinedDateTime = `${datePart}T${timePart}Z`;
-    console.log(location);
 
     const formData = {
       creator: "1",

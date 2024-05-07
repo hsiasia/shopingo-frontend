@@ -20,6 +20,18 @@ const HomeShowAllTicket = () => {
   let componentMounted = true;
 
   useEffect(() => {
+    // 取得使用者位置
+    const getLocation = () => {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        // 將位置資訊存儲到 localStorage 中
+        localStorage.setItem('latitude', latitude);
+        localStorage.setItem('longitude', longitude);
+      });
+    };
+    getLocation();
+
     const getTickets = async () => {
       setLoading(true);
       
