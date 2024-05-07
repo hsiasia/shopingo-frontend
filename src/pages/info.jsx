@@ -12,6 +12,11 @@ import {
   Navbar,
 } from "../components"; //baisc website components
 import { Link } from 'react-router-dom';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -184,6 +189,38 @@ const Info = () => {
   };
 
   function Comp_ListBar_MyTicket (InfoProps) {
+    const [MyTicket, setMyTicket] = useState(InfoProps.Data.filter((item) => item.user_id === userID));
+    const [openDialog, setOpenDialog] = useState({});
+    const toEditTicketPage = (id) => {
+      window.location.href = `/editticket/${id}`;
+    }
+    const handleClickOpen = (id) => {
+      setOpenDialog({ ...openDialog, [id]: true });
+    };
+    const handleClose = (id) => {
+      setOpenDialog({ ...openDialog, [id]: false });
+    };
+    const handleDelete = (id) => {
+      fetch(`${apiUrl}/api/event/?event_id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete event');
+          }
+          console.log('Event deleted successfully');
+          setMyTicket(MyTicket.filter((item) => item.id !== id));
+          handleClose(id);
+        })
+        .catch(error => {
+          console.error('Error deleting event:', error);
+        });
+    }
+
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -219,14 +256,26 @@ const Info = () => {
                           </Link>
                         </td>
                         <td style={styles.tableCell}>
-                          <Button variant="outlined" href={""} color="success">
+                          <Button variant="outlined" href={""} color="success" onClick={() => toEditTicketPage(event.id)}>
                               <EditIcon />
                           </Button>
                         </td>
                         <td style={styles.tableCell}>
-                          <Button variant="outlined" href={""} color="error">
+                          <Button variant="outlined" href={""} color="error" onClick={() => handleClickOpen(event.id)}>
                               <DeleteIcon />
                           </Button>
+                          <Dialog open={openDialog[event.id] || false} onClose={() => handleClose(event.id)}>
+                            <DialogTitle>Delete Event</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Are you sure to delete this event?
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button onClick={() => handleClose(event.id)}>Cancel</Button>
+                              <Button onClick={() => handleDelete(event.id)}>Delete</Button>
+                            </DialogActions>
+                          </Dialog>
                         </td>
                       </tr>
                     ))}

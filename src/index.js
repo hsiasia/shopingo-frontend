@@ -31,7 +31,7 @@ root.render(
         <Route path="/ticket" element={<Tickets />} />
         <Route path="/ticket/:id" element={<Ticket />} />
         <Route path="/newticket" element={<NewTicket />} />
-        <Route path="/editticket" element={<EditTicket />} />
+        <Route path="/editticket/:id" element={<EditTicket />} />
         <Route path="/jointicket" element={<JoinTicket />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/bookmark" element={<Bookmark />} />
