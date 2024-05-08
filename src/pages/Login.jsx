@@ -69,7 +69,6 @@ const Login = () => {
               <i className="fa fa-arrow-left"></i> Home Page
         </Link>
         </div>
-        
         <br />
         <br />
       </div>
