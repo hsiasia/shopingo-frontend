@@ -39,28 +39,7 @@ const Info = () => {
   localStorage.setItem('user_id', "105302000994518372665");
   localStorage.setItem('auth_token',  "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFjM2UzZTU1ODExMWM3YzdhNzVjNWI2NTEzNGQyMmY2M2VlMDA2ZDAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDQzNTE0OTgxOTkxLTUwbnJkcTZjc3QzdGVjbzNmdDJtMzZoMDZyOTBxc3E4LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTA0MzUxNDk4MTk5MS01MG5yZHE2Y3N0M3RlY28zZnQybTM2aDA2cjkwcXNxOC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTMwMjAwMDk5NDUxODM3MjY2NSIsImVtYWlsIjoid2VpLmx1bi5icnlhbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmJmIjoxNzE1MDA1NDg4LCJuYW1lIjoiTHVuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0x0aFFBNVdja0FqUHhYZ0RuY2FjekstUWRrSjFQUXdzYlhyZ21iMmZBRDF3SWdoaWN2d2c9czk2LWMiLCJnaXZlbl9uYW1lIjoiTHVuIiwiaWF0IjoxNzE1MDA1Nzg4LCJleHAiOjE3MTUwMDkzODgsImp0aSI6ImM1MTNiNGFiNjM2ZmM1NjBlMWM1ZmNkMDhmNDJlNTAzYzY1MDNmYzIifQ.mr1ZbSYXcid912rBiWTHh_d3VuLNCe6OVZU5Gjk-J1PKlI5oB95Ti_gfDTkEAvcI1eVZfUg4t1EyyYv0RmNefQSZICc-paCfqUsnx1pm_kQuGm38jgMIFZrgyvzM8LxoRoxMCI5xtWcC-TuadNj2isCry27ExpyGWpbN9exzb7EDTg6_d-tkk9ovktHpJ2DmkByjUVtBaQO_mQ2jUHdPoq4EgFnzQFvN_lhN1veLB5Wt60PUGo_pdZMYXIA418SuHSFg2QDBLYFmGq6BYt5Eux0cmY8DKABzJfUAEePkjVUu5pq0VgylZ2GFQDdAPN3WSF6E9LHxo4GNeJ2S9PD0sg");
 
-  const currentDate = new Date();
-  const [EventPast, setEventPast] = useState([]);
-  const [EventFuture, setEventFuture] = useState([]);
-  const filterTime = (Future) => {
-    if (apiData.length > 0) {
-      if(Future){
-        const updatedList = apiData.filter((item) => {
-        const target = item.event_date > currentDate;
-        return (target);
-        });
-        setEventFuture(updatedList);
-      }
-      else{
-        const updatedList = apiData.filter((item) => {
-          const target = item.event_date <= currentDate;
-          return (target);
-        });
-        setEventPast(updatedList);
-      }
-    }
-  };
-
+  //Upadtaing Newest Event Data
   const [apiData, setApiData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -73,18 +52,14 @@ const Info = () => {
           setApiData(updatedData);}
     fetchData();
   }, []);
-
-  useEffect(() => {
-    filterTime(true); 
-    filterTime(false); 
-  }, [apiData]);
   
+  //Personal Info Bar Related
   const DefaultUser = {
     name: "Anonymous",
     score: 0,
     profile_pic:"https://example.com/profile.jpg"
   };
-  
+
   const [userID,setUserID] = useState("");
   const [token,setToken] = useState("");
   const [userData, setUserData] = useState(DefaultUser);
@@ -119,31 +94,39 @@ const Info = () => {
       });
   }, [apiData]);
 
-  const [specData,setSpecData] = useState([]);
+  //Calling UserEvent API
+  const [myEvent,setMyEvent] = useState([]);
+  const [pastEvent,setPastEvent] = useState([]);
+  const [futureEvent,setFutureEvent] = useState([]);
   useEffect(() => {
     //setUserID(localStorage.getItem('user_id'));
     //setToken(localStorage.getItem('auth_token'));
-
-    fetch(`${apiUrl}/api/userEvent?user_id=${userID}&status=all`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch user info');
-        }
-        return response.json();
+    function fetchData(Catagory, Setting)  {
+      fetch(`${apiUrl}/api/userEvent?user_id=${userID}&status=${Catagory}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
       })
-      .then(data => {
-        console.log('User Event Info:', data.data[0]);
-      })
-      .catch(error => {
-        console.error('Error fetching user info:', error);
-      });
-  }, []);
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user info');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(`${Catagory}:`, data.data);
+          Setting(data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user info:', error);
+        });
+      };
+      fetchData("creator", setMyEvent);
+      fetchData("expired", setPastEvent);
+      fetchData("ongoing", setFutureEvent);
+  }, [apiData]);
 
   function Personal ({User}) {
     return (
@@ -215,7 +198,7 @@ const Info = () => {
   };
 
   function Comp_ListBar_MyTicket (InfoProps) {
-    const [MyTicket, setMyTicket] = useState(InfoProps.Data.filter((item) => item.user_id === userID));
+    const [MyTicket, setMyTicket] = useState(InfoProps.Data);
     const [openDialog, setOpenDialog] = useState({});
     const toEditTicketPage = (id) => {
       window.location.href = `/editticket/${id}`;
@@ -321,10 +304,10 @@ const Info = () => {
         <h1 className="text-center">User Info</h1>
         <Personal User={userData}/>
         <hr />
-        <Comp_ListBar_MyTicket BarTitle="My Events" Data={apiData}/>
+        <Comp_ListBar_MyTicket BarTitle="My Events" Data={myEvent}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
-        <Comp_ListBar BarTitle="Incoming Events" Data={EventFuture}/>
-        <Comp_ListBar BarTitle="Finished Events" Data={EventPast}/>
+        <Comp_ListBar BarTitle="Incoming Events" Data={futureEvent}/>
+        <Comp_ListBar BarTitle="Finished Events" Data={pastEvent}/>
         <hr />
       </div>
       <Footer />
