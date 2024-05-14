@@ -35,6 +35,8 @@ const NewTicket = () => {
   const [inputValue, setInputValue] = useState("");
   const [bias, setBias] = useState(true);
   const [strictBounds, setStrictBounds] = useState(false);
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -91,9 +93,10 @@ const NewTicket = () => {
       }
 
       markerInstance.setPosition(place.geometry.location);
-      // 之後要回傳地址選這邊
-      console.log(place.geometry.location.lat());
-      console.log(place.geometry.location.lng());
+      // 回傳地址
+      setLatitude(place.geometry.location.lat());
+      setLongitude(place.geometry.location.lng());
+
       markerInstance.setVisible(true);
       infowindowInstance.open(mapInstance, markerInstance);
 
@@ -181,11 +184,44 @@ const NewTicket = () => {
       },
       body: JSON.stringify(formData),
     })
-      .then((response) => response.json())
-      .catch((error) => {
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const locationData = {
+        event_id: data["data"].id,
+        coords: {
+          "latitude":latitude, 
+          "longitude":longitude
+        }
+      };
+      saveLocation(`${apiUrl}/api/map/SaveEventLocation`, locationData);
+    })
+    .catch((error) => {
         console.error("Error:", error);
         throw error; // 可以根據需要決定是否重新拋出錯誤
-      });
+    });
+  };
+
+  const saveLocation = (url, formData) => {
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    .then((response) => {
+      //console.log('Response:', response);
+      return response.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        throw error; // 可以根據需要決定是否重新拋出錯誤
+    });
   };
 
   const uploadImage = async (signedUrl, file) => {
@@ -231,9 +267,7 @@ const NewTicket = () => {
     };
 
     // 送出表單資料
-    postFormData(`${apiUrl}/api/event/`, formData).then((data) => {
-      console.log(data);
-    });
+    postFormData(`${apiUrl}/api/event/`, formData);
 
     // 上傳圖片到雲端
     uploadImage(signedUrl, selectedfile);
