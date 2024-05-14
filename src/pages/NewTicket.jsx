@@ -123,6 +123,8 @@ const NewTicket = () => {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedTime, setSelectedTime] = React.useState(null);
   const [signedUrl, setSignedUrl] = React.useState("");
+  const [imageUrl, setImageUrl] = React.useState("");
+
   const [selectedfile, setFile] = React.useState("");
 
   const [amount, setAmount] = React.useState("");
@@ -168,8 +170,8 @@ const NewTicket = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.data[0][1]);
         setSignedUrl(data.data[0][0]);
+        setImageUrl(data.data[0][1]);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -196,10 +198,18 @@ const NewTicket = () => {
         }
       };
       saveLocation(`${apiUrl}/api/map/SaveEventLocation`, locationData);
+
+      const imageData = {
+        event_id: data["data"].id,
+        old_urls: [],
+        new_urls: [imageUrl]
+      };
+  
+      saveImageToDatabase(`${apiUrl}/api/event/images`, imageData);
     })
     .catch((error) => {
         console.error("Error:", error);
-        throw error; // 可以根據需要決定是否重新拋出錯誤
+        throw error;
     });
   };
 
@@ -212,7 +222,6 @@ const NewTicket = () => {
       body: JSON.stringify(formData),
     })
     .then((response) => {
-      //console.log('Response:', response);
       return response.json();
     })
     .then((data) => {
@@ -221,6 +230,26 @@ const NewTicket = () => {
     .catch((error) => {
         console.error("Error:", error);
         throw error; // 可以根據需要決定是否重新拋出錯誤
+    });
+  };
+
+  const saveImageToDatabase = (url, formData) => {
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        throw error;
     });
   };
 
@@ -266,11 +295,11 @@ const NewTicket = () => {
       score: 0,
     };
 
+    // 上傳圖片到雲端換取網址
+    uploadImage(signedUrl, selectedfile);
+
     // 送出表單資料
     postFormData(`${apiUrl}/api/event/`, formData);
-
-    // 上傳圖片到雲端
-    uploadImage(signedUrl, selectedfile);
 
     setOpen(false);
     navigate("/");
