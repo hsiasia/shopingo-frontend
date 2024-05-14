@@ -23,6 +23,8 @@ const Navbar = () => {
         setOpen(false);
         setIsLoggedIn(false); // 設置登入狀態為false
         localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("auth_token");
     };
     
     
