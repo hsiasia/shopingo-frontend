@@ -98,7 +98,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   return (
     <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
       <Card sx={{margin: '8px', width: '800px'}}>
@@ -171,7 +171,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-                <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
+                <img src={ticket.images} height="300px"/>
               </Grid>
               {/* map 問題待確認 */}
               {/* <Grid item xs={12}>
