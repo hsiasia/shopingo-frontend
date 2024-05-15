@@ -70,7 +70,25 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const dispatch = useDispatch();
   const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
+    fetch(`${apiUrl}/api/saveEvent/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: ticket.id,
+        user: localStorage.getItem("user_id"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
+
   const addjointicket = (ticket) => {
     dispatch(addJoinTicket(ticket));
     // input: event_id, user_id
