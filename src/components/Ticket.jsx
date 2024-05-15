@@ -25,6 +25,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const labelStyle = {
   backgroundColor: '#9EC5FF',
   color: 'white',
@@ -68,9 +70,45 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const dispatch = useDispatch();
   const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
+    fetch(`${apiUrl}/api/saveEvent/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: ticket.id,
+        user: localStorage.getItem("user_id"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
+
   const addjointicket = (ticket) => {
-    dispatch(addJoinTicket(ticket))
+    dispatch(addJoinTicket(ticket));
+    // input: event_id, user_id
+    fetch(`${apiUrl}/api/eventInfo/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: ticket.id,
+        user: localStorage.getItem("user_id"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     setOpen(false);
   }
 
@@ -98,7 +136,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   return (
     <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
       <Card sx={{margin: '8px', width: '800px'}}>
@@ -171,7 +209,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-                <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
+                <img src={ticket.images} height="300px"/>
               </Grid>
               {/* map 問題待確認 */}
               {/* <Grid item xs={12}>
