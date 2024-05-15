@@ -25,6 +25,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const labelStyle = {
   backgroundColor: '#9EC5FF',
   color: 'white',
@@ -70,7 +72,25 @@ const Ticket = ({ticket, defaultExpanded}) => {
     dispatch(addBookmark(ticket))
   }
   const addjointicket = (ticket) => {
-    dispatch(addJoinTicket(ticket))
+    dispatch(addJoinTicket(ticket));
+    // input: event_id, user_id
+    fetch(`${apiUrl}/api/eventInfo/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: ticket.id,
+        user: localStorage.getItem("user_id"),
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     setOpen(false);
   }
 
