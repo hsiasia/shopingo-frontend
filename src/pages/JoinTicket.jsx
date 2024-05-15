@@ -1,58 +1,95 @@
-import React from "react";
-import { Footer, Navbar, Ticket } from "../components";
-import { useSelector, useDispatch } from "react-redux";
-import { addJoinTicket, delJoinTicket } from "../redux/action";
+import React, {useEffect, useState} from "react";
+import { Footer, Navbar} from "../components";
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
 import { Link } from "react-router-dom";
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+const apiUrl = process.env.REACT_APP_API_URL;
+
+const styles = {
+  tableHeader: {
+    border: '1px solid #dddddd',
+    padding: '8px',
+    textAlign: 'left',
+    backgroundColor: '#f2f2f2',
+    position: 'sticky',
+    top: 0, 
+    zIndex: 1,
+  },
+  tableCell: {
+    border: '1px solid #dddddd',
+    padding: '8px',
+    textAlign: 'left',
+  },
+}
 
 const JoinTicket = () => {
-  const state = useSelector((state) => state.handleJoinTicket);
-  const dispatch = useDispatch();
 
-  const EmptyJoinTicket = () => {
+  //Calling UserEvent API
+  const [futureEvent,setFutureEvent] = useState([]);
+  useEffect(() => {
+    //setUserID(localStorage.getItem('user_id'));
+    //setToken(localStorage.getItem('auth_token'));
+    function fetchData(Catagory, Setting)  {
+      fetch(`${apiUrl}/api/userEvent?user_id=${localStorage.getItem('user_id')}&status=${Catagory}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user info');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(`${Catagory}:`, data.data);
+          Setting(data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user info:', error);
+        });
+      };
+      fetchData("ongoing", setFutureEvent);
+  }, []);
+
+  function Comp_ListBar (InfoProps) {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 py-5 bg-light text-center">
-            <h4 className="p-3 display-5">Your JoinTicket is Empty</h4>
-            <Link to="/" className="btn  btn-outline-dark mx-4">
-              <i className="fa fa-arrow-left"></i> Continue Browsing
-            </Link>
-          </div>
+      <div>
+        <div style={{ height: '300px', overflowY: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={styles.tableHeader}>Event ID</th>
+                <th style={styles.tableHeader}>Event</th>
+                <th style={styles.tableHeader}>Date</th>
+                <th style={styles.tableHeader}>Location</th>
+                <th style={styles.tableHeader}>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {InfoProps.Data && InfoProps.Data.map(event => (
+                <tr key={event.id}>
+                  <td style={styles.tableCell}>{event.id}</td>
+                  <td style={styles.tableCell}>{event.event_name}</td>
+                  <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
+                  <td style={styles.tableCell}>{event.location}</td>
+                  <td style={styles.tableCell}>
+                    <Link to={`/ticket/${event.id}`}>
+                      <Button variant="contained" href={""}>
+                        <VisibilityIcon />
+                      </Button>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    );
-  };
-
-  const removeItem = (ticket) => {
-    dispatch(delJoinTicket(ticket));
-  };
-
-  const ShowJoinTicket = () => {
-    return (
-      <>
-        {state.map((item) => {
-          return (
-            <>
-              <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
-                <Grid item xs={12}>
-                  <Ticket ticket={item} />
-                </Grid>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    removeItem(item);
-                  }}
-                  sx={{bgcolor: '#9EC5FF'}}
-                >
-                  cancel {item.event_name} JoinTicket
-                </Button>
-              </Grid>
-            </>
-          )
-        })}
-      </>
     );
   };
 
@@ -60,9 +97,10 @@ const JoinTicket = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">JoinTicket</h1>
+        <h1 className="text-center">My Incoming Events</h1>
         <hr />
-        {state.length > 0 ? <ShowJoinTicket /> : <EmptyJoinTicket />}
+        <Comp_ListBar Data={futureEvent}/>
+        <hr />
       </div>
       <Footer />
     </>

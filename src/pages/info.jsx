@@ -26,6 +26,9 @@ const styles = {
     padding: '8px',
     textAlign: 'left',
     backgroundColor: '#f2f2f2',
+    position: 'sticky',
+    top: 0, 
+    zIndex: 1,
   },
   tableCell: {
     border: '1px solid #dddddd',
@@ -156,7 +159,7 @@ const Info = () => {
   function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
             <Typography>{InfoProps.BarTitle}</Typography>
           </AccordionSummary>
           <AccordionDetails>
