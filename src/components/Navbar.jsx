@@ -25,6 +25,8 @@ const Navbar = () => {
         localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
         localStorage.removeItem("user_id");
         localStorage.removeItem("auth_token");
+        // refresh the page
+        window.location.reload();
     };
     
     
