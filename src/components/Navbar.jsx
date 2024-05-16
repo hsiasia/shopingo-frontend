@@ -9,13 +9,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
-import { fetchBookmarkData } from '../redux/action';
+import { fetchBookmarkData, fetchJoinTicketData } from '../redux/action';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 const Navbar = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchBookmarkData());
+        dispatch(fetchJoinTicketData());
     }, [dispatch]);
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
@@ -44,41 +45,6 @@ const Navbar = () => {
         setOpen(false);
     }
 
-    const [myEvent,setMyEvent] = useState([]);
-    const [futureEvent,setFutureEvent] = useState([]);
-    const [JoinTicketNumber, setJoinTicketNumber] = useState(0);
-    useEffect(() => {
-        function fetchData(Catagory, Setting)  {
-          fetch(`${apiUrl}/api/userEvent?user_id=${localStorage.getItem('user_id')}&status=${Catagory}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-            },
-          })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Failed to fetch user info');
-              }
-              return response.json();
-            })
-            .then(data => {
-              Setting(data.data);
-            })
-            .catch(error => {
-              console.error('Error fetching user info:', error);
-            });
-          };
-          fetchData("creator", setMyEvent);
-          fetchData("ongoing", setFutureEvent);
-          setJoinTicketNumber(myEvent.length + futureEvent.length);
-      }, []);
-
-      useEffect(() => {
-        // 更新 JoinTicketNumber 的值
-        setJoinTicketNumber(myEvent.length + futureEvent.length);
-    }, [myEvent, futureEvent]);
-    
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
             <div className="container">
