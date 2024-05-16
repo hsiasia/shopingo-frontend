@@ -3,6 +3,8 @@ const jointicket = []
 const handleJoinTicket = (state=jointicket, action) =>{
     const ticket = action.payload
     switch(action.type){
+        case "INIT_JOINTICKET":
+            return [...action.payload];
         case "ADDJOINTICKET":
             // Check if ticket already in jointicket
             const exist = state.find((x) => x.id === ticket.id)
