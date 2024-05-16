@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -9,11 +9,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import { fetchBookmarkData } from '../redux/action';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 const Navbar = () => {
-    // const BookMarkstate = useSelector(state => state.handleBookmark)
-    // const JoinTicketstate = useSelector(state => state.handleJoinTicket)
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchBookmarkData());
+    }, [dispatch]);
+    const BookMarkstate = useSelector(state => state.handleBookmark)
+    const JoinTicketstate = useSelector(state => state.handleJoinTicket)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [open, setOpen] = React.useState(false);
 
@@ -38,24 +43,6 @@ const Navbar = () => {
     const handleClose = () => {
         setOpen(false);
     }
-
-    const [bookmarkNumber, setBookmarkNumber] = useState(0);
-    useEffect(() => {
-        fetch(`${apiUrl}/api/saveEvent/?user_id=${localStorage.getItem('user_id')}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch user info');
-          }
-          return response.json();
-        })
-        .then(data => {
-            setBookmarkNumber(data.data.length);
-        })
-        .catch(error => {
-          console.error('Error fetching user info:', error);
-        });
-    }
-    , []);
 
     const [myEvent,setMyEvent] = useState([]);
     const [futureEvent,setFutureEvent] = useState([]);
@@ -90,7 +77,6 @@ const Navbar = () => {
       useEffect(() => {
         // 更新 JoinTicketNumber 的值
         setJoinTicketNumber(myEvent.length + futureEvent.length);
-        console.log(futureEvent);
     }, [myEvent, futureEvent]);
     
     return (
@@ -142,8 +128,8 @@ const Navbar = () => {
                         ) : (
                             <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
-                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketNumber}) </NavLink>
-                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({bookmarkNumber}) </NavLink>
+                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
+                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({BookMarkstate.length}) </NavLink>
                     </div>
                 </div>
 

@@ -29,3 +29,24 @@ export const delJoinTicket = (ticket) =>{
         payload:ticket
     }
 }
+
+// actions.js
+const apiUrl = process.env.REACT_APP_API_URL;
+export const fetchBookmarkData = () => {
+    return (dispatch) => {
+      fetch(`${apiUrl}/api/saveEvent/?user_id=${localStorage.getItem('user_id')}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch bookmark data');
+          }
+          return response.json();
+        })
+        .then(data => {
+          dispatch({ type: 'INIT_BOOKMARK', payload: data.data });
+        })
+        .catch(error => {
+          console.error('Error fetching bookmark data:', error);
+        });
+    };
+  };
+  
