@@ -387,17 +387,7 @@ const NewTicket = () => {
               </div>
               <div class="form my-3">
                 <label for="Name">Location</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="location"
-                  placeholder="Choose location below"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  //onChange={handleChangeLocation}
-                />
-              </div>
-              <div class="form my-3">
+                <br />
                 <input id="pac-input" type="text" placeholder="Enter a location" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
                 <div id="map" style={{ height: "300px", width: "100%" }}></div>
               </div>
@@ -423,7 +413,7 @@ const NewTicket = () => {
               </div>
               <div class="form my-3">
                 <label for="Name">People Number Needed</label>
-                <FormControl fullWidth sx={{ m: 1 }}>
+                <FormControl fullWidth>
                   <InputLabel htmlFor="outlined-adornment-amount">
                     Amount
                   </InputLabel>
@@ -441,7 +431,6 @@ const NewTicket = () => {
                 <label for="Name">Add Photo</label>
                 <br />
                 {/* <img src={file} alt="photo" width="300" height="300" /> */}
-                <br />
                 <Button
                   component="label"
                   role={undefined}
@@ -461,7 +450,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Choose Hashtag</label>
                 <br />
-                <FormControl sx={{ m: 1, minWidth: 192 }}>
+                <FormControl sx={{ m: 0, minWidth: 200, marginRight:"3%" }}>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -473,7 +462,7 @@ const NewTicket = () => {
                     <MenuItem value={"Pizza"}>Pizza</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 192 }}>
+                <FormControl sx={{ m: 0, minWidth: 200 }}>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -488,7 +477,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Description</label>
                 <br />
-                <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+                <FormControl fullWidth>
                   <TextField
                     id="detail"
                     placeholder="Enter description"
