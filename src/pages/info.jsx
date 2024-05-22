@@ -1,6 +1,6 @@
 import React , { useState, useEffect } from "react";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
-import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 import Rating from '@mui/material/Rating';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -129,6 +129,23 @@ const Info = () => {
   }, [apiData]);
 
   function Personal ({User}) {
+    const [open, setOpen] = React.useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const handleLogout = () => {
+      setOpen(false);
+      setIsLoggedIn(false); // 設置登入狀態為false
+      localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("auth_token");
+      // refresh the page
+      window.location.reload();
+  };
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
@@ -143,11 +160,21 @@ const Info = () => {
           </div>
         </div>
         <div>
-          <Link to="/Login" style={{ textDecoration: 'none' }}>
-            <Button variant="outlined" color="primary">
-              <LoginIcon />Login
+            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+              <LogoutIcon />Logout
             </Button>
-          </Link>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Logout</DialogTitle>
+              <DialogContent>
+                  <DialogContentText>
+                  Are you sure to logout?
+                  </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                  <Button onClick={handleClose}>Cancel</Button>
+                  <Button onClick={handleLogout}>Logout</Button>
+              </DialogActions>
+          </Dialog>
         </div>
       </div>
     )
