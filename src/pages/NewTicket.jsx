@@ -32,6 +32,7 @@ const NewTicket = () => {
   const [autocomplete, setAutocomplete] = useState(null);
   const [infowindow, setInfowindow] = useState(null);
   const [marker, setMarker] = useState(null);
+  const [inputValue, setInputValue] = useState("");
   const [location, setLocation] = useState("");
   const [bias, setBias] = useState(true);
   const [strictBounds, setStrictBounds] = useState(false);
@@ -384,7 +385,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Location</label>
                 <br />
-                <input id="pac-input" type="text" placeholder="Enter a location" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+                <input id="pac-input" type="text" placeholder="Enter a location" value={location} onChange={(e) => setLocation(e.target.value)} />
                 <div id="map" style={{ height: "300px", width: "100%" }}></div>
               </div>
               <div class="form my-3">
