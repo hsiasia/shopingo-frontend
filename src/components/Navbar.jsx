@@ -2,16 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { fetchBookmarkData, fetchJoinTicketData } from '../redux/action';
 
+const clientId =
+  "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
 const apiUrl = process.env.REACT_APP_API_URL;
+
 const Navbar = () => {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -21,29 +18,59 @@ const Navbar = () => {
     const BookMarkstate = useSelector(state => state.handleBookmark)
     const JoinTicketstate = useSelector(state => state.handleJoinTicket)
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         const loggedIn = localStorage.getItem('isLoggedIn');
         setIsLoggedIn(loggedIn);
     }, []);
-    const handleLogout = () => {
-        setOpen(false);
-        setIsLoggedIn(false); // 設置登入狀態為false
-        localStorage.removeItem('isLoggedIn'); // 從localStorage中刪除登入信息
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("auth_token");
-        // refresh the page
-        window.location.reload();
-    };
     
+
+    useEffect(() => {
+        window.google?.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleCredentialResponse,
+        });
+        window.google?.accounts.id.renderButton(
+          document.getElementById("signInDiv"),
+          { theme: "outline", size: "large" }
+        );
+        window.google?.accounts.id.prompt();
+      }, []);
     
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    const handleClose = () => {
-        setOpen(false);
-    }
+      const handleCredentialResponse = (response) => {
+        console.log("response", response);
+        console.log("Encoded JWT ID token: " + response.credential);
+        localStorage.setItem('isLoggedIn', true);
+        getAPI(response.credential);
+      };
+    
+      const getAPI = (token) => {
+        // Make a request to your backend server to exchange the token for user_id
+        fetch(`${apiUrl}/api/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({token: token})
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user_id');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Handle the response data which should contain user_id
+          console.log('User ID:', data.user_info.id);
+          console.log('User Name:', data.user_info);
+          localStorage.setItem('user_id', data.user_info.id);
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error fetching user_id:', error);
+        });
+      };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -64,35 +91,20 @@ const Navbar = () => {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
                         </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/Info">Personal Info</NavLink>
-                        </li>
-                        {/* <li className="nav-item">
-                            <NavLink className="nav-link" to="/editticket">EditTicket</NavLink>
-                        </li> */}
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
                         {isLoggedIn ? (
                             <>
-                            <button onClick={handleClickOpen} className="btn btn-link p-0">
+                            <NavLink to="/Info">
+                            <button className="btn btn-link p-0">
                             <Avatar src="/broken-image.jpg" />
                           </button>
-                          <Dialog open={open} onClose={handleClose}>
-                                <DialogTitle>Logout</DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText>
-                                    Are you sure to logout?
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={handleClose}>Cancel</Button>
-                                    <Button onClick={handleLogout}>Logout</Button>
-                                </DialogActions>
-                            </Dialog>
+                          </NavLink>
                             </>
                         ) : (
-                            <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
+                            <div id="signInDiv"></div>
+                            // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
                         <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
                         <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({BookMarkstate.length}) </NavLink>
