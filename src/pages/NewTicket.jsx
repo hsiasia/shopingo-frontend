@@ -32,7 +32,7 @@ const NewTicket = () => {
   const [autocomplete, setAutocomplete] = useState(null);
   const [infowindow, setInfowindow] = useState(null);
   const [marker, setMarker] = useState(null);
-  const [inputValue, setInputValue] = useState("");
+  const [location, setLocation] = useState("");
   const [bias, setBias] = useState(true);
   const [strictBounds, setStrictBounds] = useState(false);
   const [latitude, setLatitude] = useState("");
@@ -102,7 +102,6 @@ const NewTicket = () => {
 
         // 結合 place.name 和 place.formatted_address
       const locationValue = `${place.name}, ${place.formatted_address}`;
-      setInputValue(locationValue);
       setLocation(locationValue);
     });
   };
@@ -113,7 +112,6 @@ const NewTicket = () => {
 
   const [eventName, setEventName] = React.useState("");
   const [companyName, setCompanyName] = React.useState("");
-  const [location, setLocation] = React.useState("");
   const [peopleNumNeeded, setPeopleNumNeeded] = React.useState("");
   const [photo, setPhoto] = React.useState(null);
   const [hashtag1, setHashtag1] = React.useState("");
@@ -137,10 +135,6 @@ const NewTicket = () => {
   const handleChangeCompanyName = (event) => {
     setCompanyName(event.target.value);
   };
-
-  // const handleChangeLocation = (event) => {
-  //   setLocation(event.target.value);
-  // };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -294,6 +288,8 @@ const NewTicket = () => {
       delete_datetime: null,
       score: 0,
     };
+
+    console.log(formData);
 
     // 上傳圖片到雲端換取網址
     uploadImage(signedUrl, selectedfile);
