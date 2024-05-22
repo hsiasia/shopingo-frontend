@@ -120,7 +120,11 @@ const Info = () => {
         })
         .then(data => {
           console.log(`${Catagory}:`, data.data);
-          Setting(data.data);
+          const updatedData = data.data.map(item => {
+            const eventDate = new Date(item.event_date); 
+            return { ...item, event_date: eventDate }; 
+          });
+          Setting(updatedData);
         })
         .catch(error => {
           console.error('Error fetching user info:', error);
@@ -327,6 +331,61 @@ const Info = () => {
     );
   };
 
+  function Comp_ListBar_Rating (InfoProps) {
+    return (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+            <Typography>{InfoProps.BarTitle}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <div style={{ height: '300px', overflowY: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Event ID</th>
+                      <th style={styles.tableHeader}>Event</th>
+                      <th style={styles.tableHeader}>Date</th>
+                      <th style={styles.tableHeader}>Location</th>
+                      <th style={styles.tableHeader}>View</th>
+                      <th style={styles.tableHeader}>Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {InfoProps.Data && InfoProps.Data.map(event => (
+                      <tr key={event.id}>
+                        <td style={styles.tableCell}>{event.id}</td>
+                        <td style={styles.tableCell}>{event.event_name}</td>
+                        <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
+                        <td style={styles.tableCell}>{event.location}</td>
+                        <td style={styles.tableCell}>
+                          <Link to={`/ticket/${event.id}`}>
+                            <Button variant="contained" href={""}>
+                              <VisibilityIcon />
+                            </Button>
+                          </Link>
+                        </td>
+                        <td style={styles.tableCell}>
+                          <Rating
+                            name="simple-controlled"
+                            value={event.score}
+                            precision={0.5}
+                            onChange={(event, newValue) => {
+                            
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -337,7 +396,7 @@ const Info = () => {
         <Comp_ListBar_MyTicket BarTitle="My Events" Data={myEvent}/>
         <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
         <Comp_ListBar BarTitle="Incoming Events" Data={futureEvent}/>
-        <Comp_ListBar BarTitle="Finished Events" Data={pastEvent}/>
+        <Comp_ListBar_Rating BarTitle="Finished Events" Data={pastEvent}/>
         <hr />
       </div>
       <Footer />
