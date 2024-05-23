@@ -32,6 +32,7 @@ const NewTicket = () => {
   const [autocomplete, setAutocomplete] = useState(null);
   const [infowindow, setInfowindow] = useState(null);
   const [marker, setMarker] = useState(null);
+  const [inputValue, setInputValue] = useState("");
   const [location, setLocation] = useState("");
   const [bias, setBias] = useState(true);
   const [strictBounds, setStrictBounds] = useState(false);
@@ -383,13 +384,8 @@ const NewTicket = () => {
               </div>
               <div class="form my-3">
                 <label for="Name">Location</label>
-                <input 
-                  id="pac-input" 
-                  type="text" 
-                  class="form-control"
-                  placeholder="Enter a location" 
-                  value={location} 
-                  onChange={(e) => setLocation(e.target.value)} />
+                <br />
+                <input id="pac-input" type="text" placeholder="Enter a location" value={location} onChange={(e) => setLocation(e.target.value)} />
                 <div id="map" style={{ height: "300px", width: "100%" }}></div>
               </div>
               <div class="form my-3">
@@ -414,7 +410,7 @@ const NewTicket = () => {
               </div>
               <div class="form my-3">
                 <label for="Name">People Number Needed</label>
-                <FormControl fullWidth sx={{ m: 1 }}>
+                <FormControl fullWidth>
                   <InputLabel htmlFor="outlined-adornment-amount">
                     Amount
                   </InputLabel>
@@ -432,7 +428,6 @@ const NewTicket = () => {
                 <label for="Name">Add Photo</label>
                 <br />
                 {/* <img src={file} alt="photo" width="300" height="300" /> */}
-                <br />
                 <Button
                   component="label"
                   role={undefined}
@@ -452,7 +447,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Choose Hashtag</label>
                 <br />
-                <FormControl sx={{ m: 1, minWidth: 192 }}>
+                <FormControl sx={{ m: 0, minWidth: 200, marginRight:"3%" }}>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -464,7 +459,7 @@ const NewTicket = () => {
                     <MenuItem value={"Pizza"}>Pizza</MenuItem>
                   </Select>
                 </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 192 }}>
+                <FormControl sx={{ m: 0, minWidth: 200 }}>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
@@ -479,7 +474,7 @@ const NewTicket = () => {
               <div class="form my-3">
                 <label for="Name">Description</label>
                 <br />
-                <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+                <FormControl fullWidth>
                   <TextField
                     id="detail"
                     placeholder="Enter description"
