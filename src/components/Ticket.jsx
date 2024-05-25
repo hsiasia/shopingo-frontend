@@ -26,6 +26,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 const apiUrl = process.env.REACT_APP_API_URL;
+const defaultImageUrl = "/assets/ticketDefaultImage.png";
 
 const labelStyle = {
   backgroundColor: '#9EC5FF',
@@ -33,24 +34,21 @@ const labelStyle = {
   textAlign: 'center',
   borderRadius: '10px',
   margin: '5px',
-  fontSize: '16px'
+  fontSize: '16px',
+  height: '25px',
+  width: '110px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
 };
 
 const contentStyle = {
   backgroundColor: 'white',
   textAlign: 'left',
   borderRadius: '10px',
-  margin: '3px',
-  fontSize: '16px'
-};
-
-const chipStyle = {
-  fontSize: '22px',
-  width: '100px',
-  height: '40px',
-  borderRadius: '10px',
-  margin: '3px',
-  fontSize: '16px'
+  margin: '5px',
+  fontSize: '16px',
+  height: '25px'
 };
 
 // 處理展開細節
@@ -208,18 +206,18 @@ const Ticket = ({ticket, defaultExpanded}) => {
           </Grid>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-                <img src={ticket.images} height="300px"/>
-              </Grid>
+            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+              <img src={ticket.images.length > 0 ? ticket.images[0] : defaultImageUrl} height="300px" alt="Event" />
+            </Grid>
               {/* map 問題待確認 */}
               {/* <Grid item xs={12}>
                 {ticket.hashtag.map((tag, index) => (
                   <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
                 ))}
               </Grid> */}
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
-                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                  <Typography key={index} variant="h5" sx={labelStyle}>{tag}</Typography>
                 ))}
               </Grid>
               <Grid container sx={{alignItems: 'center'}}>
