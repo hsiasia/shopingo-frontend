@@ -253,6 +253,16 @@ const Ticket = ({ticket, defaultExpanded}) => {
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
                 </Grid>
+                {ticket.distanse && (
+                  <>
+                    <Grid item xs={2}>
+                      <Typography variant="h5" sx={labelStyle}>DISTANCE</Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Typography variant="h5" sx={contentStyle}>walk {ticket.distanse.walk.w_time} ({ticket.distanse.walk.w_dist}) drive {ticket.distanse.drive.d_time} ({ticket.distanse.drive.d_dist})</Typography>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </CardContent>
           </Collapse>

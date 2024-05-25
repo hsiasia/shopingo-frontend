@@ -15,7 +15,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 const HomeShowAllTicket = () => {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
+  const [filter, setFilter] = useState([]);
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
 
@@ -95,6 +95,46 @@ const HomeShowAllTicket = () => {
       setFilter(updatedList);
     }
   };
+
+  const handleReorderLocation = async () => {
+    const latitude = localStorage.getItem('latitude');
+    const longitude = localStorage.getItem('longitude');
+
+    if (!latitude || !longitude) {
+      alert('Location data is not available. Please enable location services.');
+      return;
+    }
+
+    const userLocation = {
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+    };
+
+    const requestBody = {
+      UserLocation: userLocation,
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/api/map/GetDistance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      setFilter(responseData.data); // 更新過濾後的資料狀態
+      console.log('API response:', responseData);
+      // Handle the API response as needed
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   
   const ShowTickets = () => {
     const handleSliderChange = (event, newValue) => {
@@ -162,6 +202,8 @@ const HomeShowAllTicket = () => {
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("tea")}>Tea</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("dessert")}>Dessert</button>
           <button className="btn btn-outline-dark btn-sm m-2" onClick={() => filterTicket("BOGOF")}>BOGOF</button>
+          <button className="btn btn-outline-dark btn-sm m-2" onClick={handleReorderLocation}>search events near my location</button>
+
         </div>
         {filter.map((ticket) => {
           return (
