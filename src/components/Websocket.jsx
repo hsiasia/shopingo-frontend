@@ -3,12 +3,14 @@ import Alert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
+const apiKey = process.env.REACT_APP_API_KEY;
+
 const Websocket = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     // Create a new WebSocket instance
-    const ws = new WebSocket(`ws://localhost:8000/ws/event-updates/?user_id=${localStorage.getItem('user_id')}`); // send user_ID here
+    const ws = new WebSocket(`wss://shopingo.info/ws/event-updates/?user_id=${localStorage.getItem('user_id')}`); // send user_ID here
 
     // Event handler for when the WebSocket connection is opened
     ws.onopen = () => {
