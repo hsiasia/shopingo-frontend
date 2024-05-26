@@ -12,6 +12,13 @@
     "saved": {"CH": "暫存活動", "EN": "Saved Event"}, 
     "incoming": {"CH": "即將開始", "EN": "Incoming Event"}, 
     "finished": {"CH": "結束活動", "EN": "Finished Event"}, 
+    "view": {"CH": "查看", "EN": "View"},
+    "edit": {"CH": "編輯", "EN": "Edit"},
+    "delete": {"CH": "刪除", "EN": "Delete"},
+    "askToDelete": {"CH": "確定要刪除此活動?", "EN": "Are you sure to delete this event?"},
+
+    "saveEdit": {"CH": "儲存編輯", "EN": "Save Edit"},
+    "askToSaveEdit": {"CH": "確定要儲存編輯?", "EN": "Are you sure to save this edit?"},
 
     "create": {"CH": "建立活動", "EN": "Create Event"}, 
     "Enter event name": {"CH": "輸入活動名稱", "EN": "Enter Event Name"},
@@ -43,6 +50,7 @@
     "calendar": {"CH": "日曆", "EN": "Calendar"}, 
     "login": {"CH": "登入", "EN": "Login"}, 
     "logout": {"CH": "登出", "EN": "Logout"}, 
+    "askToLogout": {"CH": "確定要登出?", "EN": "Are you sure to logout?"},
     "joined": {"CH": "已參加", "EN": "Joined Event"},
     "join": {"CH": "參加活動", "EN": "Join Event"},
     "askToJoin": {"CH": "確定要參加此活動?", "EN": "Are you sure to join this ticket?"},
