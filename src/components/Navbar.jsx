@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { fetchBookmarkData, fetchJoinTicketData } from '../redux/action';
+import { useLanguage } from '../languageContext';
+import { FormControlLabel, Switch } from '@mui/material';
 import Websocket from './Websocket';
 
 const clientId =
@@ -25,6 +27,11 @@ const Navbar = () => {
         setIsLoggedIn(loggedIn);
     }, []);
     
+    const { language, switchLanguage, translate } = useLanguage();
+
+    const handleLanguageToggle = (event) => {
+      switchLanguage(event.target.checked ? 'EN' : 'CH');
+    };
 
     useEffect(() => {
         window.google?.accounts.id.initialize({
@@ -85,13 +92,13 @@ const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav m-auto my-2 text-center">
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/">Home </NavLink>
+                            <NavLink className="nav-link" to="/">{translate('homePage')} </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/newticket">NewTicket</NavLink>
+                            <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
+                            <NavLink className="nav-link" to="/calendar">{translate('calendar')}</NavLink>
                         </li>
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -109,9 +116,12 @@ const Navbar = () => {
                             <div id="signInDiv"></div>
                             // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
-                        <Websocket />
-                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
-                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({BookMarkstate.length}) </NavLink>
+                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> {translate('joined')} ({JoinTicketstate.length}) </NavLink>
+                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> {translate('saved')} ({BookMarkstate.length}) </NavLink>
+                        <FormControlLabel
+                          control={<Switch checked={language === 'EN'} onChange={handleLanguageToggle} />}
+                          label={language === 'EN' ? 'English' : '中文'}
+                        />
                     </div>
                 </div>
 
