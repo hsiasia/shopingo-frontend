@@ -5,12 +5,12 @@ const Websocket = () => {
 
   useEffect(() => {
     // Create a new WebSocket instance
-    const ws = new WebSocket('ws://localhost:8000/ws/event-updates/?user_id=1'); // send user_ID here
+    const ws = new WebSocket(`ws://localhost:8000/ws/event-updates/?user_id=${localStorage.getItem('user_id')}`); // send user_ID here
 
     // Event handler for when the WebSocket connection is opened
     ws.onopen = () => {
       console.log('WebSocket connected');
-      ws.send('Hi') 
+      ws.send(localStorage.getItem('user_id')); 
       // You can send a message to the server here if needed
       // ws.send('Hello Server');
     };

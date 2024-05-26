@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { fetchBookmarkData, fetchJoinTicketData } from '../redux/action';
+import Websocket from './Websocket';
 
 const clientId =
   "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
@@ -65,6 +66,7 @@ const Navbar = () => {
           console.log('User ID:', data.user_info.id);
           console.log('User Name:', data.user_info);
           localStorage.setItem('user_id', data.user_info.id);
+          setIsLoggedIn(true);
           window.location.reload();
         })
         .catch(error => {
@@ -101,6 +103,7 @@ const Navbar = () => {
                             <Avatar src="/broken-image.jpg" />
                           </button>
                           </NavLink>
+                          <Websocket />
                             </>
                         ) : (
                             <div id="signInDiv"></div>
