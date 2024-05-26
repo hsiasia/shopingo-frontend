@@ -24,6 +24,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useLanguage } from '../languageContext';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 const defaultImageUrl = "/assets/ticketDefaultImage.png";
@@ -134,12 +135,14 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const { translate } = useLanguage();
   
   return (
     <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
       <Card sx={{margin: '8px', width: '800px'}}>
         <CardHeader
-          title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
+          title={`${days} ${translate('day')} ${hours} ${translate('hour')} ${minutes} ${translate('min')} ${translate('Before the Event Starts')}`}
           sx={{
             bgcolor: '#FF9292',
             color: 'white', 
@@ -172,15 +175,15 @@ const Ticket = ({ticket, defaultExpanded}) => {
                   <AddCircleIcon onClick={handleClickOpen} sx={{width: 50, height: 50, color: "#FF9292"}}/>
                 </IconButton>
                 <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>Join Ticket</DialogTitle>
+                  <DialogTitle>{translate('join')}</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
-                      Are you sure to join this ticket?
+                    {translate('askToJoin')}
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <IconButton onClick={handleClose}>Cancel</IconButton>
-                    <IconButton onClick={() => addjointicket(ticket)}>Join</IconButton>
+                    <IconButton onClick={handleClose}>{translate('cancel')}</IconButton>
+                    <IconButton onClick={() => addjointicket(ticket)}>{translate('join')}</IconButton>
                   </DialogActions>
                 </Dialog>
               </Grid>
@@ -199,7 +202,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
                 aria-expanded={expanded}
                 sx={{fontSize: '16px'}}
               >
-                Show more
+                {translate('showMore')}
                 <ExpandMoreIcon />
               </ExpandMore>
             </CardActions>
@@ -222,31 +225,31 @@ const Ticket = ({ticket, defaultExpanded}) => {
               </Grid>
               <Grid container sx={{alignItems: 'center'}}>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>LOC</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('location')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>DATE</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('datetime')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('scale')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('budget')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('description')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
@@ -254,7 +257,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
                 {ticket.distance && (
                   <>
                     <Grid item xs={2}>
-                      <Typography variant="h5" sx={labelStyle}>DISTANCE</Typography>
+                      <Typography variant="h5" sx={labelStyle}>{translate('distance')}</Typography>
                     </Grid>
                     <Grid item xs={10}>
                       <Typography variant="h5" sx={contentStyle}>walk {ticket.distance.walk.w_time} ({ticket.distance.walk.w_dist}) drive {ticket.distance.drive.d_time} ({ticket.distance.drive.d_dist})</Typography>

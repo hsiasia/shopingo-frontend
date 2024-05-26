@@ -22,6 +22,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from '../languageContext';
 
 const apiKey = process.env.REACT_APP_API_KEY;
 const userLatitude = localStorage.getItem('latitude');
@@ -38,6 +39,7 @@ const NewTicket = () => {
   const [strictBounds, setStrictBounds] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const { translate } = useLanguage();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -338,47 +340,47 @@ const NewTicket = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Add A New Ticket</h1>
+        <h1 className="text-center">{translate('create')}</h1>
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form>
               <div class="form my-3">
-                <label for="Name">Event Name</label>
+                <label for="Name">{translate('eventName')}</label>
                 <input
                   type="text"
                   class="form-control"
                   id="eventName"
-                  placeholder="Enter event name"
+                  placeholder={translate('Enter event name')}
                   onChange={handleChangeEventName}
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">Date & Time</label>
+                <label for="Name">{translate('datetime')}</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
                       value={selectedDate}
-                      label="Choose date"
+                      label={translate('Choose date')}
                       onChange={handleDateChange}
                     />
                   </DemoContainer>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
                       value={selectedTime}
-                      label="Choose time"
+                      label={translate('Choose time')}
                       onChange={handleTimeChange}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
               <div class="form my-3">
-                <label for="Name">Brand Name</label>
+                <label for="Name">{translate('brand')}</label>
                 <input
                   type="text"
                   class="form-control"
                   id="companyName"
-                  placeholder="Enter brand name"
+                  placeholder={translate('Enter brand name')}
                   onChange={handleChangeCompanyName}
                 />
               </div>
