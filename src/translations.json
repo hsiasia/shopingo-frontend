@@ -1,0 +1,29 @@
+{
+    "homePage": {"CH": "首頁", "EN": "Home Page"}, 
+    "day": {"CH": "日", "EN": "Days"}, 
+    "hour": {"CH": "小時", "EN": "Hours"}, 
+    "min": {"CH": "分鐘", "EN": "Mins"}, 
+    "beforeTheEvent": {"CH": "活動前", "EN": "Before the event"},
+
+    "personalPage": {"CH": "個人資訊", "EN": "Personal Page"}, 
+    "mine": {"CH": "我的活動", "EN": "My Event"}, 
+    "saved": {"CH": "暫存活動", "EN": "Saved Event"}, 
+    "incoming": {"CH": "即將開始", "EN": "Incoming Event"}, 
+    "finished": {"CH": "結束活動", "EN": "Finished Event"}, 
+
+    "create": {"CH": "建立活動", "EN": "Create Event"}, 
+    "eventName": {"CH": "活動名稱", "EN": "Event Name"}, 
+    "datetime": {"CH": "日期/時間", "EN": "Date & Time"}, 
+    "brand": {"CH": "商家", "EN": "Brand"}, 
+    "location": {"CH": "位置", "EN": "Location"}, 
+    "scale": {"CH": "人數", "EN": "Scale"}, 
+    "budget": {"CH": "預算", "EN": "Budget"}, 
+    "photo": {"CH": "圖片", "EN": "Photo"}, 
+    "hashtag": {"CH": "Hashtag", "EN": "Hashtag"}, 
+    "description": {"CH": "活動描述", "EN": "Description"}, 
+
+    "calendar": {"CH": "日曆", "EN": "Calendar"}, 
+    "login": {"CH": "登入", "EN": "Login"}, 
+    "logout": {"CH": "登出", "EN": "Logout"}, 
+    "joined": {"CH": "已參加", "EN": "Joined Event"}
+}
