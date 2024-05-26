@@ -5,19 +5,21 @@ import { addJoinTicket, delJoinTicket } from "../redux/action";
 import { Link } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import { useLanguage } from '../languageContext';
 
 const JoinTicket = () => {
   const state = useSelector((state) => state.handleJoinTicket);
   const dispatch = useDispatch();
+  const { translate } = useLanguage();
 
   const EmptyJoinTicket = () => {
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-12 py-5 bg-light text-center">
-            <h4 className="p-3 display-5">Your JoinTicket is Empty</h4>
+            <h4 className="p-3 display-5"> {translate('JoinTicketEmpty')}</h4>
             <Link to="/" className="btn  btn-outline-dark mx-4">
-              <i className="fa fa-arrow-left"></i> Continue Browsing
+              <i className="fa fa-arrow-left"></i> {translate('ContinueBrowsing')}
             </Link>
           </div>
         </div>
@@ -46,7 +48,7 @@ const JoinTicket = () => {
                   }}
                   sx={{bgcolor: '#9EC5FF'}}
                 >
-                  cancel {item.event_name} JoinTicket
+                  {translate('cancel')} {item.event_name} {translate('joined')} 
                 </Button>
               </Grid>
             </>
@@ -60,7 +62,7 @@ const JoinTicket = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">JoinTicket</h1>
+        <h1 className="text-center">{translate('joined')} </h1>
         <hr />
         {state.length > 0 ? <ShowJoinTicket /> : <EmptyJoinTicket />}
       </div>

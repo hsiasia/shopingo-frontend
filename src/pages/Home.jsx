@@ -157,7 +157,7 @@ const HomeShowAllTicket = () => {
     return (
       <>
     <div className=" text-center">
-        <TextField id="standard-basic" variant="standard" placeholder="Search"  style={{ width: '250px' }}
+        <TextField id="standard-basic" variant="standard" placeholder={translate('search')}  style={{ width: '250px' }}
           value={search}
           inputProps={{ 'aria-label': 'search', inputMode: 'text' }}
           autoFocus
