@@ -101,6 +101,7 @@ const Info = () => {
   const [myEvent,setMyEvent] = useState([]);
   const [pastEvent,setPastEvent] = useState([]);
   const [futureEvent,setFutureEvent] = useState([]);
+  const [savedEvent,setSavedEvent] = useState([]);
   useEffect(() => {
     //setUserID(localStorage.getItem('user_id'));
     //setToken(localStorage.getItem('auth_token'));
@@ -133,6 +134,7 @@ const Info = () => {
       fetchData("creator", setMyEvent);
       fetchData("expired", setPastEvent);
       fetchData("ongoing", setFutureEvent);
+      fetchData("saved", setSavedEvent);
   }, [apiData]);
 
   function Personal ({User}) {
@@ -186,6 +188,10 @@ const Info = () => {
       </div>
     )
   };
+
+  function Rate (Value){
+    console.log(Value)
+  } 
 
   function Comp_ListBar (InfoProps) {
     return (
@@ -332,6 +338,7 @@ const Info = () => {
   };
 
   function Comp_ListBar_Rating (InfoProps) {
+    const [value,setValue] = React.useState(0);
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
@@ -366,14 +373,15 @@ const Info = () => {
                           </Link>
                         </td>
                         <td style={styles.tableCell}>
-                          <Rating
-                            name="simple-controlled"
-                            value={event.score}
-                            precision={0.5}
-                            onChange={(event, newValue) => {
-                            
-                            }}
-                          />
+                        <Rating
+                          name="simple-controlled"
+                          value={value}
+                          precision={0.5}
+                          onChange={(event, newValue) => {
+                            setValue(newValue);
+                            Rate(newValue);
+                          }}
+                        />
                         </td>
                       </tr>
                     ))}
@@ -394,7 +402,7 @@ const Info = () => {
         <Personal User={userData}/>
         <hr />
         <Comp_ListBar_MyTicket BarTitle="My Events" Data={myEvent}/>
-        <Comp_ListBar BarTitle="Saved Events" Data={apiData}/>
+        <Comp_ListBar BarTitle="Saved Events" Data={savedEvent}/> 
         <Comp_ListBar BarTitle="Incoming Events" Data={futureEvent}/>
         <Comp_ListBar_Rating BarTitle="Finished Events" Data={pastEvent}/>
         <hr />
