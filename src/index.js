@@ -5,7 +5,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-
+import { LanguageProvider } from "./languageContext";
 
 import {
   Home,
@@ -25,6 +25,7 @@ import {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
+  <LanguageProvider>
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -42,5 +43,6 @@ root.render(
         <Route path="/info" element={<Info />} />
       </Routes>
     </Provider>
+    </LanguageProvider>
   </BrowserRouter>
 );
