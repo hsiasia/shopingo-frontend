@@ -109,6 +109,7 @@ const Navbar = () => {
                             <div id="signInDiv"></div>
                             // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
                         )}
+                        <Websocket />
                         <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
                         <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({BookMarkstate.length}) </NavLink>
                     </div>
