@@ -3,10 +3,12 @@ import { Footer, Navbar } from '../components';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
+import { useLanguage } from '../languageContext';
 
 const localizer = momentLocalizer(moment);
 
 const Calendar = () => {
+  const { translate } = useLanguage();
   const [eventList, setEventList] = useState([]);
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const Calendar = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Calendar</h1>
+        <h1 className="text-center">{translate('calendar')} </h1>
         <hr />
         <div>
           <BigCalendar

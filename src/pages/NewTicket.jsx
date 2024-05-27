@@ -22,6 +22,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from '../languageContext';
 
 const apiKey = process.env.REACT_APP_API_KEY;
 const userLatitude = localStorage.getItem('latitude');
@@ -39,6 +40,7 @@ const NewTicket = () => {
   const [strictBounds, setStrictBounds] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const { translate } = useLanguage();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -330,62 +332,62 @@ const NewTicket = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Add A New Ticket</h1>
+        <h1 className="text-center">{translate('create')}</h1>
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form>
               <div class="form my-3">
-                <label for="Name">Event Name</label>
+                <label for="Name">{translate('eventName')}</label>
                 <input
                   type="text"
                   class="form-control"
                   id="eventName"
-                  placeholder="Enter event name"
+                  placeholder={translate('Enter event name')}
                   onChange={handleChangeEventName}
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">Date & Time</label>
+                <label for="Name">{translate('datetime')}</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
                       value={selectedDate}
-                      label="Choose date"
+                      label={translate('Choose date')}
                       onChange={handleDateChange}
                     />
                   </DemoContainer>
                   <DemoContainer components={["TimePicker"]}>
                     <TimePicker
                       value={selectedTime}
-                      label="Choose time"
+                      label={translate('Choose time')}
                       onChange={handleTimeChange}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
               </div>
               <div class="form my-3">
-                <label for="Name">Brand Name</label>
+                <label for="Name">{translate('brand')}</label>
                 <input
                   type="text"
                   class="form-control"
                   id="companyName"
-                  placeholder="Enter brand name"
+                  placeholder={translate('Enter brand name')}
                   onChange={handleChangeCompanyName}
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">Location</label>
+                <label for="Name">{translate('location')}</label>
                 <br />
-                <input id="pac-input" type="text" placeholder="Enter a location" value={location} onChange={(e) => setLocation(e.target.value)} />
+                <input id="pac-input" type="text" placeholder={translate('Enter location')} value={location} onChange={(e) => setLocation(e.target.value)} />
                 <div id="map" style={{ height: "300px", width: "100%" }}></div>
               </div>
               <div class="form my-3">
-                <label for="Name">People Number Needed</label>
+                <label for="Name">{translate('scale')}</label>
                 <Box sx={{ minWidth: 120 }}>
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">
-                      People Needed
+                    {translate('scale')}
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
@@ -401,10 +403,10 @@ const NewTicket = () => {
                 </Box>
               </div>
               <div class="form my-3">
-                <label for="Name">People Number Needed</label>
+                <label for="Name">{translate('budget')}</label>
                 <FormControl fullWidth>
                   <InputLabel htmlFor="outlined-adornment-amount">
-                    Amount
+                    {translate('budget')}
                   </InputLabel>
                   <OutlinedInput
                     id="amount"
@@ -417,7 +419,7 @@ const NewTicket = () => {
                 </FormControl>
               </div>
               <div class="form my-3">
-                <label for="Name">Add Photo</label>
+                <label for="Name">{translate('upload')}</label>
                 <br />
                 {/* <img src={file} alt="photo" width="300" height="300" /> */}
                 <Button
@@ -427,7 +429,7 @@ const NewTicket = () => {
                   tabIndex={-1}
                   startIcon={<CloudUploadIcon />}
                 >
-                  Add Photo
+                  {translate('upload')}
                   <input
                     type="file"
                     accept="image/*"
@@ -437,7 +439,7 @@ const NewTicket = () => {
                 </Button>
               </div>
               <div class="form my-3">
-                <label for="Name">Choose Hashtag</label>
+                <label for="Name">{translate('Choose Hashtag')}</label>
                 <br />
                 <FormControl sx={{ m: 0, minWidth: 200, marginRight:"3%" }}>
                   <Select
@@ -446,9 +448,9 @@ const NewTicket = () => {
                     value={hashtag1}
                     onChange={handleChangeHashtag1}
                   >
-                    <MenuItem value={"Coffee"}>Coffee</MenuItem>
-                    <MenuItem value={"Tea"}>Tea</MenuItem>
-                    <MenuItem value={"Pizza"}>Pizza</MenuItem>
+                    <MenuItem value={"Coffee"}>{translate('Coffee')}</MenuItem>
+                    <MenuItem value={"Tea"}>{translate('Tea')}</MenuItem>
+                    <MenuItem value={"Pizza"}>{translate('Dessert')}</MenuItem>
                   </Select>
                 </FormControl>
                 <FormControl sx={{ m: 0, minWidth: 200 }}>
@@ -458,18 +460,18 @@ const NewTicket = () => {
                     value={hashtag2}
                     onChange={handleChangeHashtag2}
                   >
-                    <MenuItem value={"BOGOF"}>BOGOF</MenuItem>
-                    <MenuItem value={"Discount"}>Discount</MenuItem>
+                    <MenuItem value={"BOGOF"}>{translate('BOGOF')}</MenuItem>
+                    <MenuItem value={"Discount"}>{translate('Discount')}</MenuItem>
                   </Select>
                 </FormControl>
               </div>
               <div class="form my-3">
-                <label for="Name">Description</label>
+                <label for="Name">{translate('description')}</label>
                 <br />
                 <FormControl fullWidth>
                   <TextField
                     id="detail"
-                    placeholder="Enter description"
+                    placeholder={translate('description')}
                     multiline
                     rows={4}
                     onChange={handleChangeDetail}
@@ -482,19 +484,19 @@ const NewTicket = () => {
                   type="button"
                   onClick={handleClickOpen}
                 >
-                  Submit
+                  {translate('Submit')}
                 </button>
                 <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>Submit</DialogTitle>
+                  <DialogTitle>{translate('Submit')}</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
-                      Are you sure you want to submit this ticket?
+                    {translate('askToSubmit')}
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleClose}>{translate('cancel')}</Button>
                     <Button type="submit" onClick={handleSubmit}>
-                      Submit
+                    {translate('Submit')}
                     </Button>
                   </DialogActions>
                 </Dialog>

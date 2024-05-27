@@ -5,6 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Avatar from '@mui/material/Avatar';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import { fetchBookmarkData, fetchJoinTicketData } from '../redux/action';
+import { useLanguage } from '../languageContext';
+import { FormControlLabel, Switch } from '@mui/material';
+import Websocket from './Websocket';
 
 const google = window.google;
 
@@ -44,7 +47,6 @@ const Navbar = () => {
       document.body.removeChild(script1);
       document.body.removeChild(script2);
     };
-    
   }, []);
 
   function gapiLoaded() {
@@ -69,6 +71,12 @@ const Navbar = () => {
       prompt: 'consent' // Ensure consent is asked every time
     });
   }
+  
+  const { language, switchLanguage, translate } = useLanguage();
+
+  const handleLanguageToggle = (event) => {
+    switchLanguage(event.target.checked ? 'EN' : 'CH');
+  };
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -125,13 +133,13 @@ const Navbar = () => {
       console.log('User ID:', data.user_info.id);
       console.log('User Name:', data.user_info);
       localStorage.setItem('user_id', data.user_info.id);
+      setIsLoggedIn(true);
       window.location.reload();
     })
     .catch(error => {
       console.error('Error fetching user_id:', error);
     });
   };
-
   const handleCalendarClick = async (e) => {
     e.preventDefault();
     const userId = localStorage.getItem("user_id");
@@ -188,50 +196,111 @@ const Navbar = () => {
       });
     };
     tokenClient.requestCode();
+  }  const handleCalendarClick = async (e) => {
+    e.preventDefault();
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      alert("請先登入才能使用 calendar 功能");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
+      const data = await response.json();
+
+      if (data.empty === false) {
+        localStorage.setItem("isCreateCalendar", true);
+        navigate("/calendar");
+      } else {
+        handleAuthClick();
+      }
+    } 
+    catch (error) {
+      console.error("Error fetching calendar data:", error);
+    }
+  };
+
+  function handleAuthClick() {
+    if (!tokenClient) {
+      console.error('Token client not initialized');
+      return;
+    }
+    tokenClient.callback = (resp) => {
+      if (resp.error !== undefined) {
+        throw (resp);
+      }
+      console.log(resp);
+      const authCode = resp.code;
+      const userId = localStorage.getItem('user_id');
+      console.log(authCode);
+      console.log(JSON.stringify({ user_id: userId, code: authCode }));
+      fetch(`${apiUrl}/api/calendar/createCalendar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ user_id: userId, code: authCode })
+      })
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem("isCreateCalendar", true);
+        alert("已成功於您的 google calendar 創建行事曆！");
+      })
+      .catch(error => {
+        console.error('Error exchanging auth code:', error);
+      });
+    };
+    tokenClient.requestCode();
   }
-      
-  return (
-      <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
-          <div className="container">
-              <NavLink className="navbar-brand fw-bold fs-4 px-2 pink" to="/"> SHOPINGO</NavLink>
-              <button className="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-              </button>
 
-              <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul className="navbar-nav m-auto my-2 text-center">
-                      <li className="nav-item">
-                          <NavLink className="nav-link" to="/">Home </NavLink>
-                      </li>
-                      <li className="nav-item">
-                          <NavLink className="nav-link" to="/newticket">NewTicket</NavLink>
-                      </li>
-                      <li className="nav-item">
+    return (
+        <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
+            <div className="container">
+                <NavLink className="navbar-brand fw-bold fs-4 px-2 pink" to="/"> SHOPINGO</NavLink>
+                <button className="navbar-toggler mx-2" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav m-auto my-2 text-center">
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/">{translate('homePage')} </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
+                        </li>
+                        <li className="nav-item">
                           <NavLink className="nav-link" to="/calendar" onClick={handleCalendarClick}>Calendar</NavLink>
-                      </li>
-                  </ul>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                      {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
-                      {isLoggedIn ? (
-                          <>
-                          <NavLink to="/Info">
-                          <button className="btn btn-link p-0">
-                          <Avatar src="/broken-image.jpg" />
-                        </button>
-                        </NavLink>
-                          </>
-                      ) : (
-                          <div id="signInDiv"></div>
-                          // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
-                      )}
-                      <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> JoinTicket ({JoinTicketstate.length}) </NavLink>
-                      <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> Bookmark ({BookMarkstate.length}) </NavLink>
-                  </div>
-              </div>
+                        </li>
+                    </ul>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
+                        {isLoggedIn ? (
+                            <>
+                            <NavLink to="/Info">
+                            <button className="btn btn-link p-0">
+                            <Avatar src="/broken-image.jpg" />
+                          </button>
+                          </NavLink>
+                          <Websocket />
+                            </>
+                        ) : (
+                            <div id="signInDiv"></div>
+                            // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
+                        )}
+                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> {translate('joined')} ({JoinTicketstate.length}) </NavLink>
+                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> {translate('saved')} ({BookMarkstate.length}) </NavLink>
+                        <FormControlLabel
+                          control={<Switch checked={language === 'EN'} onChange={handleLanguageToggle} />}
+                          label={language === 'EN' ? 'English' : '中文'}
+                        />
+                    </div>
+                </div>
 
 
-          </div>
-      </nav>
+            </div>
+        </nav>
     )
 }
 
