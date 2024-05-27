@@ -2,29 +2,14 @@ import React, {useEffect, useState} from "react";
 import { Footer, Navbar} from "../components";
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button} from '@mui/material';
 import { Link } from "react-router-dom";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
-const apiUrl = process.env.REACT_APP_API_URL;
-
-const styles = {
-  tableHeader: {
-    border: '1px solid #dddddd',
-    padding: '8px',
-    textAlign: 'left',
-    backgroundColor: '#f2f2f2',
-    position: 'sticky',
-    top: 0, 
-    zIndex: 1,
-  },
-  tableCell: {
-    border: '1px solid #dddddd',
-    padding: '8px',
-    textAlign: 'left',
-  },
-}
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import { useLanguage } from '../languageContext';
 
 const JoinTicket = () => {
+  const state = useSelector((state) => state.handleJoinTicket);
+  const dispatch = useDispatch();
+  const { translate } = useLanguage();
 
   //Calling UserEvent API
   const [futureEvent,setFutureEvent] = useState([]);
@@ -58,6 +43,7 @@ const JoinTicket = () => {
 
   function Comp_ListBar (InfoProps) {
     return (
+<<<<<<< HEAD
       <div>
         <div style={{ height: '300px', overflowY: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -88,18 +74,66 @@ const JoinTicket = () => {
               ))}
             </tbody>
           </table>
+=======
+      <div className="container">
+        <div className="row">
+          <div className="col-md-12 py-5 bg-light text-center">
+            <h4 className="p-3 display-5"> {translate('JoinTicketEmpty')}</h4>
+            <Link to="/" className="btn  btn-outline-dark mx-4">
+              <i className="fa fa-arrow-left"></i> {translate('ContinueBrowsing')}
+            </Link>
+          </div>
+>>>>>>> master
         </div>
       </div>
     );
   };
 
+<<<<<<< HEAD
+=======
+  const removeItem = (ticket) => {
+    dispatch(delJoinTicket(ticket));
+  };
+
+  const ShowJoinTicket = () => {
+    return (
+      <>
+        {state.map((item) => {
+          return (
+            <>
+              <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
+                <Grid item xs={12}>
+                  <Ticket ticket={item} />
+                </Grid>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    removeItem(item);
+                  }}
+                  sx={{bgcolor: '#9EC5FF'}}
+                >
+                  {translate('cancel')} {item.event_name} {translate('joined')} 
+                </Button>
+              </Grid>
+            </>
+          )
+        })}
+      </>
+    );
+  };
+
+>>>>>>> master
   return (
     <>
       <Navbar />
       <div className="container my-3 py-3">
+<<<<<<< HEAD
         <h1 className="text-center">My Incoming Events</h1>
         <hr />
         <Comp_ListBar Data={futureEvent}/>
+=======
+        <h1 className="text-center">{translate('joined')} </h1>
+>>>>>>> master
         <hr />
       </div>
       <Footer />
