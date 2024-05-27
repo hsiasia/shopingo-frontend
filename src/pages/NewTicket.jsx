@@ -27,6 +27,7 @@ import { useLanguage } from '../languageContext';
 const apiKey = process.env.REACT_APP_API_KEY;
 const userLatitude = localStorage.getItem('latitude');
 const userLongitude = localStorage.getItem('longitude');
+const userId = localStorage.getItem("user_id");
 
 const NewTicket = () => {
   const [map, setMap] = useState(null);
@@ -194,15 +195,25 @@ const NewTicket = () => {
           "longitude":longitude
         }
       };
-      saveLocation(`${apiUrl}/api/map/SaveEventLocation`, locationData);
+      // 存經緯度
+      saveEventInfo(`${apiUrl}/api/map/SaveEventLocation`, locationData);
 
       const imageData = {
         event_id: data["data"].id,
         old_urls: [],
         new_urls: [imageUrl]
       };
-  
-      saveImageToDatabase(`${apiUrl}/api/event/images`, imageData);
+      // 存圖片
+      saveEventInfo(`${apiUrl}/api/event/images`, imageData);
+
+      const calendarEvent = {
+        user_id: userId,
+        event_id: data["data"].id,
+      };
+
+      console.log(calendarEvent);
+      // 存 calendarEvent
+      saveEventInfo(`${apiUrl}/api/calendar/createCalendarEvent`, calendarEvent);
     })
     .catch((error) => {
         console.error("Error:", error);
@@ -210,7 +221,8 @@ const NewTicket = () => {
     });
   };
 
-  const saveLocation = (url, formData) => {
+  // 可用來 saveLocation、saveImageToDatabase 或是 createCalendarEvent
+  const saveEventInfo = (url, formData) => {
     return fetch(url, {
       method: "POST",
       headers: {
@@ -227,26 +239,6 @@ const NewTicket = () => {
     .catch((error) => {
         console.error("Error:", error);
         throw error; // 可以根據需要決定是否重新拋出錯誤
-    });
-  };
-
-  const saveImageToDatabase = (url, formData) => {
-    return fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => {
-        console.error("Error:", error);
-        throw error;
     });
   };
 
