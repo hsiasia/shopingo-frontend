@@ -253,7 +253,7 @@ const Navbar = () => {
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
-                        {isLoggedIn ? (
+                        {! isLoggedIn ? (
                             <>
                             <NavLink to="/Info">
                             <button className="btn btn-link p-0">

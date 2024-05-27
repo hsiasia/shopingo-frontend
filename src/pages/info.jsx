@@ -27,6 +27,9 @@ const styles = {
     padding: '8px',
     textAlign: 'left',
     backgroundColor: '#f2f2f2',
+    position: 'sticky',
+    top: 0, 
+    zIndex: 1,
   },
   tableCell: {
     border: '1px solid #dddddd',
@@ -40,24 +43,11 @@ const Info = () => {
   //Use these paras while working on local site
   //localStorage.setItem('user_id', "105302000994518372665");
   //localStorage.setItem('auth_token',  "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFjM2UzZTU1ODExMWM3YzdhNzVjNWI2NTEzNGQyMmY2M2VlMDA2ZDAiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDQzNTE0OTgxOTkxLTUwbnJkcTZjc3QzdGVjbzNmdDJtMzZoMDZyOTBxc3E4LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTA0MzUxNDk4MTk5MS01MG5yZHE2Y3N0M3RlY28zZnQybTM2aDA2cjkwcXNxOC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNTMwMjAwMDk5NDUxODM3MjY2NSIsImVtYWlsIjoid2VpLmx1bi5icnlhbkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmJmIjoxNzE1MDA1NDg4LCJuYW1lIjoiTHVuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0x0aFFBNVdja0FqUHhYZ0RuY2FjekstUWRrSjFQUXdzYlhyZ21iMmZBRDF3SWdoaWN2d2c9czk2LWMiLCJnaXZlbl9uYW1lIjoiTHVuIiwiaWF0IjoxNzE1MDA1Nzg4LCJleHAiOjE3MTUwMDkzODgsImp0aSI6ImM1MTNiNGFiNjM2ZmM1NjBlMWM1ZmNkMDhmNDJlNTAzYzY1MDNmYzIifQ.mr1ZbSYXcid912rBiWTHh_d3VuLNCe6OVZU5Gjk-J1PKlI5oB95Ti_gfDTkEAvcI1eVZfUg4t1EyyYv0RmNefQSZICc-paCfqUsnx1pm_kQuGm38jgMIFZrgyvzM8LxoRoxMCI5xtWcC-TuadNj2isCry27ExpyGWpbN9exzb7EDTg6_d-tkk9ovktHpJ2DmkByjUVtBaQO_mQ2jUHdPoq4EgFnzQFvN_lhN1veLB5Wt60PUGo_pdZMYXIA418SuHSFg2QDBLYFmGq6BYt5Eux0cmY8DKABzJfUAEePkjVUu5pq0VgylZ2GFQDdAPN3WSF6E9LHxo4GNeJ2S9PD0sg");
-
-  //Upadtaing Newest Event Data
-  const [apiData, setApiData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await fetch(`${apiUrl}/api/event`);
-          const json = await result.json();
-          const updatedData = json.data.map(item => {
-            const eventDate = new Date(item.event_date); 
-            return { ...item, event_date: eventDate }; 
-          });
-          setApiData(updatedData);}
-    fetchData();
-  }, []);
+  
   
   //Personal Info Bar Related
   const DefaultUser = {
-    name: "Anonymous",
+    name: "Guest",
     score: 0,
     profile_pic:"https://example.com/profile.jpg"
   };
@@ -66,18 +56,25 @@ const Info = () => {
   const [token,setToken] = useState("");
   const [userData, setUserData] = useState(DefaultUser);
 
+  //Calling APIs
+  const [myEvent,setMyEvent] = useState([]);
+  const [pastEvent,setPastEvent] = useState([]);
+  const [futureEvent,setFutureEvent] = useState([]);
+  const [savedEvent,setSavedEvent] = useState([]);
+  const [ratings, setRatings] = useState();
+
   useEffect(() => {
     setUserID(localStorage.getItem('user_id'));
     setToken(localStorage.getItem('auth_token'));
-    console.log(Date())
 
-    fetch(`${apiUrl}/api/user?user_id=${userID}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    })
+    function fetchUserInfo () {
+      fetch(`${apiUrl}/api/user?user_id=${userID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
       .then(response => {
         if (!response.ok) {
           throw new Error('Failed to fetch user info');
@@ -85,24 +82,16 @@ const Info = () => {
         return response.json();
       })
       .then(data => {
-        console.log('User Info:', data.data[0]);
-        if (data.data[0]){
-          setUserData(data.data[0]); 
+        console.log('User Info:', data.data);
+        if (data.data){
+          setUserData(data.data); 
         }
       })
       .catch(error => {
         console.error('Error fetching user info:', error);
-        setUserData(DefaultUser); 
       });
-  }, [apiData]);
+    };
 
-  //Calling UserEvent API
-  const [myEvent,setMyEvent] = useState([]);
-  const [pastEvent,setPastEvent] = useState([]);
-  const [futureEvent,setFutureEvent] = useState([]);
-  useEffect(() => {
-    //setUserID(localStorage.getItem('user_id'));
-    //setToken(localStorage.getItem('auth_token'));
     function fetchData(Catagory, Setting)  {
       fetch(`${apiUrl}/api/userEvent?user_id=${userID}&status=${Catagory}`, {
         method: 'GET',
@@ -113,24 +102,55 @@ const Info = () => {
       })
         .then(response => {
           if (!response.ok) {
-            throw new Error('Failed to fetch user info');
+            throw new Error('Failed to fetch user event');
           }
           return response.json();
         })
         .then(data => {
           console.log(`${Catagory}:`, data.data);
-          Setting(data.data);
+          const updatedData = data.data.map(item => {
+            const eventDate = new Date(item.event_date); 
+            return { ...item, event_date: eventDate }; 
+          });
+          Setting(updatedData);
         })
         .catch(error => {
-          console.error('Error fetching user info:', error);
+          console.error('Error fetching user event:', error);
         });
-      };
-      fetchData("creator", setMyEvent);
-      fetchData("expired", setPastEvent);
-      fetchData("ongoing", setFutureEvent);
-  }, [apiData]);
+    };
 
-  function Personal ({User}) {
+    function fetchHistory()  {
+      fetch(`${apiUrl}/api/user/scoreHistory?user_id=${userID}&mode=notnull`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch user score');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log(`ScoreHistorys:`, data.data);
+          setRatings(data.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user score:', error);
+        });
+    };
+
+    fetchData("creator", setMyEvent);
+    fetchData("expired", setPastEvent);
+    fetchData("ongoing", setFutureEvent);
+    fetchData("saved", setSavedEvent);
+    fetchHistory();
+    fetchUserInfo();
+  }, [userID, token]);
+
+  function Personal({ User }) {
     const [open, setOpen] = React.useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const handleLogout = () => {
@@ -141,13 +161,13 @@ const Info = () => {
       localStorage.removeItem("auth_token");
       // refresh the page
       window.location.reload();
-  };
+    };
     const handleClickOpen = () => {
       setOpen(true);
     };
     const handleClose = () => {
-        setOpen(false);
-    }
+      setOpen(false);
+    };
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
@@ -158,34 +178,36 @@ const Info = () => {
             </div>
           </div>
           <div>
-            <Rating name="read-only" defaultValue={0} value={User && User.score} size="large" precision={0.5} readOnly/>
+            <Rating name="read-only" defaultValue={0} value={User && User.score} size="large" precision={0.5} readOnly />
+            <span style={{ marginLeft: '5px', fontSize: '22.5px' }}>{`(${User && User.score_amount})`}</span>
           </div>
         </div>
         <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-              <LogoutIcon />{translate('logout')}
-            </Button>
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>{translate('logout')}</DialogTitle>
-              <DialogContent>
-                  <DialogContentText>
-                  {translate('askToLogout')}
-                  </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                  <Button onClick={handleClose}>{translate('cancel')}</Button>
-                  <Button onClick={handleLogout}>{translate('logout')}</Button>
-              </DialogActions>
+          <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+            <LogoutIcon />{translate('logout')}
+          </Button>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>{translate('logout')}</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {translate('askToLogout')}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>{translate('cancel')}</Button>
+              <Button onClick={handleLogout}>{translate('logout')}</Button>
+            </DialogActions>
           </Dialog>
         </div>
       </div>
     )
   };
+  
 
   function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
             <Typography>{InfoProps.BarTitle}</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -326,6 +348,118 @@ const Info = () => {
     );
   };
 
+  function Comp_ListBar_Rating (InfoProps) {
+
+    const handleRatingChange = (eventId, newValue) => {
+      const POSTscore = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/api/eventInfo/`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              event_id: eventId,
+              user_id: userID,
+              score: newValue,
+            }),
+          });
+    
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`updating failure: ${response.statusText}, error: ${errorText}`);
+          }
+    
+          const data = await response.json();
+          console.log("response when rating:", data);
+        } catch (error) {
+          console.error("updating failure:", error);
+        }
+      };
+    
+      const fetchHistory = async () => {
+        try {
+          const response = await fetch(`${apiUrl}/api/user/scoreHistory?user_id=${userID}&mode=notnull`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+    
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`failing fetching scoreHistory: ${response.statusText}, error: ${errorText}`);
+          }
+    
+          const data = await response.json();
+          setRatings(data.data);
+          console.log("fetching scoreHistory :", data.data);
+        } catch (error) {
+          console.error("failing fetching scoreHistory:", error);
+        }
+      };
+    
+      POSTscore().then(() => fetchHistory());
+    };
+
+    const findRatingByEventId = (eventId) => {
+      const rating = ratings && ratings.find((item) => item.event_id === eventId);
+      return rating ? rating.score : 0; 
+    };
+
+    return (
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
+            <Typography>{InfoProps.BarTitle}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <div style={{ height: '300px', overflowY: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={styles.tableHeader}>Event ID</th>
+                      <th style={styles.tableHeader}>Event</th>
+                      <th style={styles.tableHeader}>Date</th>
+                      <th style={styles.tableHeader}>Location</th>
+                      <th style={styles.tableHeader}>View</th>
+                      <th style={styles.tableHeader}>Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {InfoProps.Data && InfoProps.Data.map(Event => (
+                      <tr key={Event.id}>
+                        <td style={styles.tableCell}>{Event.id}</td>
+                        <td style={styles.tableCell}>{Event.event_name}</td>
+                        <td style={styles.tableCell}>{Event.event_date.toLocaleString()}</td>
+                        <td style={styles.tableCell}>{Event.location}</td>
+                        <td style={styles.tableCell}>
+                          <Link to={`/ticket/${Event.id}`}>
+                            <Button variant="contained" href={""}>
+                              <VisibilityIcon />
+                            </Button>
+                          </Link>
+                        </td>
+                        <td style={styles.tableCell}>
+                        <Rating
+                          name="simple-controlled"
+                          value={findRatingByEventId(Event.id)}
+                          precision={0.5}
+                          onChange={(event, newValue) => handleRatingChange(Event.id, newValue)}
+                        />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -333,10 +467,10 @@ const Info = () => {
         <h1 className="text-center">{translate('personalPage')}</h1>
         <Personal User={userData}/>
         <hr />
-        <Comp_ListBar_MyTicket BarTitle={translate('mine')} Data={myEvent}/>
-        <Comp_ListBar BarTitle={translate('saved')} Data={apiData}/>
-        <Comp_ListBar BarTitle={translate('incoming')} Data={futureEvent}/>
-        <Comp_ListBar BarTitle={translate('finished')} Data={pastEvent}/>
+        <Comp_ListBar_MyTicket BarTitle="My Events" Data={myEvent}/>
+        <Comp_ListBar BarTitle="Saved Events" Data={savedEvent}/> 
+        <Comp_ListBar BarTitle="Incoming Events" Data={futureEvent}/>
+        <Comp_ListBar_Rating BarTitle="Finished Events" Data={pastEvent}/>
         <hr />
       </div>
       <Footer />

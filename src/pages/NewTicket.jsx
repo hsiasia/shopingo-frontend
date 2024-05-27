@@ -269,7 +269,7 @@ const NewTicket = () => {
     const combinedDateTime = `${datePart}T${timePart}Z`;
 
     const formData = {
-      creator: userId,
+      creator: localStorage.getItem('user_id'),
       event_name: eventName,
       company_name: companyName,
       hashtag: [hashtag1, hashtag2],
