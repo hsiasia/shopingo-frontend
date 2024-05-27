@@ -196,30 +196,7 @@ const Navbar = () => {
       });
     };
     tokenClient.requestCode();
-  }  const handleCalendarClick = async (e) => {
-    e.preventDefault();
-    const userId = localStorage.getItem("user_id");
-
-    if (!userId) {
-      alert("請先登入才能使用 calendar 功能");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
-      const data = await response.json();
-
-      if (data.empty === false) {
-        localStorage.setItem("isCreateCalendar", true);
-        navigate("/calendar");
-      } else {
-        handleAuthClick();
-      }
-    } 
-    catch (error) {
-      console.error("Error fetching calendar data:", error);
-    }
-  };
+  }
 
   function handleAuthClick() {
     if (!tokenClient) {
