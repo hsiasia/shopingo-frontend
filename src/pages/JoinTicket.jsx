@@ -43,38 +43,6 @@ const JoinTicket = () => {
 
   function Comp_ListBar (InfoProps) {
     return (
-<<<<<<< HEAD
-      <div>
-        <div style={{ height: '300px', overflowY: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={styles.tableHeader}>Event ID</th>
-                <th style={styles.tableHeader}>Event</th>
-                <th style={styles.tableHeader}>Date</th>
-                <th style={styles.tableHeader}>Location</th>
-                <th style={styles.tableHeader}>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {InfoProps.Data && InfoProps.Data.map(event => (
-                <tr key={event.id}>
-                  <td style={styles.tableCell}>{event.id}</td>
-                  <td style={styles.tableCell}>{event.event_name}</td>
-                  <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
-                  <td style={styles.tableCell}>{event.location}</td>
-                  <td style={styles.tableCell}>
-                    <Link to={`/ticket/${event.id}`}>
-                      <Button variant="contained" href={""}>
-                        <VisibilityIcon />
-                      </Button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-=======
       <div className="container">
         <div className="row">
           <div className="col-md-12 py-5 bg-light text-center">
@@ -83,14 +51,11 @@ const JoinTicket = () => {
               <i className="fa fa-arrow-left"></i> {translate('ContinueBrowsing')}
             </Link>
           </div>
->>>>>>> master
         </div>
       </div>
     );
   };
 
-<<<<<<< HEAD
-=======
   const removeItem = (ticket) => {
     dispatch(delJoinTicket(ticket));
   };
@@ -122,18 +87,11 @@ const JoinTicket = () => {
     );
   };
 
->>>>>>> master
   return (
     <>
       <Navbar />
       <div className="container my-3 py-3">
-<<<<<<< HEAD
-        <h1 className="text-center">My Incoming Events</h1>
-        <hr />
-        <Comp_ListBar Data={futureEvent}/>
-=======
         <h1 className="text-center">{translate('joined')} </h1>
->>>>>>> master
         <hr />
       </div>
       <Footer />
