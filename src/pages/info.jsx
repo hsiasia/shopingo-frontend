@@ -189,10 +189,6 @@ const Info = () => {
     )
   };
 
-  function Rate (Value){
-    console.log(Value)
-  } 
-
   function Comp_ListBar (InfoProps) {
     return (
         <Accordion>
@@ -338,7 +334,19 @@ const Info = () => {
   };
 
   function Comp_ListBar_Rating (InfoProps) {
-    const [value,setValue] = React.useState(0);
+    const [ratings, setRatings] = useState({});
+
+    const handleRatingChange = (eventId, newValue) => {
+      setRatings({
+        ...ratings,
+        [eventId]: newValue,
+      });
+    };
+
+    useEffect(() => {
+      console.log(`Ratings: ${JSON.stringify(ratings)}`);
+    }, [ratings]);
+
     return (
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
@@ -359,14 +367,14 @@ const Info = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {InfoProps.Data && InfoProps.Data.map(event => (
-                      <tr key={event.id}>
-                        <td style={styles.tableCell}>{event.id}</td>
-                        <td style={styles.tableCell}>{event.event_name}</td>
-                        <td style={styles.tableCell}>{event.event_date.toLocaleString()}</td>
-                        <td style={styles.tableCell}>{event.location}</td>
+                    {InfoProps.Data && InfoProps.Data.map(Event => (
+                      <tr key={Event.id}>
+                        <td style={styles.tableCell}>{Event.id}</td>
+                        <td style={styles.tableCell}>{Event.event_name}</td>
+                        <td style={styles.tableCell}>{Event.event_date.toLocaleString()}</td>
+                        <td style={styles.tableCell}>{Event.location}</td>
                         <td style={styles.tableCell}>
-                          <Link to={`/ticket/${event.id}`}>
+                          <Link to={`/ticket/${Event.id}`}>
                             <Button variant="contained" href={""}>
                               <VisibilityIcon />
                             </Button>
@@ -375,12 +383,9 @@ const Info = () => {
                         <td style={styles.tableCell}>
                         <Rating
                           name="simple-controlled"
-                          value={value}
+                          value={ratings[Event.id]||0}
                           precision={0.5}
-                          onChange={(event, newValue) => {
-                            setValue(newValue);
-                            Rate(newValue);
-                          }}
+                          onChange={(event, newValue) => handleRatingChange(Event.id, newValue)}
                         />
                         </td>
                       </tr>
