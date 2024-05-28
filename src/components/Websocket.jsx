@@ -16,6 +16,7 @@ const Websocket = () => {
     ws.onopen = () => {
       console.log('WebSocket connected');
       ws.send(localStorage.getItem('user_id')); 
+      console.log("User ID sent to server");
       // You can send a message to the server here if needed
       // ws.send('Hello Server');
     };

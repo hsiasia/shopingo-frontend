@@ -249,31 +249,34 @@ const Navbar = () => {
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/">{translate('homePage')} </NavLink>
                         </li>
-                        <li className="nav-item">
-                            <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
-                        </li>
-                        <li className="nav-item">
-                          {/* <NavLink className="nav-link" to="/calendar" onClick={handleCalendarClick}>Calendar</NavLink> */}
-                          <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
-                        </li>
+                        {isLoggedIn ? (
+                          <>
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
+                            </li>
+                            <li className="nav-item">
+                              <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
+                            </li>
+                          </>
+                          ) : (
+                            <></>
+                          )}
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {/* <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink> */}
                         {isLoggedIn ? (
                             <>
-                            <NavLink to="/Info">
-                            <button className="btn btn-link p-0">
-                            <Avatar src="/broken-image.jpg" />
-                          </button>
-                          </NavLink>
-                          <Websocket />
+                              <NavLink to="/Info">
+                                <button className="btn btn-link p-0">
+                                  <Avatar src="/broken-image.jpg" />
+                                </button>
+                              </NavLink>
+                              <Websocket />
+                              <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> {translate('joined')} ({JoinTicketstate.length}) </NavLink>
+                              <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> {translate('saved')} ({BookMarkstate.length}) </NavLink>
                             </>
                         ) : (
                             <div id="signInDiv"></div>
-                            // <NavLink to="/login" className="btn btn-outline-dark m-2"><i className="fa fa-sign-in-alt mr-1"></i> Login</NavLink>
-                        )}
-                        <NavLink to="/jointicket" className="btn btn-outline-dark m-2"><i className="fa fa-cart-shopping mr-1"></i> {translate('joined')} ({JoinTicketstate.length}) </NavLink>
-                        <NavLink to="/bookmark" className="btn btn-outline-dark m-2"><BookmarksIcon fontSize="small"/> {translate('saved')} ({BookMarkstate.length}) </NavLink>
+                        )}           
                         <FormControlLabel
                           control={<Switch checked={language === 'EN'} onChange={handleLanguageToggle} />}
                           label={language === 'EN' ? 'English' : '中文'}
