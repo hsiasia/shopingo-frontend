@@ -187,7 +187,7 @@ const NewTicket = () => {
     .then((response) => {
       return response.json();
     })
-    .then((data) => {
+    .then(async (data) => {
       const locationData = {
         event_id: data["data"].id,
         coords: {
@@ -197,6 +197,13 @@ const NewTicket = () => {
       };
       // 存經緯度
       saveEventInfo(`${apiUrl}/api/map/SaveEventLocation`, locationData);
+
+      const eventParticipantData = {
+        event: data["data"].id,
+        user: userId
+      };
+      // 存 event_participant
+      saveEventInfo(`${apiUrl}/api/eventInfo/`, eventParticipantData);
 
       const imageData = {
         event_id: data["data"].id,
@@ -213,7 +220,7 @@ const NewTicket = () => {
 
       console.log(calendarEvent);
       // 存 calendarEvent
-      saveEventInfo(`${apiUrl}/api/calendar/createCalendarEvent`, calendarEvent);
+      await saveEventInfo(`${apiUrl}/api/calendar/createCalendarEvent`, calendarEvent);
     })
     .catch((error) => {
         console.error("Error:", error);
