@@ -22,7 +22,7 @@ const REDIRECT_URI = 'postmessage'; // 你的重定向 URI
 
 let tokenClient;
 
-//localStorage.setItem("user_id", "Kid");
+//localStorage.setItem("user_id", "118108620572792966055");
 localStorage.setItem("isCreateCalendar", false);
 
 const Navbar = () => {

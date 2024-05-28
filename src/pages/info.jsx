@@ -296,8 +296,9 @@ const Info = () => {
         }
         console.log('Calendar event deleted successfully');
     
+        console.log(`${apiUrl}/api/event/?user_id=${userID}&event_id=${id}`);
         // Now, delete the event
-        const deleteEventResponse = await fetch(`${apiUrl}/api/event/?event_id=${id}`, {
+        const deleteEventResponse = await fetch(`${apiUrl}/api/event/?user_id=${userID}&event_id=${id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
