@@ -140,9 +140,8 @@ const Navbar = () => {
       console.error('Error fetching user_id:', error);
     });
   };
-  const handleCalendarClick = async () => {
+  const handleCalendarClick = () => {
     console.log("execute handleCalendarClick");
-    //e.preventDefault();
     const userId = localStorage.getItem("user_id");
     console.log(userId);
 
@@ -152,8 +151,8 @@ const Navbar = () => {
     }
 
     try {
-      const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
-      const data = await response.json();
+      const response = fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
+      const data = response.json();
       console.log(data);
       console.log("fetch api getCalendarId_token");
 
