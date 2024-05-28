@@ -189,24 +189,16 @@ const EditTicket = () => {
       console.log(location);
   
       const formData = {
-        creator: id,
         event_name: eventName,
-        company_name: companyName,
         hashtag: [hashtag1, hashtag2],
-        location: location,
         event_date: combinedDateTime,
-        scale: peopleNumNeeded,
         budget: amount,
         detail: detail,
-        create_datetime: currentDateTime,
-        update_datetime: currentDateTime,
-        delete_datetime: null,
-        score: ticket.score,
       };
   
       // 送出表單資料
       postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
-        console.log(data);
+        console.log("更新成功", data);
       });
   
       // 上傳圖片到雲端
