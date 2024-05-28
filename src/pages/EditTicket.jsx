@@ -45,7 +45,6 @@ const EditTicket = () => {
         setHashtag2(data.data[0].hashtag[1]);
         // setPeopleNumNeeded(data.data[0].scale.toString());
         setPeopleNumNeeded(data.data[0].scale);
-        console.log(data.data[0].scale);
         setLoading(false);
       };
       getTicket();
@@ -178,7 +177,6 @@ const EditTicket = () => {
     };
 
     const handleSave = (event) => {
-      console.log(event);
       event.preventDefault();
   
       // 獲取當前時間
@@ -208,6 +206,7 @@ const EditTicket = () => {
   
       // 送出表單資料
       postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
+        console.log("表單資料已送出:");
         console.log(data);
       });
   
