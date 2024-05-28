@@ -113,6 +113,8 @@ const NewTicket = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const navigate = useNavigate();
+  const currentDate = dayjs(); // 获取当前日期和时间
+
 
   const [eventName, setEventName] = React.useState("");
   const [companyName, setCompanyName] = React.useState("");
@@ -362,6 +364,7 @@ const NewTicket = () => {
                       value={selectedDate}
                       label={translate('Choose date')}
                       onChange={handleDateChange}
+                      minDate={currentDate} // 设置最小日期为当前日期
                     />
                   </DemoContainer>
                   <DemoContainer components={["TimePicker"]}>
