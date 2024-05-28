@@ -140,9 +140,9 @@ const Navbar = () => {
       console.error('Error fetching user_id:', error);
     });
   };
-  const handleCalendarClick = async (e) => {
+  const handleCalendarClick = async () => {
     console.log("execute handleCalendarClick");
-    e.preventDefault();
+    //e.preventDefault();
     const userId = localStorage.getItem("user_id");
 
     if (!userId) {
