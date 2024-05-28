@@ -90,26 +90,49 @@ const Ticket = ({ticket, defaultExpanded}) => {
 
   const addjointicket = (ticket) => {
     dispatch(addJoinTicket(ticket));
-    // input: event_id, user_id
+    
+    const userId = localStorage.getItem("user_id");
+    const eventParticipantData = {
+      event: ticket.id,
+      user: userId,
+    };
+    
     fetch(`${apiUrl}/api/eventInfo/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        event: ticket.id,
-        user: localStorage.getItem("user_id"),
-      }),
+      body: JSON.stringify(eventParticipantData),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+  
+      // Call the calendar event API after eventInfo API call is successful
+      const calendarEventData = {
+        user_id: userId,
+        event_id: ticket.id,
+      };
+  
+      return fetch(`${apiUrl}/api/calendar/createCalendarEvent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(calendarEventData),
       });
+    })
+    .then((res) => res.json())
+    .then((calendarData) => {
+      console.log(calendarData);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  
     setOpen(false);
-  }
+  };
+  
 
   // 處理展開
   const [expanded, setExpanded] = React.useState(defaultExpanded);
