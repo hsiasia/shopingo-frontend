@@ -137,7 +137,34 @@ const Ticket = ({ticket, defaultExpanded}) => {
   };
 
   const { translate } = useLanguage();
-  
+
+  const [creatorInfo,setCreatorInfo] = React.useState({});
+  function FetchUserInfo (ID) {
+    fetch(`${apiUrl}/api/user?user_id=${ID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        //'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('User Info:', data.data);
+      if (data.data){
+        setCreatorInfo(data.data)
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching user info:', error);
+    });
+  };
+  FetchUserInfo(ticket.creator);
+
   return (
     <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
       <Card sx={{margin: '8px', width: '800px'}}>
@@ -154,14 +181,13 @@ const Ticket = ({ticket, defaultExpanded}) => {
           <Grid container spacing={2}>
             <Grid container item xs={10} alignItems="center">
               <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center'}}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />
+                <Avatar alt="User Avatar" src={creatorInfo.profile_pic} />
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="h6">{ticket.creator}</Typography>
+                <Typography variant="h6">{creatorInfo.name}</Typography>
                 <Box sx={{display: 'flex', bgcolor: 'white', borderRadius: '10px', alignItems: 'center'}}>
-                  <Rating value={ticket.score} readOnly size="small"></Rating>
-                  <Typography variant="h7" mx={1}>{ticket.score}</Typography>
-                  <Typography variant="h7">(12)</Typography>
+                  <Rating value={creatorInfo.score} readOnly size="small" precision={0.5}></Rating>
+                  <Typography variant="h7">{`(${creatorInfo.score_amount})`}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={7}>
