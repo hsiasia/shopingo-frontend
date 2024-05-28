@@ -198,14 +198,14 @@ const NewTicket = () => {
         }
       };
       // 存經緯度
-      saveEventInfo(`${apiUrl}/api/map/SaveEventLocation`, locationData);
+      await saveEventInfo(`${apiUrl}/api/map/SaveEventLocation`, locationData);
 
       const eventParticipantData = {
         event: data["data"].id,
         user: userId
       };
       // 存 event_participant
-      saveEventInfo(`${apiUrl}/api/eventInfo/`, eventParticipantData);
+      await saveEventInfo(`${apiUrl}/api/eventInfo/`, eventParticipantData);
 
       const imageData = {
         event_id: data["data"].id,
@@ -213,7 +213,7 @@ const NewTicket = () => {
         new_urls: [imageUrl]
       };
       // 存圖片
-      saveEventInfo(`${apiUrl}/api/event/images`, imageData);
+      await saveEventInfo(`${apiUrl}/api/event/images`, imageData);
 
       const calendarEvent = {
         user_id: userId,
