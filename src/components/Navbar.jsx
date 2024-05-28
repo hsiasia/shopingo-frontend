@@ -22,7 +22,7 @@ const REDIRECT_URI = 'postmessage'; // 你的重定向 URI
 
 let tokenClient;
 
-//localStorage.setItem("user_id", "1");
+//localStorage.setItem("user_id", "Kid");
 localStorage.setItem("isCreateCalendar", false);
 
 const Navbar = () => {
@@ -134,32 +134,28 @@ const Navbar = () => {
       console.log('User Name:', data.user_info);
       localStorage.setItem('user_id', data.user_info.id);
       setIsLoggedIn(true);
-      handleCalendarClick();
+      window.location.reload();
     })
     .catch(error => {
       console.error('Error fetching user_id:', error);
     });
   };
-  const handleCalendarClick = () => {
-    console.log("execute handleCalendarClick");
+  const handleCalendarClick = async (e) => {
+    e.preventDefault();
     const userId = localStorage.getItem("user_id");
-    console.log(userId);
+    const isCreateCalendar = localStorage.getItem("isCreateCalendar");
 
-    if (!userId) {
-      alert("請先登入才能使用 calendar 功能");
-      return;
+    if (isCreateCalendar) {
+      navigate('/calendar');
     }
 
     try {
-      const response = fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
-      const data = response.json();
-      console.log(data);
-      console.log("fetch api getCalendarId_token");
+      const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
+      const data = await response.json();
 
       if (data.empty === false) {
         localStorage.setItem("isCreateCalendar", true);
-        //navigate("/");
-        // window.location.reload();
+        navigate("/calendar");
       } else {
         handleAuthClick();
       }
@@ -193,9 +189,8 @@ const Navbar = () => {
       .then(response => response.json())
       .then(data => {
         localStorage.setItem("isCreateCalendar", true);
-        alert("已成功於您的 google calendar 創建行事曆！");
-        //navigate("/");
-        //window.location.reload();
+        //alert("已成功於您的 google calendar 創建行事曆！");
+        navigate("/calendar");
       })
       .catch(error => {
         console.error('Error exchanging auth code:', error);
@@ -203,39 +198,6 @@ const Navbar = () => {
     };
     tokenClient.requestCode();
   }
-
-  // function handleAuthClick() {
-  //   if (!tokenClient) {
-  //     console.error('Token client not initialized');
-  //     return;
-  //   }
-  //   tokenClient.callback = (resp) => {
-  //     if (resp.error !== undefined) {
-  //       throw (resp);
-  //     }
-  //     console.log(resp);
-  //     const authCode = resp.code;
-  //     const userId = localStorage.getItem('user_id');
-  //     console.log(authCode);
-  //     console.log(JSON.stringify({ user_id: userId, code: authCode }));
-  //     fetch(`${apiUrl}/api/calendar/createCalendar`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ user_id: userId, code: authCode })
-  //     })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       localStorage.setItem("isCreateCalendar", true);
-  //       alert("已成功於您的 google calendar 創建行事曆！");
-  //     })
-  //     .catch(error => {
-  //       console.error('Error exchanging auth code:', error);
-  //     });
-  //   };
-  //   tokenClient.requestCode();
-  // }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
@@ -256,7 +218,7 @@ const Navbar = () => {
                                 <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
                             </li>
                             <li className="nav-item">
-                              <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
+                              <NavLink className="nav-link" to="/calendar" onClick={handleCalendarClick}>Calendar</NavLink>
                             </li>
                           </>
                           ) : (
