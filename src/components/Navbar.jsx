@@ -144,6 +144,7 @@ const Navbar = () => {
     console.log("execute handleCalendarClick");
     //e.preventDefault();
     const userId = localStorage.getItem("user_id");
+    console.log(userId);
 
     if (!userId) {
       alert("請先登入才能使用 calendar 功能");
@@ -153,6 +154,7 @@ const Navbar = () => {
     try {
       const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
       const data = await response.json();
+      console.log(data);
       console.log("fetch api getCalendarId_token");
 
       if (data.empty === false) {
