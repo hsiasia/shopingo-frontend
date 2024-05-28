@@ -260,26 +260,63 @@ const Info = () => {
     const handleClose = (id) => {
       setOpenDialog({ ...openDialog, [id]: false });
     };
-    const handleDelete = (id) => {
-      fetch(`${apiUrl}/api/event/?event_id=${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to delete event');
-          }
-          console.log('Event deleted successfully');
-          setMyTicket(MyTicket.filter((item) => item.id !== id));
-          handleClose(id);
-        })
-        .catch(error => {
-          console.error('Error deleting event:', error);
+    // const handleDelete = (id) => {
+    //   fetch(`${apiUrl}/api/event/?event_id=${id}`, {
+    //     method: 'DELETE',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Authorization': `Bearer ${token}`
+    //     },
+    //   })
+    //     .then(response => {
+    //       if (!response.ok) {
+    //         throw new Error('Failed to delete event');
+    //       }
+    //       console.log('Event deleted successfully');
+    //       setMyTicket(MyTicket.filter((item) => item.id !== id));
+    //       handleClose(id);
+    //     })
+    //     .catch(error => {
+    //       console.error('Error deleting event:', error);
+    //     });
+    // }
+    const handleDelete = async (id) => {
+      try {
+        // First, delete the calendar event
+        const deleteCalendarResponse = await fetch(`${apiUrl}/api/calendar/deleteCalendarEvent`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userID,event_id: id})
         });
+    
+        if (!deleteCalendarResponse.ok) {
+          throw new Error('Failed to delete calendar event');
+        }
+        console.log('Calendar event deleted successfully');
+    
+        // Now, delete the event
+        const deleteEventResponse = await fetch(`${apiUrl}/api/event/?event_id=${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        });
+    
+        if (!deleteEventResponse.ok) {
+          throw new Error('Failed to delete event');
+        }
+        console.log('Event deleted successfully');
+        setMyTicket(MyTicket.filter((item) => item.id !== id));
+        handleClose(id);
+    
+      } catch (error) {
+        console.error('Error deleting event:', error);
+      }
     }
+    
 
     return (
         <Accordion>
