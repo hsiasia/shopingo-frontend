@@ -113,7 +113,6 @@ const Navbar = () => {
     };
     
   const getAPI = (token) => {
-    console.log("kang test");
     // Make a request to your backend server to exchange the token for user_id
     fetch(`${apiUrl}/api/user/login`, {
       method: 'POST',
@@ -142,6 +141,7 @@ const Navbar = () => {
     });
   };
   const handleCalendarClick = async (e) => {
+    console.log("execute handleCalendarClick");
     e.preventDefault();
     const userId = localStorage.getItem("user_id");
 
@@ -153,10 +153,11 @@ const Navbar = () => {
     try {
       const response = await fetch(`${apiUrl}/api/calendar/getCalendarId_token?user_id=${userId}`);
       const data = await response.json();
+      console.log("fetch api getCalendarId_token");
 
       if (data.empty === false) {
         localStorage.setItem("isCreateCalendar", true);
-        navigate("/");
+        //navigate("/");
         // window.location.reload();
       } else {
         handleAuthClick();
@@ -192,7 +193,7 @@ const Navbar = () => {
       .then(data => {
         localStorage.setItem("isCreateCalendar", true);
         alert("已成功於您的 google calendar 創建行事曆！");
-        navigate("/");
+        //navigate("/");
         //window.location.reload();
       })
       .catch(error => {
