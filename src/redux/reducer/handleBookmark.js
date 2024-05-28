@@ -3,6 +3,8 @@ const bookmark = []
 const handleBookmark = (state=bookmark, action) =>{
     const ticket = action.payload
     switch(action.type){
+        case "INIT_BOOKMARK":
+            return [...action.payload];
         case "ADDTICKET":
             // Check if ticket already in bookmark
             const exist = state.find((x) => x.id === ticket.id)

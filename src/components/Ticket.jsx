@@ -24,6 +24,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useLanguage } from '../languageContext';
+
+const apiUrl = process.env.REACT_APP_API_URL;
+const defaultImageUrl = "/assets/ticketDefaultImage.png";
 
 const labelStyle = {
   backgroundColor: '#9EC5FF',
@@ -31,24 +35,21 @@ const labelStyle = {
   textAlign: 'center',
   borderRadius: '10px',
   margin: '5px',
-  fontSize: '16px'
+  fontSize: '16px',
+  height: '25px',
+  width: '110px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
 };
 
 const contentStyle = {
   backgroundColor: 'white',
   textAlign: 'left',
   borderRadius: '10px',
-  margin: '3px',
-  fontSize: '16px'
-};
-
-const chipStyle = {
-  fontSize: '22px',
-  width: '100px',
-  height: '40px',
-  borderRadius: '10px',
-  margin: '3px',
-  fontSize: '16px'
+  margin: '5px',
+  fontSize: '16px',
+  height: '25px'
 };
 
 // 處理展開細節
@@ -68,11 +69,70 @@ const Ticket = ({ticket, defaultExpanded}) => {
   const dispatch = useDispatch();
   const addbookmark = (ticket) => {
     dispatch(addBookmark(ticket))
+    fetch(`${apiUrl}/api/saveEvent/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event: ticket.id,
+        user: localStorage.getItem("user_id"),
+      }),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
+
   const addjointicket = (ticket) => {
-    dispatch(addJoinTicket(ticket))
+    dispatch(addJoinTicket(ticket));
+    
+    const userId = localStorage.getItem("user_id");
+    const eventParticipantData = {
+      event: ticket.id,
+      user: userId,
+    };
+    
+    fetch(`${apiUrl}/api/eventInfo/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventParticipantData),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+  
+      // Call the calendar event API after eventInfo API call is successful
+      const calendarEventData = {
+        user_id: userId,
+        event_id: ticket.id,
+      };
+  
+      return fetch(`${apiUrl}/api/calendar/createCalendarEvent`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(calendarEventData),
+      });
+    })
+    .then((res) => res.json())
+    .then((calendarData) => {
+      console.log(calendarData);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  
     setOpen(false);
-  }
+  };
+  
 
   // 處理展開
   const [expanded, setExpanded] = React.useState(defaultExpanded);
@@ -99,11 +159,40 @@ const Ticket = ({ticket, defaultExpanded}) => {
     setOpen(false);
   };
 
+  const { translate } = useLanguage();
+
+  const [creatorInfo,setCreatorInfo] = React.useState({});
+  function FetchUserInfo (ID) {
+    fetch(`${apiUrl}/api/user?user_id=${ID}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        //'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('User Info:', data.data);
+      if (data.data){
+        setCreatorInfo(data.data)
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching user info:', error);
+    });
+  };
+  FetchUserInfo(ticket.creator);
+
   return (
     <Box sx={{display: 'flex', bgcolor: 'white', justifyContent: 'center'}}>
       <Card sx={{margin: '8px', width: '800px'}}>
         <CardHeader
-          title={`${days} Days ${hours} Hours ${minutes} Mins Before the Event Starts`}
+          title={`${days} ${translate('day')} ${hours} ${translate('hour')} ${minutes} ${translate('min')} ${translate('Before the Event Starts')}`}
           sx={{
             bgcolor: '#FF9292',
             color: 'white', 
@@ -115,14 +204,13 @@ const Ticket = ({ticket, defaultExpanded}) => {
           <Grid container spacing={2}>
             <Grid container item xs={10} alignItems="center">
               <Grid item xs={1} sx={{display: 'flex', justifyContent: 'center'}}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/1.jpg" />
+                <Avatar alt="User Avatar" src={creatorInfo.profile_pic} />
               </Grid>
               <Grid item xs={4}>
-                <Typography variant="h6">{ticket.creator}</Typography>
+                <Typography variant="h6">{creatorInfo.name}</Typography>
                 <Box sx={{display: 'flex', bgcolor: 'white', borderRadius: '10px', alignItems: 'center'}}>
-                  <Rating value={ticket.score} readOnly size="small"></Rating>
-                  <Typography variant="h7" mx={1}>{ticket.score}</Typography>
-                  <Typography variant="h7">(12)</Typography>
+                  <Rating value={creatorInfo.score} readOnly size="small" precision={0.5}></Rating>
+                  <Typography variant="h7">{`(${creatorInfo.score_amount})`}</Typography>
                 </Box>
               </Grid>
               <Grid item xs={7}>
@@ -136,15 +224,15 @@ const Ticket = ({ticket, defaultExpanded}) => {
                   <AddCircleIcon onClick={handleClickOpen} sx={{width: 50, height: 50, color: "#FF9292"}}/>
                 </IconButton>
                 <Dialog open={open} onClose={handleClose}>
-                  <DialogTitle>Join Ticket</DialogTitle>
+                  <DialogTitle>{translate('join')}</DialogTitle>
                   <DialogContent>
                     <DialogContentText>
-                      Are you sure to join this ticket?
+                    {translate('askToJoin')}
                     </DialogContentText>
                   </DialogContent>
                   <DialogActions>
-                    <IconButton onClick={handleClose}>Cancel</IconButton>
-                    <IconButton onClick={() => addjointicket(ticket)}>Join</IconButton>
+                    <IconButton onClick={handleClose}>{translate('cancel')}</IconButton>
+                    <IconButton onClick={() => addjointicket(ticket)}>{translate('join')}</IconButton>
                   </DialogActions>
                 </Dialog>
               </Grid>
@@ -163,58 +251,68 @@ const Ticket = ({ticket, defaultExpanded}) => {
                 aria-expanded={expanded}
                 sx={{fontSize: '16px'}}
               >
-                Show more
+                {translate('showMore')}
                 <ExpandMoreIcon />
               </ExpandMore>
             </CardActions>
           </Grid>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-                <img src={`${process.env.PUBLIC_URL}/assets/${ticket.id}.jpg`} height="300px"/>
-              </Grid>
+            <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
+              <img src={ticket.images.length > 0 ? ticket.images[0] : defaultImageUrl} height="300px" alt="Event" />
+            </Grid>
               {/* map 問題待確認 */}
               {/* <Grid item xs={12}>
                 {ticket.hashtag.map((tag, index) => (
                   <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
                 ))}
               </Grid> */}
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {ticket.hashtag && Array.isArray(ticket.hashtag) && ticket.hashtag.map((tag, index) => (
-                  <Chip key={index} label={tag} variant="outlined" sx={chipStyle} />
+                  <Typography key={index} variant="h5" sx={labelStyle}>{tag}</Typography>
                 ))}
               </Grid>
               <Grid container sx={{alignItems: 'center'}}>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>LOC</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('location')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.location}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>DATE</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('datetime')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{formattedEventDate}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>SCALE</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('scale')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>BUDGET</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('budget')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.budget}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <Typography variant="h5" sx={labelStyle}>DETAIL</Typography>
+                  <Typography variant="h5" sx={labelStyle}>{translate('description')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.detail}</Typography>
                 </Grid>
+                {ticket.distance && (
+                  <>
+                    <Grid item xs={2}>
+                      <Typography variant="h5" sx={labelStyle}>{translate('distance')}</Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Typography variant="h5" sx={contentStyle}>walk {ticket.distance.walk.w_time} ({ticket.distance.walk.w_dist}) drive {ticket.distance.drive.d_time} ({ticket.distance.drive.d_dist})</Typography>
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </CardContent>
           </Collapse>

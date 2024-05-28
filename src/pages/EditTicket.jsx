@@ -22,10 +22,12 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useLanguage } from "../languageContext";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const EditTicket = () => {
+    const { translate } = useLanguage();
 
     // get the ticket
     const { id } = useParams();
@@ -43,7 +45,6 @@ const EditTicket = () => {
         setHashtag2(data.data[0].hashtag[1]);
         // setPeopleNumNeeded(data.data[0].scale.toString());
         setPeopleNumNeeded(data.data[0].scale);
-        console.log(data.data[0].scale);
         setLoading(false);
       };
       getTicket();
@@ -176,7 +177,6 @@ const EditTicket = () => {
     };
 
     const handleSave = (event) => {
-      console.log(event);
       event.preventDefault();
   
       // 獲取當前時間
@@ -198,7 +198,8 @@ const EditTicket = () => {
   
       // 送出表單資料
       postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
-        console.log("更新成功", data);
+        console.log("表單資料已送出:");
+        console.log(data);
       });
   
       // 上傳圖片到雲端
@@ -231,13 +232,13 @@ const EditTicket = () => {
     <>
       <Navbar />
       <div className="container my-3 py-3">
-        <h1 className="text-center">Edit My Ticket</h1>
+        <h1 className="text-center">{translate('edit')}</h1>
         <hr />
         <div class="row my-4 h-100">
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form>
               <div class="form my-3">
-                <label for="Name">Event Name</label>
+                <label for="Name">{translate('eventName')}</label>
                 <input
                     type="text"
                     className="form-control"
@@ -247,7 +248,7 @@ const EditTicket = () => {
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">Date & Time</label>
+                <label for="Name">{translate('datetime')}</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={['DatePicker']}>
                   <DatePicker
@@ -266,7 +267,7 @@ const EditTicket = () => {
                 </LocalizationProvider>
               </div>
               <div class="form my-3">
-                <label for="Name">Brand Name</label>
+                <label for="Name">{translate('brand')}</label>
                 <input
                   type="email"
                   class="form-control"
@@ -276,7 +277,7 @@ const EditTicket = () => {
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">Location</label>
+                <label for="Name">{translate('location')}</label>
                 <input
                   type="email"
                   class="form-control"
@@ -286,7 +287,7 @@ const EditTicket = () => {
                 />
               </div>
               <div class="form my-3">
-                <label for="Name">People Number Needed</label>
+                <label for="Name">{translate('scale')}</label>
                   <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
                       <Select
@@ -304,7 +305,7 @@ const EditTicket = () => {
                   </Box>
               </div>
               <div class="form my-3">
-                  <label for="Name">Budget</label>
+                  <label for="Name">{translate('budget')}</label>
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <OutlinedInput
                       id="outlined-adornment-amount"
@@ -315,7 +316,7 @@ const EditTicket = () => {
                   </FormControl>
               </div>
               <div class="form my-3">
-                <label for="Name">Photo</label>
+                <label for="Name">{translate('photo')}</label>
                 <br/>
                 {/* <img src={file} alt="photo" width="300" height="300" /> */}
                 <img src={`${process.env.PUBLIC_URL}/assets/${id}.jpg`} height="300px"/>
@@ -328,7 +329,7 @@ const EditTicket = () => {
                     tabIndex={-1}
                     startIcon={<CloudUploadIcon />}
                     >
-                    Change Photo
+                    {translate('upload')}
                     <input
                         type="file"
                         accept="image/*"
@@ -371,7 +372,7 @@ const EditTicket = () => {
               </FormControl>
               </div>
               <div class="form my-3">
-                <label for="Name">Description</label>
+                <label for="Name">{translate('description')}</label>
                 <br/>
                 <FormControl fullWidth sx={{ m: 1 }} variant="standard">
                 <TextField
@@ -386,22 +387,22 @@ const EditTicket = () => {
               <div className="text-center">
                 <Stack direction="row" spacing={2}>
                     <Button variant="contained" onClick={handleClickOpen}>
-                        Save
+                    {translate('saveEdit')}
                     </Button>
                     <Dialog open={open} onClose={handleClose}>
-                        <DialogTitle>Save</DialogTitle>
+                        <DialogTitle>{translate('saveEdit')}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Are you sure you want to save the changes?
+                            {translate('askToSaveEdit')}
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleClose}>Cancel</Button>
-                            <Button onClick={handleSave}>Save</Button>
+                            <Button onClick={handleClose}>{translate('cancel')}</Button>
+                            <Button onClick={handleSave}>{translate('saveEdit')}</Button>
                         </DialogActions>
                     </Dialog>
                     <Button variant="outlined" onClick={backToTicket}>
-                        Cancel
+                    {translate('cancel')}
                     </Button>
                 </Stack>
               </div>
