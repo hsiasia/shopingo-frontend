@@ -134,6 +134,7 @@ const Navbar = () => {
       console.log('User Name:', data.user_info);
       localStorage.setItem('user_id', data.user_info.id);
       setIsLoggedIn(true);
+      handleCalendarClick();
       window.location.reload();
     })
     .catch(error => {
@@ -155,7 +156,7 @@ const Navbar = () => {
 
       if (data.empty === false) {
         localStorage.setItem("isCreateCalendar", true);
-        navigate("/calendar");
+        // navigate("/calendar");
       } else {
         handleAuthClick();
       }
@@ -248,7 +249,8 @@ const Navbar = () => {
                             <NavLink className="nav-link" to="/newticket">{translate('create')}</NavLink>
                         </li>
                         <li className="nav-item">
-                          <NavLink className="nav-link" to="/calendar" onClick={handleCalendarClick}>Calendar</NavLink>
+                          {/* <NavLink className="nav-link" to="/calendar" onClick={handleCalendarClick}>Calendar</NavLink> */}
+                          <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
                         </li>
                     </ul>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
