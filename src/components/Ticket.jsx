@@ -177,7 +177,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
       return response.json();
     })
     .then(data => {
-      console.log('User Info:', data.data);
+      //console.log('User Info:', data.data);
       if (data.data){
         setCreatorInfo(data.data)
       }

@@ -113,6 +113,7 @@ const Navbar = () => {
     };
     
   const getAPI = (token) => {
+    console.log("kang test");
     // Make a request to your backend server to exchange the token for user_id
     fetch(`${apiUrl}/api/user/login`, {
       method: 'POST',
@@ -155,8 +156,8 @@ const Navbar = () => {
 
       if (data.empty === false) {
         localStorage.setItem("isCreateCalendar", true);
-        // navigate("/calendar");
-        window.location.reload();
+        navigate("/");
+        // window.location.reload();
       } else {
         handleAuthClick();
       }
@@ -191,7 +192,8 @@ const Navbar = () => {
       .then(data => {
         localStorage.setItem("isCreateCalendar", true);
         alert("已成功於您的 google calendar 創建行事曆！");
-        window.location.reload();
+        navigate("/");
+        //window.location.reload();
       })
       .catch(error => {
         console.error('Error exchanging auth code:', error);
