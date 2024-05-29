@@ -258,7 +258,11 @@ const Ticket = ({ticket, defaultExpanded}) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <CardContent>
             <Grid item xs={12} sx={{display: 'flex', justifyContent: 'center'}}>
-              <img src={ticket.images.length > 0 ? ticket.images[0] : defaultImageUrl} height="300px" alt="Event" />
+            <img 
+              src={(ticket.images.length > 0 && ticket.images[0] !== "") ? ticket.images[0] : defaultImageUrl} 
+              height="300px" 
+              alt="Event" 
+            />
             </Grid>
               {/* map 問題待確認 */}
               {/* <Grid item xs={12}>
