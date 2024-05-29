@@ -1,11 +1,13 @@
 import React from "react";
 import { Footer, Navbar, Ticket } from "../components";
 import { useSelector, useDispatch } from "react-redux";
-import { addBookmark, delBookmark } from "../redux/action";
+import { delBookmark } from "../redux/action";
 import { Link } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useLanguage } from '../languageContext';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Bookmark = () => {
   const state = useSelector((state) => state.handleBookmark);
@@ -32,6 +34,28 @@ const Bookmark = () => {
   };
 
   const ShowBookmark = () => {
+    const handleUnsave = (ticket) => {
+      dispatch(delBookmark(ticket));
+
+      fetch(`${apiUrl}/api/unsaveEvent/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          event: ticket.id,
+          user: localStorage.getItem("user_id"),
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("unsave successful", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+
     return (
       <>
         {state.map((item) => {
@@ -45,6 +69,7 @@ const Bookmark = () => {
                   variant="contained"
                   onClick={() => {
                     removeItem(item);
+                    handleUnsave(item);
                   }}
                   sx={{bgcolor: '#9EC5FF'}}
                 >
