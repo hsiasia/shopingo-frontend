@@ -208,7 +208,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
               <Grid item xs={4}>
                 <Typography variant="h6">{creatorInfo.name}</Typography>
                 <Box sx={{display: 'flex', bgcolor: 'white', borderRadius: '10px', alignItems: 'center'}}>
-                  <Rating value={creatorInfo.score} defaultValue={5} readOnly size="small" precision={0.5}></Rating>
+                  <Rating name="read-only" defaultValue={5} value={creatorInfo.score} size="large" precision={0.5} readOnly />
                   <Typography variant="h7">{`(${creatorInfo.score_amount})`}</Typography>
                 </Box>
               </Grid>
