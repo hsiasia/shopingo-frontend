@@ -295,6 +295,20 @@ const Ticket = ({ticket, defaultExpanded}) => {
                   <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
                 </Grid>
                 <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>{translate('joiners')}</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>{ticket.participant_count}</Typography>
+                </Grid>
+                <Grid item xs={2}>
+                  <Typography variant="h5" sx={labelStyle}>{translate('participants')}</Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="h5" sx={contentStyle}>
+                    {ticket.participants.join(', ')}
+                  </Typography>
+                </Grid>
+                <Grid item xs={2}>
                   <Typography variant="h5" sx={labelStyle}>{translate('budget')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
