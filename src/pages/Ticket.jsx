@@ -24,6 +24,7 @@ const TicketInfo = () => {
       const response = await fetch(`${apiUrl}/api/event/?event_id=${id}`);
       const data = await response.json();
       setTicket(data.data[0]);
+      console.log(data.data[0]);
       setIsDataLoaded(true);
     };
     getTicket();

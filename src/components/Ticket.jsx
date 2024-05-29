@@ -298,7 +298,7 @@ const Ticket = ({ticket, defaultExpanded}) => {
                 <Grid item xs={10}>
                   <Typography variant="h5" sx={contentStyle}>{ticket.scale}</Typography>
                 </Grid>
-                <Grid item xs={2}>
+                {/* <Grid item xs={2}>
                   <Typography variant="h5" sx={labelStyle}>{translate('joiners')}</Typography>
                 </Grid>
                 <Grid item xs={10}>
@@ -311,7 +311,29 @@ const Ticket = ({ticket, defaultExpanded}) => {
                   <Typography variant="h5" sx={contentStyle}>
                     {ticket.participants.join(', ')}
                   </Typography>
-                </Grid>
+                </Grid> */}
+                {ticket.participant_count && (
+                  <>
+                    <Grid item xs={2}>
+                      <Typography variant="h5" sx={labelStyle}>{translate('joiners')}</Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Typography variant="h5" sx={contentStyle}>{ticket.participant_count}</Typography>
+                    </Grid>
+                  </>
+                )}
+                {ticket.participants && ticket.participants.length > 0 && (
+                  <>
+                    <Grid item xs={2}>
+                      <Typography variant="h5" sx={labelStyle}>{translate('participants')}</Typography>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Typography variant="h5" sx={contentStyle}>
+                        {ticket.participants.join(', ')}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
                 <Grid item xs={2}>
                   <Typography variant="h5" sx={labelStyle}>{translate('budget')}</Typography>
                 </Grid>
