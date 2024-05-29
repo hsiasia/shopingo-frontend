@@ -17,14 +17,15 @@ const handleJoinTicket = (state=jointicket, action) =>{
             }
             break;
         case "DELJOINTICKET":
-            const exist2 = state.find((x) => x.id === ticket.id)
-            if(exist2.qty === 1){
-                return state.filter((x)=>x.id!==exist2.id)
-            }
-            else{
-                return state.map((x)=> x.id===ticket.id?{...x, qty:x.qty-1}:x)
-            }
-            break;
+            // const exist2 = state.find((x) => x.id === ticket.id)
+            // if(exist2.qty === 1){
+            //     return state.filter((x)=>x.id!==exist2.id)
+            // }
+            // else{
+            //     return state.map((x)=> x.id===ticket.id?{...x, qty:x.qty-1}:x)
+            // }
+            // break;
+            return state.filter((x) => x.id !== ticket.id);
 
         default:
             return state
