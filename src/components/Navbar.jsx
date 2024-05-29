@@ -90,6 +90,7 @@ const Navbar = () => {
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn');
     setIsLoggedIn(loggedIn);
+    //setIsLoggedIn(true);
   }, []);
     
 

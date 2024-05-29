@@ -176,9 +176,10 @@ const EditTicket = () => {
       }
     };
 
-    const handleSave = (event) => {
+    const handleSave = async (event) => {
       event.preventDefault();
-  
+      const userId = localStorage.getItem('user_id');
+
       // 獲取當前時間
       const currentDateTime = new Date().toISOString();
   
@@ -197,13 +198,22 @@ const EditTicket = () => {
       };
   
       // 送出表單資料
-      postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
+      await postFormData(`${apiUrl}/api/event/?event_id=${id}`, formData).then((data) => {
         console.log("表單資料已送出:");
         console.log(data);
       });
   
       // 上傳圖片到雲端
       uploadImage(signedUrl, selectedfile);
+
+      const updateCalendarEvent = {
+        user_id: userId,
+        event_id: id
+      };
+      console.log(updateCalendarEvent);
+
+      // 更新日曆
+      await postFormData(`${apiUrl}/api/calendar/updateCalendarEvent`, updateCalendarEvent);
   
       setOpen(false);
       navigate(`/ticket/${id}`);
