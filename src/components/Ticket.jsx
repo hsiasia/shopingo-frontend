@@ -75,8 +75,8 @@ const Ticket = ({ticket, defaultExpanded}) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        event: ticket.id,
-        user: localStorage.getItem("user_id"),
+        event_id: ticket.id,
+        user_id: localStorage.getItem("user_id"),
       }),
     })
     .then((res) => res.json())
