@@ -220,7 +220,11 @@ const Ticket = ({ticket, defaultExpanded}) => {
             <Grid container item xs={2}>
               <Grid item xs={6}>
                 <IconButton>
-                  <AddCircleIcon onClick={handleClickOpen} sx={{width: 50, height: 50, color: "#FF9292"}}/>
+                  {ticket.creator === localStorage.getItem("user_id") ? (
+                    <AddCircleIcon sx={{ width: 50, height: 50, color: "#BDBDBD" }} readOnly/>
+                  ) : (
+                    <AddCircleIcon onClick={handleClickOpen} sx={{ width: 50, height: 50, color: "#FF9292" }} />
+                  )}
                 </IconButton>
                 <Dialog open={open} onClose={handleClose}>
                   <DialogTitle>{translate('join')}</DialogTitle>
