@@ -60,16 +60,32 @@ const Navbar = () => {
     });
   }
 
+  // function gisLoaded() {
+  //   tokenClient = google.accounts.oauth2.initCodeClient({
+  //     client_id: CLIENT_ID,
+  //     scope: SCOPES,
+  //     ux_mode: 'popup',
+  //     callback: '', // defined later
+  //     access_type: 'offline', // Request a refresh token
+  //     redirect_uri: REDIRECT_URI,
+  //     prompt: 'consent' // Ensure consent is asked every time
+  //   });
+  // }
+
   function gisLoaded() {
-    tokenClient = google.accounts.oauth2.initCodeClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      ux_mode: 'popup',
-      callback: '', // defined later
-      access_type: 'offline', // Request a refresh token
-      redirect_uri: REDIRECT_URI,
-      prompt: 'consent' // Ensure consent is asked every time
-    });
+    if (window.google && window.google.accounts) {
+      tokenClient = window.google.accounts.oauth2.initCodeClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        ux_mode: 'popup',
+        callback: handleAuthClick, // defined later
+        access_type: 'offline', // Request a refresh token
+        redirect_uri: REDIRECT_URI,
+        prompt: 'consent' // Ensure consent is asked every time
+      });
+    } else {
+      console.error('Google accounts API not loaded');
+    }
   }
   
   const { language, switchLanguage, translate } = useLanguage();
@@ -94,16 +110,31 @@ const Navbar = () => {
   }, []);
     
 
+  // useEffect(() => {
+  //   window.google?.accounts.id.initialize({
+  //     client_id: clientId,
+  //     callback: handleCredentialResponse,
+  //   });
+  //   window.google?.accounts.id.renderButton(
+  //     document.getElementById("signInDiv"),
+  //     { theme: "outline", size: "large" }
+  //   );
+  //   window.google?.accounts.id.prompt();
+  // }, []);
   useEffect(() => {
-    window.google?.accounts.id.initialize({
-      client_id: clientId,
-      callback: handleCredentialResponse,
-    });
-    window.google?.accounts.id.renderButton(
-      document.getElementById("signInDiv"),
-      { theme: "outline", size: "large" }
-    );
-    window.google?.accounts.id.prompt();
+    if (window.google && window.google.accounts) {
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleCredentialResponse,
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("signInDiv"),
+        { theme: "outline", size: "large" }
+      );
+      window.google.accounts.id.prompt();
+    } else {
+      console.error('Google accounts API not loaded');
+    }
   }, []);
   
   const handleCredentialResponse = (response) => {
