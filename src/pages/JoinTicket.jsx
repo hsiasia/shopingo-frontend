@@ -7,10 +7,13 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { useLanguage } from '../languageContext';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const JoinTicket = () => {
   const state = useSelector((state) => state.handleJoinTicket);
   const dispatch = useDispatch();
   const { translate } = useLanguage();
+  const userId = localStorage.getItem("user_id");
 
   const EmptyJoinTicket = () => {
     return (
@@ -27,8 +30,45 @@ const JoinTicket = () => {
     );
   };
 
-  const removeItem = (ticket) => {
-    dispatch(delJoinTicket(ticket));
+  const removeItem = async (ticket) => {
+    try {
+      console.log(ticket.id);
+
+      // 先執行 deleteCalendarEvent API
+      const deleteCalendarResponse = await fetch(`${apiUrl}/api/calendar/deleteCalendarEvent`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId, event_id: ticket.id })
+      });
+
+      if (!deleteCalendarResponse.ok) {
+        console.error('Failed to delete calendar event', deleteCalendarResponse.statusText);
+        return;
+      }
+
+      // 然後執行 leaveEvent API
+      const leaveEventResponse = await fetch(`${apiUrl}/api/leaveEvent/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event_id: ticket.id,
+          user_id: userId,
+        }),
+      });
+
+      if (leaveEventResponse.ok) {
+        // 如果請求成功，則從 state 中刪除該 ticket
+        dispatch(delJoinTicket(ticket));
+      } else {
+        console.error('Failed to leave event', leaveEventResponse.statusText);
+      }
+    } catch (error) {
+      console.error('Error while leaving event', error);
+    }
   };
 
   const ShowJoinTicket = () => {
@@ -36,8 +76,8 @@ const JoinTicket = () => {
       <>
         {state.map((item) => {
           return (
-            <>
-              <Grid container sx={{display: 'flex', justifyContent: 'center'}}>
+            <React.Fragment key={item.event_id}>
+              <Grid container sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Grid item xs={12}>
                   <Ticket ticket={item} />
                 </Grid>
@@ -46,13 +86,13 @@ const JoinTicket = () => {
                   onClick={() => {
                     removeItem(item);
                   }}
-                  sx={{bgcolor: '#9EC5FF'}}
+                  sx={{ bgcolor: '#9EC5FF' }}
                 >
                   {translate('cancel')} {item.event_name} {translate('joined')} 
                 </Button>
               </Grid>
-            </>
-          )
+            </React.Fragment>
+          );
         })}
       </>
     );
