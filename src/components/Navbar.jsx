@@ -12,17 +12,16 @@ import Websocket from './Websocket';
 const google = window.google;
 
 const clientId =
-  "1043514981991-50nrdq6cst3teco3ft2m36h06r90qsq8.apps.googleusercontent.com";
+  "";
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const CLIENT_ID = '121623953765-rgle7pqkttsvkp64sp977pv5d234eo7b.apps.googleusercontent.com';
+const CLIENT_ID = '';
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
 const SCOPES = 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events';
 const REDIRECT_URI = 'postmessage'; // 你的重定向 URI
 
 let tokenClient;
 
-//localStorage.setItem("user_id", "118108620572792966055");
 localStorage.setItem("isCreateCalendar", false);
 
 const Navbar = () => {
@@ -60,18 +59,6 @@ const Navbar = () => {
     });
   }
 
-  // function gisLoaded() {
-  //   tokenClient = google.accounts.oauth2.initCodeClient({
-  //     client_id: CLIENT_ID,
-  //     scope: SCOPES,
-  //     ux_mode: 'popup',
-  //     callback: '', // defined later
-  //     access_type: 'offline', // Request a refresh token
-  //     redirect_uri: REDIRECT_URI,
-  //     prompt: 'consent' // Ensure consent is asked every time
-  //   });
-  // }
-
   function gisLoaded() {
     if (window.google && window.google.accounts) {
       tokenClient = window.google.accounts.oauth2.initCodeClient({
@@ -106,7 +93,6 @@ const Navbar = () => {
   useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn');
     setIsLoggedIn(loggedIn);
-    //setIsLoggedIn(true);
   }, []);
     
 
